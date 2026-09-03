@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Return & Refund — Welcome Mart</title>
+    <meta name="description" content="Welcome Mart's return and refund policy. Learn about our 30-day return window, refund process, and conditions for hassle-free returns." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #c9a84c;
+            --accent-light: #e8d5a3;
+            --accent-dark: #b8942e;
+            --white: #ffffff;
+            --off-white: #f8f6f2;
+            --gray-100: #f3f1ed;
+            --gray-200: #e8e5df;
+            --gray-300: #d1cdc4;
+            --gray-400: #a8a39a;
+            --gray-500: #7a756b;
+            --gray-600: #5a554b;
+            --gray-700: #3d3830;
+            --gray-800: #2a2620;
+            --gray-900: #1a1714;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.14);
+            --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.18);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --transition: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Playfair Display', serif;
+            --max-width: 1280px;
+            --header-height: 74px;
+            --announce-height: 38px;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: var(--font-body);
+            background: var(--white);
+            color: var(--gray-800);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            background: none;
+            font-size: inherit;
+        }
+        ul {
+            list-style: none;
+        }
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+        .section-padding {
+            padding: 64px 0;
+        }
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 40px 0;
+            }
+        }
+        .section-heading {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .section-heading h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+        }
+        .section-heading p {
+            color: var(--gray-500);
+            font-size: 1rem;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+        .section-heading .accent-line {
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            margin: 10px auto 0;
+            border-radius: 4px;
+        }
+
+        /* ===== ANNOUNCEMENT BAR ===== */
+        .announcement-bar {
+            background: var(--primary);
+            color: var(--white);
+            height: var(--announce-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            position: relative;
+            z-index: 1001;
+            overflow: hidden;
+            white-space: nowrap;
+            user-select: none;
+        }
+        .announcement-bar .track {
+            display: flex;
+            gap: 48px;
+            animation: scrollAnnounce 18s linear infinite;
+        }
+        .announcement-bar .track span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.9;
+        }
+        .announcement-bar .track span i {
+            font-size: 0.7rem;
+            color: var(--accent-light);
+        }
+        @keyframes scrollAnnounce {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        .announcement-bar .close-btn {
+            position: absolute;
+            right: 20px;
+            background: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            transition: var(--transition);
+            padding: 4px 8px;
+        }
+        .announcement-bar .close-btn:hover {
+            color: #fff;
+        }
+        @media (max-width: 640px) {
+            .announcement-bar {
+                font-size: 0.7rem;
+                height: 34px;
+            }
+            .announcement-bar .track {
+                gap: 24px;
+            }
+            .announcement-bar .close-btn {
+                right: 8px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid transparent;
+            transition: var(--transition);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+        }
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.97);
+            border-bottom-color: rgba(0, 0, 0, 0.06);
+            box-shadow: var(--shadow-sm);
+        }
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .header .logo {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .header .logo span {
+            color: var(--accent);
+        }
+        .header .logo small {
+            font-size: 0.6rem;
+            font-family: var(--font-body);
+            font-weight: 400;
+            color: var(--gray-500);
+            letter-spacing: 0.08em;
+            margin-left: 2px;
+        }
+        .header .nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .header .nav a {
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            border-radius: 30px;
+            transition: var(--transition);
+            position: relative;
+        }
+        .header .nav a:hover {
+            color: var(--primary);
+            background: var(--gray-100);
+        }
+        .header .nav a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .header .nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        .header .actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .header .actions button,
+        .header .actions a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--gray-600);
+            transition: var(--transition);
+            position: relative;
+            font-size: 1.15rem;
+            background: transparent;
+        }
+        .header .actions button:hover,
+        .header .actions a:hover {
+            background: var(--gray-100);
+            color: var(--primary);
+        }
+        .header .actions .badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 600;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header .search-toggle {
+            display: none;
+        }
+        .header .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px;
+            cursor: pointer;
+        }
+        .header .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--gray-700);
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        @media (max-width: 1024px) {
+            .header .nav {
+                display: none;
+            }
+            .header .hamburger {
+                display: flex;
+            }
+            .header .search-toggle {
+                display: flex;
+            }
+            .header .actions .desktop-only {
+                display: none;
+            }
+            .header .logo {
+                font-size: 1.3rem;
+            }
+        }
+        @media (max-width: 640px) {
+            .header .actions button,
+            .header .actions a {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+            .header .actions .badge {
+                width: 16px;
+                height: 16px;
+                font-size: 0.5rem;
+                top: 0;
+                right: 0;
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        .mobile-menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background: var(--white);
+            z-index: 2001;
+            padding: 24px 20px;
+            overflow-y: auto;
+            transition: var(--transition);
+            box-shadow: var(--shadow-xl);
+        }
+        .mobile-menu.open {
+            left: 0;
+        }
+        .mobile-menu .close {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 1.4rem;
+            color: var(--gray-600);
+            margin-bottom: 20px;
+        }
+        .mobile-menu nav a {
+            display: block;
+            padding: 12px 0;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            border-bottom: 1px solid var(--gray-100);
+            transition: var(--transition);
+        }
+        .mobile-menu nav a:hover {
+            color: var(--accent);
+            padding-left: 8px;
+        }
+        .mobile-menu .bottom-links {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-200);
+        }
+        .mobile-menu .bottom-links a {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            padding: 8px 0;
+            border: none;
+        }
+
+        /* ===== SEARCH OVERLAY ===== */
+        .search-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 80px;
+        }
+        .search-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .search-overlay .panel {
+            background: var(--white);
+            max-width: 640px;
+            width: 90%;
+            border-radius: var(--radius);
+            padding: 32px;
+            transform: translateY(-20px);
+            transition: var(--transition);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+        }
+        .search-overlay.open .panel {
+            transform: translateY(0);
+        }
+        .search-overlay .panel input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            outline: none;
+            transition: var(--transition);
+            font-family: var(--font-body);
+        }
+        .search-overlay .panel input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.15);
+        }
+        .search-overlay .panel .close-search {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 1.6rem;
+            color: var(--gray-500);
+            transition: var(--transition);
+            background: none;
+            border: none;
+        }
+        .search-overlay .panel .close-search:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+        .search-overlay .panel .suggestions {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .search-overlay .panel .suggestions span {
+            background: var(--gray-100);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .search-overlay .panel .suggestions span:hover {
+            background: var(--accent-light);
+            color: var(--primary);
+        }
+
+        /* ===== HERO - RETURN & REFUND ===== */
+        .hero-return {
+            position: relative;
+            height: 40vh;
+            min-height: 280px;
+            max-height: 420px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            background: var(--primary);
+        }
+        .hero-return .bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1556741533-6e6a9bd8b0d5?w=1600&q=80') center/cover no-repeat;
+            transform: scale(1.02);
+            transition: transform 0.8s ease;
+        }
+        .hero-return .bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(22, 33, 62, 0.4) 100%);
+        }
+        .hero-return .container {
+            position: relative;
+            z-index: 2;
+            color: var(--white);
+        }
+        .hero-return h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+            font-weight: 700;
+            line-height: 1.08;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeUp 0.7s 0.3s forwards;
+        }
+        .hero-return p {
+            font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+            opacity: 0.85;
+            max-width: 480px;
+            opacity: 0;
+            animation: fadeUp 0.7s 0.4s forwards;
+        }
+        .hero-return .breadcrumb {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 12px;
+            opacity: 0;
+            animation: fadeUp 0.7s 0.5s forwards;
+        }
+        .hero-return .breadcrumb a {
+            color: var(--accent-light);
+            transition: var(--transition);
+        }
+        .hero-return .breadcrumb a:hover {
+            color: var(--accent);
+        }
+        .hero-return .breadcrumb span {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 768px) {
+            .hero-return {
+                height: 35vh;
+                min-height: 240px;
+            }
+            .hero-return h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* ===== POLICY HIGHLIGHTS ===== */
+        .policy-highlights {
+            margin-top: -40px;
+            position: relative;
+            z-index: 5;
+        }
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .highlight-card {
+            background: var(--white);
+            padding: 24px 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-100);
+            transition: var(--transition);
+        }
+        .highlight-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-light);
+        }
+        .highlight-card .icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--off-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 1.3rem;
+            color: var(--accent);
+            transition: var(--transition);
+        }
+        .highlight-card:hover .icon {
+            background: var(--accent);
+            color: var(--white);
+        }
+        .highlight-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .highlight-card p {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            line-height: 1.4;
+        }
+        @media (max-width: 1024px) {
+            .highlights-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 640px) {
+            .policy-highlights {
+                margin-top: -30px;
+            }
+            .highlights-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .highlight-card {
+                padding: 18px 14px;
+            }
+            .highlight-card .icon {
+                width: 42px;
+                height: 42px;
+                font-size: 1rem;
+            }
+            .highlight-card h4 {
+                font-size: 0.8rem;
+            }
+            .highlight-card p {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* ===== POLICY SECTIONS ===== */
+        .policy-section {
+            padding: 64px 0 48px;
+        }
+        .policy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 8px;
+        }
+        .policy-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            border: 1px solid var(--gray-100);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        .policy-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-light);
+        }
+        .policy-card .icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--off-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 14px;
+        }
+        .policy-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .policy-card p {
+            font-size: 0.92rem;
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+        .policy-card ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin-top: 6px;
+        }
+        .policy-card ul li {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            line-height: 1.7;
+            margin-bottom: 2px;
+        }
+        .policy-card .highlight-box {
+            background: var(--off-white);
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            margin-top: 12px;
+            border-left: 3px solid var(--accent);
+        }
+        .policy-card .highlight-box p {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin: 0;
+        }
+        @media (max-width: 1024px) {
+            .policy-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+        @media (max-width: 640px) {
+            .policy-card {
+                padding: 24px 18px;
+            }
+            .policy-card h3 {
+                font-size: 1rem;
+            }
+            .policy-card p,
+            .policy-card ul li {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* ===== RETURN PROCESS STEPS ===== */
+        .process-section {
+            background: var(--off-white);
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 8px;
+        }
+        .step-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            text-align: center;
+            border: 1px solid var(--gray-100);
+            transition: var(--transition);
+            position: relative;
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-light);
+        }
+        .step-card .step-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 auto 14px;
+        }
+        .step-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .step-card p {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+        .step-card .step-arrow {
+            display: none;
+        }
+        @media (max-width: 1024px) {
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 640px) {
+            .steps-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+            }
+            .step-card {
+                padding: 20px 14px;
+            }
+            .step-card .step-number {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+            .step-card h4 {
+                font-size: 0.8rem;
+            }
+            .step-card p {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* ===== REFUND TIMELINE ===== */
+        .refund-timeline-section .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+        }
+        .refund-timeline-section .table-wrapper table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .refund-timeline-section .table-wrapper thead {
+            background: var(--primary);
+            color: var(--white);
+        }
+        .refund-timeline-section .table-wrapper th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .refund-timeline-section .table-wrapper td {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+        .refund-timeline-section .table-wrapper tbody tr:hover {
+            background: var(--off-white);
+        }
+        .refund-timeline-section .table-wrapper tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .refund-timeline-section .badge-refund {
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .badge-refund.processed {
+            background: #2ecc71;
+        }
+        .badge-refund.pending {
+            background: #f39c12;
+        }
+        .badge-refund.processing {
+            background: #3498db;
+        }
+        @media (max-width: 640px) {
+            .refund-timeline-section .table-wrapper th,
+            .refund-timeline-section .table-wrapper td {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+            .refund-timeline-section .badge-refund {
+                font-size: 0.6rem;
+                padding: 1px 10px;
+            }
+        }
+
+        /* ===== FAQ SECTION ===== */
+        .faq-section .faq-grid {
+            max-width: 820px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .faq-section .faq-item {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .faq-section .faq-item:hover {
+            border-color: var(--accent-light);
+        }
+        .faq-section .faq-item .question {
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--primary);
+            transition: var(--transition);
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        .faq-section .faq-item .question:hover {
+            color: var(--accent);
+        }
+        .faq-section .faq-item .question .icon {
+            font-size: 1.1rem;
+            transition: var(--transition);
+            color: var(--gray-400);
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .faq-section .faq-item.open .question .icon {
+            transform: rotate(180deg);
+            color: var(--accent);
+        }
+        .faq-section .faq-item .answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            padding: 0 24px;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        .faq-section .faq-item.open .answer {
+            max-height: 400px;
+            padding: 0 24px 20px;
+        }
+        @media (max-width: 640px) {
+            .faq-section .faq-item .question {
+                padding: 14px 16px;
+                font-size: 0.85rem;
+            }
+            .faq-section .faq-item .answer {
+                font-size: 0.82rem;
+            }
+            .faq-section .faq-item.open .answer {
+                padding: 0 16px 16px;
+            }
+        }
+
+        /* ===== CTA BANNER ===== */
+        .cta-return {
+            background: var(--primary);
+            color: var(--white);
+            padding: 48px 0;
+            text-align: center;
+        }
+        .cta-return h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .cta-return p {
+            opacity: 0.8;
+            max-width: 520px;
+            margin: 0 auto 20px;
+            font-size: 1rem;
+        }
+        .cta-return .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 40px;
+            border-radius: 60px;
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            border: none;
+        }
+        .cta-return .btn-cta:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 24px rgba(201, 168, 76, 0.4);
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--white);
+            border-top: 1px solid var(--gray-200);
+            padding: 6px 0 env(safe-area-inset-bottom, 8px);
+            z-index: 999;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 0.6rem;
+            color: var(--gray-500);
+            transition: var(--transition);
+            padding: 4px 12px;
+            position: relative;
+        }
+        .bottom-nav a i {
+            font-size: 1.2rem;
+        }
+        .bottom-nav a.active {
+            color: var(--accent);
+        }
+        .bottom-nav a .badge {
+            position: absolute;
+            top: -2px;
+            right: 2px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.5rem;
+            font-weight: 600;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .bottom-nav {
+                display: flex;
+            }
+            body {
+                padding-bottom: 64px;
+            }
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        @media (max-width: 640px) {
+            .toast {
+                font-size: 0.8rem;
+                padding: 10px 20px;
+                bottom: 80px;
+                white-space: normal;
+                max-width: 90%;
+            }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--gray-900);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 48px 0 0;
+            margin-top: 0;
+        }
+        .footer .grid {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr;
+            gap: 36px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .footer .brand .logo {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .footer .brand .logo span {
+            color: var(--accent);
+        }
+        .footer .brand p {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            max-width: 280px;
+            margin: 8px 0 16px;
+            line-height: 1.6;
+        }
+        .footer .brand .socials {
+            display: flex;
+            gap: 10px;
+        }
+        .footer .brand .socials a {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+        .footer .brand .socials a:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .footer .col h4 {
+            color: var(--white);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        .footer .col a {
+            display: block;
+            padding: 4px 0;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        .footer .col a:hover {
+            opacity: 1;
+            color: var(--accent);
+            padding-left: 4px;
+        }
+        .footer .payments {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 0 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            justify-content: space-between;
+        }
+        .footer .payments .label {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            font-weight: 500;
+        }
+        .footer .payments .icons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .footer .payments .icons span {
+            font-size: 0.75rem;
+            opacity: 0.5;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+        .footer .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .footer .bottom .heart {
+            color: #e74c3c;
+        }
+        @media (max-width: 1024px) {
+            .footer .grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 28px;
+            }
+        }
+        @media (max-width: 640px) {
+            .footer .grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .footer .payments {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .footer .bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* ===== REVEAL ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== ANNOUNCEMENT BAR ===== -->
+    <div class="announcement-bar" id="announcement" role="banner" aria-label="Promotional announcements">
+        <div class="track" id="announceTrack">
+            <span><i class="fas fa-truck"></i> Free Delivery Across India</span>
+            <span><i class="fas fa-fire"></i> Trending Deals — Shop Now</span>
+            <span><i class="fas fa-shield-alt"></i> Secure Payments with UPI, Cards &amp; More</span>
+            <span><i class="fas fa-undo-alt"></i> Easy Returns Available</span>
+            <span><i class="fas fa-truck"></i> Free Delivery Across India</span>
+            <span><i class="fas fa-fire"></i> Trending Deals — Shop Now</span>
+            <span><i class="fas fa-shield-alt"></i> Secure Payments with UPI, Cards &amp; More</span>
+            <span><i class="fas fa-undo-alt"></i> Easy Returns Available</span>
+        </div>
+        <button class="close-btn" aria-label="Close announcement" onclick="document.getElementById('announcement').style.display='none'">✕</button>
+    </div>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header" id="header" role="banner">
+        <div class="container">
+            <a href="#" class="logo" aria-label="Welcome Mart Home">Welcmart <small>™</small></a>
+
+            <nav class="nav" aria-label="Main navigation">
+                <a href="#">Home</a>
+                <a href="#">Men</a>
+                <a href="#">Women</a>
+                <a href="#">Footwear</a>
+                <a href="#">Accessories</a>
+                <a href="#">Beauty</a>
+                <a href="#">Home &amp; Lifestyle</a>
+                <a href="#">New Arrivals</a>
+                <a href="#">Sale</a>
+                <a href="#" class="active">Returns</a>
+            </nav>
+
+            <div class="actions">
+                <button class="search-toggle" aria-label="Search" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
+                <button aria-label="Account"><i class="fas fa-user"></i></button>
+                <button aria-label="Wishlist" id="wishlistBtn"><i class="fas fa-heart"></i><span class="badge" id="wishlistCount">0</span></button>
+                <button aria-label="Cart" id="cartBtn"><i class="fas fa-shopping-bag"></i><span class="badge" id="cartCount">0</span></button>
+                <button class="hamburger" aria-label="Toggle menu" id="hamburgerBtn" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MOBILE MENU ===== -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+        <div class="close"><button aria-label="Close menu" id="closeMobileMenu">✕</button></div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Men</a>
+            <a href="#">Women</a>
+            <a href="#">Footwear</a>
+            <a href="#">Accessories</a>
+            <a href="#">Beauty</a>
+            <a href="#">Home &amp; Lifestyle</a>
+            <a href="#">New Arrivals</a>
+            <a href="#">Sale</a>
+            <a href="#" class="active">Returns</a>
+        </nav>
+        <div class="bottom-links">
+            <a href="#">Account</a>
+            <a href="#">Wishlist</a>
+            <a href="#">Track Order</a>
+            <a href="#">Contact Us</a>
+        </div>
+    </div>
+
+    <!-- ===== SEARCH OVERLAY ===== -->
+    <div class="search-overlay" id="searchOverlay" role="dialog" aria-label="Search">
+        <div class="panel">
+            <button class="close-search" aria-label="Close search" onclick="toggleSearch()">✕</button>
+            <input type="text" placeholder="Search products..." id="searchInput" aria-label="Search input" />
+            <div class="suggestions">
+                <span>Dresses</span>
+                <span>Sneakers</span>
+                <span>Watches</span>
+                <span>Bags</span>
+                <span>Beauty</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== HERO - RETURN & REFUND ===== -->
+    <section class="hero-return" aria-label="Return and refund policy hero">
+        <div class="bg"></div>
+        <div class="container">
+            <h1>Return &amp; Refund</h1>
+            <p>Shop with confidence. Our simple and transparent return policy ensures your satisfaction.</p>
+            <div class="breadcrumb">
+                <a href="#">Home</a> <span> / </span> Return &amp; Refund
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== POLICY HIGHLIGHTS ===== -->
+    <div class="policy-highlights">
+        <div class="container">
+            <div class="highlights-grid">
+                <div class="highlight-card reveal">
+                    <div class="icon"><i class="fas fa-calendar-alt"></i></div>
+                    <h4>30-Day Returns</h4>
+                    <p>Easy returns within 30 days of delivery</p>
+                </div>
+                <div class="highlight-card reveal">
+                    <div class="icon"><i class="fas fa-truck"></i></div>
+                    <h4>Free Pickup</h4>
+                    <p>Free return pickup across India</p>
+                </div>
+                <div class="highlight-card reveal">
+                    <div class="icon"><i class="fas fa-wallet"></i></div>
+                    <h4>Quick Refunds</h4>
+                    <p>Refunds processed within 5-7 business days</p>
+                </div>
+                <div class="highlight-card reveal">
+                    <div class="icon"><i class="fas fa-headset"></i></div>
+                    <h4>Support 24/7</h4>
+                    <p>Dedicated support for all return queries</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== POLICY SECTIONS ===== -->
+    <section class="policy-section" aria-label="Return and refund policies">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>Our Return &amp; Refund Policy</h2>
+                <p>We want you to love every purchase. Here's how we handle returns and refunds.</p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="policy-grid">
+                <div class="policy-card reveal">
+                    <div class="icon-wrap"><i class="fas fa-undo-alt"></i></div>
+                    <h3>Return Policy</h3>
+                    <p>We accept returns on most products within <strong>30 days</strong> of delivery. To be eligible for a return, your item must be:</p>
+                    <ul>
+                        <li>Unused and in the same condition as received</li>
+                        <li>In the original packaging with all tags attached</li>
+                        <li>Accompanied by the order invoice or receipt</li>
+                        <li>Not listed under non-returnable items</li>
+                    </ul>
+                    <div class="highlight-box">
+                        <p><i class="fas fa-info-circle" style="color:var(--accent);margin-right:8px;"></i> <strong>Non-returnable items:</strong> Perishable goods, intimate apparel, gift cards, and personal care items. Please check product details before purchasing.</p>
+                    </div>
+                </div>
+                <div class="policy-card reveal">
+                    <div class="icon-wrap"><i class="fas fa-wallet"></i></div>
+                    <h3>Refund Policy</h3>
+                    <p>Once we receive and inspect your return, we'll notify you of the approval or rejection of your refund. If approved, your refund will be processed as follows:</p>
+                    <ul>
+                        <li><strong>Original Payment Method:</strong> Refunds are credited to your original payment method (UPI, Card, Net Banking, Wallet).</li>
+                        <li><strong>Store Credit:</strong> You can also opt for store credit to use on your next purchase.</li>
+                        <li><strong>Cash on Delivery:</strong> Refunds for COD orders are processed via bank transfer or store credit.</li>
+                    </ul>
+                    <div class="highlight-box">
+                        <p><i class="fas fa-clock" style="color:var(--accent);margin-right:8px;"></i> <strong>Processing Time:</strong> Refunds are processed within 5-7 business days after approval. Bank transactions may take additional 2-3 days.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== RETURN PROCESS STEPS ===== -->
+    <section class="process-section section-padding" aria-label="Return process steps">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>How to Return an Item</h2>
+                <p>Returning your item is easy. Follow these simple steps.</p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card reveal">
+                    <div class="step-number">1</div>
+                    <h4>Initiate Return</h4>
+                    <p>Log in to your account and go to "My Orders". Select the item and click "Return".</p>
+                </div>
+                <div class="step-card reveal">
+                    <div class="step-number">2</div>
+                    <h4>Schedule Pickup</h4>
+                    <p>Choose a convenient date and time for our courier partner to pick up the item.</p>
+                </div>
+                <div class="step-card reveal">
+                    <div class="step-number">3</div>
+                    <h4>Pack the Item</h4>
+                    <p>Place the item securely in the original packaging with all tags and accessories.</p>
+                </div>
+                <div class="step-card reveal">
+                    <div class="step-number">4</div>
+                    <h4>Refund Processed</h4>
+                    <p>We'll inspect the item and process your refund within 5-7 business days.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== REFUND TIMELINE TABLE ===== -->
+    <section class="refund-timeline-section section-padding" aria-label="Refund timeline">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>Refund Timeline</h2>
+                <p>Here's how quickly you'll receive your refund based on the payment method.</p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="table-wrapper reveal">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Payment Method</th>
+                            <th>Refund Timeframe</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>UPI / Wallet</strong></td>
+                            <td>3-5 business days</td>
+                            <td><span class="badge-refund processed">Quick</span></td>
+                            <td>Instant credit to wallet</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Credit / Debit Card</strong></td>
+                            <td>5-7 business days</td>
+                            <td><span class="badge-refund processing">Processing</span></td>
+                            <td>Bank may take 2-3 extra days</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Net Banking</strong></td>
+                            <td>5-7 business days</td>
+                            <td><span class="badge-refund processing">Processing</span></td>
+                            <td>Credited to your bank account</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cash on Delivery (COD)</strong></td>
+                            <td>7-10 business days</td>
+                            <td><span class="badge-refund pending">Pending</span></td>
+                            <td>Via bank transfer or store credit</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Store Credit</strong></td>
+                            <td>1-2 business days</td>
+                            <td><span class="badge-refund processed">Instant</span></td>
+                            <td>Credit added to your account</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="text-align:center;font-size:0.85rem;color:var(--gray-500);margin-top:16px;">
+                <i class="fas fa-info-circle"></i> Timelines are estimates and may vary based on bank processing times.
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== FAQ SECTION ===== -->
+    <section class="faq-section section-padding" style="background:var(--off-white);" aria-label="Return and refund FAQs">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2>Frequently Asked Questions</h2>
+                <p>Find answers to the most common return and refund questions.</p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-item open" data-faq="1">
+                    <button class="question" onclick="toggleFaq(this)">
+                        What is your return window?
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="answer">
+                        We offer a 30-day return window from the date of delivery. This means you can initiate a return within 30 days of receiving your order. For products that are defective or damaged, we accept returns even after the 30-day period — just contact our support team.
+                    </div>
+                </div>
+                <div class="faq-item" data-faq="2">
+                    <button class="question" onclick="toggleFaq(this)">
+                        How do I initiate a return?
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="answer">
+                        You can initiate a return by logging into your account, going to "My Orders", selecting the order, and clicking "Return". You'll be guided through the process to schedule a pickup. Alternatively, you can contact our support team for assistance.
+                    </div>
+                </div>
+                <div class="faq-item" data-faq="3">
+                    <button class="question" onclick="toggleFaq(this)">
+                        Is return pickup free?
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="answer">
+                        Yes, we offer free return pickup across India for all eligible returns. We'll arrange for a courier partner to pick up the item from your address at no additional cost. Please ensure the item is properly packed and ready for pickup.
+                    </div>
+                </div>
+                <div class="faq-item" data-faq="4">
+                    <button class="question" onclick="toggleFaq(this)">
+                        How long does it take to get a refund?
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="answer">
+                        Refunds are processed within 5-7 business days after we receive and inspect your return. The timeline depends on your payment method — UPI/wallet refunds are faster (3-5 days), while card refunds may take 5-7 days. Bank processing may add 2-3 extra days.
+                    </div>
+                </div>
+                <div class="faq-item" data-faq="5">
+                    <button class="question" onclick="toggleFaq(this)">
+                        Can I exchange an item instead of returning it?
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="answer">
+                        Yes, we offer size exchanges for most products. To exchange an item, initiate a return and select "Exchange" instead of "Refund". If the requested size is available, we'll ship the new size to you at no extra cost. If not, a refund will be processed.
+                    </div>
+                </div>
+                <div class="faq-item" data-faq="6">
+                    <button class="question" onclick="toggleFaq(this)">
+                        What if I received a damaged or defective item?
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="answer">
+                        We're sorry to hear that. In case of damaged or defective items, please contact our support team within 48 hours of delivery with your order ID and photos of the item and packaging. We'll arrange for a return pickup and process a full refund or replacement immediately.
+                    </div>
+                </div>
+                <div class="faq-item" data-faq="7">
+                    <button class="question" onclick="toggleFaq(this)">
+                        Do I need the original packaging for returns?
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="answer">
+                        Yes, we recommend using the original packaging for returns whenever possible. This helps protect the item during transit. If you don't have the original packaging, please use a sturdy box and ensure the item is securely packed to avoid damage during pickup.
+                    </div>
+                </div>
+                <div class="faq-item" data-faq="8">
+                    <button class="question" onclick="toggleFaq(this)">
+                        What items are non-returnable?
+                        <span class="icon"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div class="answer">
+                        Certain items are non-returnable due to hygiene and safety reasons. These include: underwear, swimwear, socks, beauty products (opened), gift cards, and perishable goods. Please check the product page for specific return eligibility. If you're unsure, contact our support team.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA BANNER ===== -->
+    <section class="cta-return" aria-label="Need help with returns">
+        <div class="container">
+            <h2>Need Help With Your Return?</h2>
+            <p>Our support team is here to assist you with any return or refund questions.</p>
+            <a href="#" class="btn-cta">
+                <i class="fas fa-headset"></i> Contact Support
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <nav class="bottom-nav" aria-label="Mobile navigation">
+        <a href="#"><i class="fas fa-home"></i>Home</a>
+        <a href="#"><i class="fas fa-th-large"></i>Shop</a>
+        <a href="#" onclick="toggleSearch();return false;"><i class="fas fa-search"></i>Search</a>
+        <a href="#" id="bottomWishlist"><i class="fas fa-heart"></i><span class="badge" id="bottomWishCount">0</span>Wishlist</a>
+        <a href="#" onclick="toggleCart();return false;" id="bottomCart"><i class="fas fa-shopping-bag"></i><span class="badge" id="bottomCartCount">0</span>Cart</a>
+    </nav>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="grid">
+                <div class="brand">
+                    <div class="logo">Welcmart <span>™</span></div>
+                    <p>Welcome Mart — Your destination for fashion, lifestyle and everyday essentials.</p>
+                    <div class="socials">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+                        <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="col">
+                    <h4>Shop</h4>
+                    <a href="#">Men's Fashion</a>
+                    <a href="#">Women's Fashion</a>
+                    <a href="#">Footwear</a>
+                    <a href="#">Accessories</a>
+                    <a href="#">Beauty</a>
+                    <a href="#">Home &amp; Lifestyle</a>
+                    <a href="#">New Arrivals</a>
+                    <a href="#">Sale</a>
+                </div>
+                <div class="col">
+                    <h4>Customer Care</h4>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Track Order</a>
+                    <a href="#">Shipping Information</a>
+                    <a href="#">Return &amp; Refund</a>
+                    <a href="#">FAQs</a>
+                    <a href="#">Help Center</a>
+                </div>
+                <div class="col">
+                    <h4>Company</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms &amp; Conditions</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+            <div class="payments">
+                <span class="label">We Accept</span>
+                <div class="icons">
+                    <span>Visa</span><span>Mastercard</span><span>RuPay</span><span>UPI</span><span>Razorpay</span><span>Net Banking</span>
+                </div>
+            </div>
+            <div class="bottom">
+                <span>© 2026 Welcome Mart. All Rights Reserved.</span>
+                <span>Made with <span class="heart">❤</span> for shoppers.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== CART & WISHLIST (dummy state) =====
+        let cart = [];
+        let wishlist = [];
+
+        // ===== TOAST =====
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 2600);
+        }
+
+        // ===== UPDATE BADGES =====
+        function updateBadges() {
+            const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            const wishCount = wishlist.length;
+            document.getElementById('cartCount').textContent = cartCount;
+            document.getElementById('bottomCartCount').textContent = cartCount;
+            document.getElementById('wishlistCount').textContent = wishCount;
+            document.getElementById('bottomWishCount').textContent = wishCount;
+        }
+
+        // ===== SEARCH =====
+        function toggleSearch() {
+            const overlay = document.getElementById('searchOverlay');
+            overlay.classList.toggle('open');
+            if (overlay.classList.contains('open')) {
+                document.getElementById('searchInput').focus();
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('searchOverlay').classList.contains('open')) toggleSearch();
+                if (document.getElementById('mobileMenu').classList.contains('open')) toggleMobileMenu();
+            }
+        });
+
+        // ===== MOBILE MENU =====
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const overlay = document.getElementById('mobileOverlay');
+            menu.classList.toggle('open');
+            overlay.classList.toggle('open');
+            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+            document.getElementById('hamburgerBtn').setAttribute('aria-expanded', menu.classList.contains('open'));
+        }
+        document.getElementById('hamburgerBtn').addEventListener('click', toggleMobileMenu);
+        document.getElementById('closeMobileMenu').addEventListener('click', toggleMobileMenu);
+        document.getElementById('mobileOverlay').addEventListener('click', toggleMobileMenu);
+
+        // ===== HEADER SCROLL =====
+        function handleScroll() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 40) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            document.querySelectorAll('.reveal').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 60) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('load', () => {
+            handleScroll();
+            setTimeout(() => handleScroll(), 100);
+        });
+
+        // ===== FAQ ACCORDION =====
+        function toggleFaq(btn) {
+            const item = btn.closest('.faq-item');
+            if (!item) return;
+            const isOpen = item.classList.contains('open');
+
+            // Close all
+            document.querySelectorAll('.faq-section .faq-item').forEach(el => el.classList.remove('open'));
+
+            if (!isOpen) {
+                item.classList.add('open');
+            }
+        }
+
+        // ===== CART TOGGLE (dummy) =====
+        function toggleCart() {
+            showToast('🛒 Cart drawer would open here.');
+        }
+
+        // ===== INIT =====
+        updateBadges();
+
+        console.log('↩️ Welcome Mart — Return & Refund page loaded');
+    </script>
+
+</body>
+</html>
