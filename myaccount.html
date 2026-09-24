@@ -1,0 +1,2818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Account — Welcome Mart</title>
+    <meta name="description" content="Your Welcome Mart account dashboard — orders, rewards, addresses, payment methods, notifications, and more." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #c9a84c;
+            --accent-light: #e8d5a3;
+            --accent-dark: #b8942e;
+            --white: #ffffff;
+            --off-white: #f8f6f2;
+            --gray-100: #f3f1ed;
+            --gray-200: #e8e5df;
+            --gray-300: #d1cdc4;
+            --gray-400: #a8a39a;
+            --gray-500: #7a756b;
+            --gray-600: #5a554b;
+            --gray-700: #3d3830;
+            --gray-800: #2a2620;
+            --gray-900: #1a1714;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
+            --gold: #f5c542;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.10);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.14);
+            --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.18);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --transition: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Playfair Display', serif;
+            --max-width: 1280px;
+            --header-height: 74px;
+            --announce-height: 38px;
+        }
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: var(--font-body);
+            background: var(--off-white);
+            color: var(--gray-800);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        img { max-width: 100%; display: block; }
+        a { text-decoration: none; color: inherit; }
+        button {
+            cursor: pointer; font-family: inherit;
+            border: none; background: none; font-size: inherit;
+        }
+        ul { list-style: none; }
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        @media (max-width: 640px) { .container { padding: 0 16px; } }
+
+        /* ===== ANNOUNCEMENT BAR ===== */
+        .announcement-bar {
+            background: var(--primary);
+            color: var(--white);
+            height: var(--announce-height);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.82rem; font-weight: 400; letter-spacing: 0.02em;
+            position: relative; z-index: 1001; overflow: hidden;
+            white-space: nowrap; user-select: none;
+        }
+        .announcement-bar .track {
+            display: flex; gap: 48px;
+            animation: scrollAnnounce 18s linear infinite;
+        }
+        .announcement-bar .track span {
+            display: flex; align-items: center; gap: 6px; opacity: 0.9;
+        }
+        .announcement-bar .track span i { font-size: 0.7rem; color: var(--accent-light); }
+        @keyframes scrollAnnounce {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .announcement-bar .close-btn {
+            position: absolute; right: 20px; background: none;
+            color: rgba(255,255,255,0.6); font-size: 1rem;
+            transition: var(--transition); padding: 4px 8px;
+        }
+        .announcement-bar .close-btn:hover { color: #fff; }
+        @media (max-width: 640px) {
+            .announcement-bar { font-size: 0.7rem; height: 34px; }
+            .announcement-bar .track { gap: 24px; }
+            .announcement-bar .close-btn { right: 8px; font-size: 0.8rem; }
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid transparent;
+            transition: var(--transition);
+            height: var(--header-height);
+            display: flex; align-items: center;
+        }
+        .header.scrolled {
+            background: rgba(255,255,255,0.97);
+            border-bottom-color: rgba(0,0,0,0.06);
+            box-shadow: var(--shadow-sm);
+        }
+        .header .container {
+            display: flex; align-items: center;
+            justify-content: space-between; width: 100%;
+        }
+        .header .logo {
+            font-family: var(--font-display);
+            font-size: 1.6rem; font-weight: 700;
+            color: var(--primary); letter-spacing: -0.02em;
+            display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+        }
+        .header .logo span { color: var(--accent); }
+        .header .logo small {
+            font-size: 0.6rem; font-family: var(--font-body);
+            font-weight: 400; color: var(--gray-500);
+            letter-spacing: 0.08em; margin-left: 2px;
+        }
+        .header .nav { display: flex; align-items: center; gap: 6px; }
+        .header .nav a {
+            padding: 6px 14px; font-size: 0.85rem; font-weight: 500;
+            color: var(--gray-700); border-radius: 30px;
+            transition: var(--transition); position: relative;
+        }
+        .header .nav a:hover { color: var(--primary); background: var(--gray-100); }
+        .header .nav a.active { color: var(--primary); font-weight: 600; }
+        .header .nav a.active::after {
+            content: ''; position: absolute; bottom: 2px;
+            left: 50%; transform: translateX(-50%);
+            width: 20px; height: 2px; background: var(--accent); border-radius: 4px;
+        }
+        .header .actions {
+            display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+        }
+        .header .actions button,
+        .header .actions a {
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--gray-600);
+            transition: var(--transition); position: relative;
+            font-size: 1.15rem; background: transparent;
+        }
+        .header .actions button:hover,
+        .header .actions a:hover {
+            background: var(--gray-100); color: var(--primary);
+        }
+        .header .actions .badge {
+            position: absolute; top: 2px; right: 2px;
+            background: var(--accent); color: #fff;
+            font-size: 0.6rem; font-weight: 600;
+            width: 18px; height: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .header .search-toggle { display: none; }
+        .header .hamburger {
+            display: none; flex-direction: column; gap: 4px;
+            padding: 8px; cursor: pointer;
+        }
+        .header .hamburger span {
+            width: 24px; height: 2px;
+            background: var(--gray-700); border-radius: 4px;
+            transition: var(--transition);
+        }
+        @media (max-width: 1024px) {
+            .header .nav { display: none; }
+            .header .hamburger { display: flex; }
+            .header .search-toggle { display: flex; }
+            .header .logo { font-size: 1.3rem; }
+        }
+        @media (max-width: 640px) {
+            .header .actions button,
+            .header .actions a { width: 36px; height: 36px; font-size: 1rem; }
+            .header .actions .badge {
+                width: 16px; height: 16px; font-size: 0.5rem;
+                top: 0; right: 0;
+            }
+        }
+
+        /* Mobile menu */
+        .mobile-menu-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4); z-index: 2000;
+            opacity: 0; visibility: hidden; transition: var(--transition);
+        }
+        .mobile-menu-overlay.open { opacity: 1; visibility: visible; }
+        .mobile-menu {
+            position: fixed; top: 0; left: -300px;
+            width: 300px; height: 100%;
+            background: var(--white); z-index: 2001;
+            padding: 24px 20px; overflow-y: auto;
+            transition: var(--transition); box-shadow: var(--shadow-xl);
+        }
+        .mobile-menu.open { left: 0; }
+        .mobile-menu .close {
+            display: flex; justify-content: flex-end;
+            font-size: 1.4rem; color: var(--gray-600); margin-bottom: 20px;
+        }
+        .mobile-menu nav a {
+            display: block; padding: 12px 0; font-size: 1rem;
+            font-weight: 500; color: var(--gray-700);
+            border-bottom: 1px solid var(--gray-100);
+            transition: var(--transition);
+        }
+        .mobile-menu nav a:hover { color: var(--accent); padding-left: 8px; }
+        .mobile-menu .bottom-links {
+            margin-top: 30px; padding-top: 20px;
+            border-top: 1px solid var(--gray-200);
+        }
+        .mobile-menu .bottom-links a {
+            font-size: 0.9rem; color: var(--gray-500);
+            padding: 8px 0; border: none;
+        }
+
+        /* Search overlay */
+        .search-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5); z-index: 3000;
+            opacity: 0; visibility: hidden; transition: var(--transition);
+            display: flex; align-items: flex-start; justify-content: center;
+            padding-top: 80px;
+        }
+        .search-overlay.open { opacity: 1; visibility: visible; }
+        .search-overlay .panel {
+            background: var(--white); max-width: 640px; width: 90%;
+            border-radius: var(--radius); padding: 32px;
+            transform: translateY(-20px); transition: var(--transition);
+            box-shadow: var(--shadow-xl); position: relative;
+        }
+        .search-overlay.open .panel { transform: translateY(0); }
+        .search-overlay .panel input {
+            width: 100%; padding: 16px 20px; font-size: 1.1rem;
+            border: 2px solid var(--gray-200); border-radius: var(--radius-sm);
+            outline: none; transition: var(--transition);
+            font-family: var(--font-body);
+        }
+        .search-overlay .panel input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(201,168,76,0.15);
+        }
+        .search-overlay .panel .close-search {
+            position: absolute; top: 20px; right: 24px;
+            font-size: 1.6rem; color: var(--gray-500);
+            transition: var(--transition); background: none; border: none;
+        }
+        .search-overlay .panel .close-search:hover {
+            color: var(--primary); transform: rotate(90deg);
+        }
+        .search-overlay .panel .suggestions {
+            margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px;
+        }
+        .search-overlay .panel .suggestions span {
+            background: var(--gray-100); padding: 6px 16px;
+            border-radius: 30px; font-size: 0.8rem;
+            color: var(--gray-600); cursor: pointer;
+            transition: var(--transition);
+        }
+        .search-overlay .panel .suggestions span:hover {
+            background: var(--accent-light); color: var(--primary);
+        }
+
+        /* ===== ACCOUNT HERO ===== */
+        .account-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 40px 0 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .account-hero::before {
+            content: '';
+            position: absolute;
+            top: -40%; right: -10%;
+            width: 550px; height: 550px;
+            background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .account-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -50%; left: -5%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .account-hero .container {
+            position: relative; z-index: 2;
+        }
+        .account-hero .hero-top {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            gap: 20px; flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .account-hero .user-block {
+            display: flex; align-items: center; gap: 18px;
+        }
+        .account-hero .user-avatar {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display);
+            font-size: 2rem; font-weight: 700;
+            color: var(--primary);
+            border: 3px solid rgba(255,255,255,0.2);
+            box-shadow: 0 4px 24px rgba(201,168,76,0.3);
+            flex-shrink: 0;
+            position: relative;
+        }
+        .account-hero .user-avatar .online-dot {
+            position: absolute; bottom: 4px; right: 4px;
+            width: 16px; height: 16px;
+            background: var(--success);
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+        }
+        .account-hero .user-block .details h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 4px;
+        }
+        .account-hero .user-block .details h1 .wave {
+            display: inline-block;
+            animation: wave 1.8s ease-in-out infinite;
+            transform-origin: 70% 70%;
+        }
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(14deg); }
+            20% { transform: rotate(-8deg); }
+            30% { transform: rotate(14deg); }
+            40% { transform: rotate(-4deg); }
+            50% { transform: rotate(10deg); }
+            60%, 100% { transform: rotate(0deg); }
+        }
+        .account-hero .user-block .details .email {
+            font-size: 0.85rem; opacity: 0.7;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .account-hero .user-block .details .member-since {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.72rem;
+            background: rgba(255,255,255,0.1);
+            padding: 2px 12px; border-radius: 30px;
+            margin-top: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .account-hero .user-block .details .member-since i {
+            color: var(--accent);
+        }
+        .account-hero .hero-actions {
+            display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        .account-hero .hero-actions .btn-hero {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px; border-radius: 60px;
+            font-size: 0.82rem; font-weight: 500;
+            transition: var(--transition);
+            border: 1.5px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
+            color: var(--white);
+            backdrop-filter: blur(8px);
+        }
+        .account-hero .hero-actions .btn-hero:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        .account-hero .hero-actions .btn-hero.primary {
+            background: var(--accent); color: var(--primary);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+        .account-hero .hero-actions .btn-hero.primary:hover {
+            background: var(--accent-dark);
+            box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+        }
+
+        /* ===== QUICK STATS ===== */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .stat-box:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+            border-color: rgba(201,168,76,0.3);
+        }
+        .stat-box .stat-top {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .stat-box .stat-top .stat-icon {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: rgba(201,168,76,0.15);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+        .stat-box .stat-top .stat-trend {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 30px;
+            background: rgba(46,204,113,0.15);
+            color: var(--success);
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .stat-box .stat-value {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.15;
+            color: var(--white);
+        }
+        .stat-box .stat-label {
+            font-size: 0.72rem;
+            opacity: 0.65;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        @media (max-width: 1024px) {
+            .quick-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .account-hero { padding: 28px 0 24px; }
+            .account-hero .user-avatar { width: 64px; height: 64px; font-size: 1.5rem; }
+            .account-hero .user-block { gap: 12px; }
+            .account-hero .user-block .details h1 { font-size: 1.3rem; }
+            .account-hero .hero-actions { width: 100%; }
+            .account-hero .hero-actions .btn-hero {
+                flex: 1; justify-content: center;
+                padding: 8px 14px; font-size: 0.75rem;
+            }
+            .quick-stats { gap: 10px; }
+            .stat-box { padding: 12px 14px; }
+            .stat-box .stat-value { font-size: 1.3rem; }
+            .stat-box .stat-label { font-size: 0.62rem; }
+        }
+
+        /* ===== TAB NAVIGATION ===== */
+        .account-tabs {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: var(--header-height);
+            z-index: 900;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .account-tabs .tabs-scroll {
+            display: flex; gap: 4px;
+            overflow-x: auto; padding: 4px 0;
+            scrollbar-width: none;
+        }
+        .account-tabs .tabs-scroll::-webkit-scrollbar { display: none; }
+        .account-tabs .tab-btn {
+            flex-shrink: 0;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-500);
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            position: relative;
+        }
+        .account-tabs .tab-btn:hover { color: var(--primary); }
+        .account-tabs .tab-btn.active {
+            color: var(--primary);
+            font-weight: 600;
+            border-bottom-color: var(--accent);
+        }
+        .account-tabs .tab-btn i { font-size: 0.9rem; }
+        .account-tabs .tab-btn .badge {
+            background: var(--accent);
+            color: var(--white);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 30px;
+            margin-left: 2px;
+        }
+        @media (max-width: 640px) {
+            .account-tabs .tab-btn { padding: 12px 14px; font-size: 0.78rem; }
+        }
+
+        /* ===== DASHBOARD CONTENT ===== */
+        .dashboard-content {
+            padding: 32px 0 64px;
+        }
+        .panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .panel.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .panel-subtitle {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        /* ===== DASHBOARD GRID (overview) ===== */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .dash-grid .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-100);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        .dash-grid .card .card-head {
+            padding: 18px 22px;
+            display: flex; align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-100);
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .dash-grid .card .card-head h3 {
+            font-size: 1rem; font-weight: 600;
+            color: var(--primary);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .dash-grid .card .card-head h3 i {
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+        .dash-grid .card .card-head .link {
+            font-size: 0.78rem; font-weight: 500;
+            color: var(--accent);
+            transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .dash-grid .card .card-head .link:hover {
+            color: var(--accent-dark); gap: 8px;
+        }
+        .dash-grid .card .card-body {
+            padding: 20px 22px;
+        }
+
+        @media (max-width: 1024px) {
+            .dash-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== RECENT ORDER CARD (overview) ===== */
+        .recent-order {
+            display: flex; align-items: center;
+            gap: 16px; padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .recent-order:last-child { border-bottom: none; }
+        .recent-order img {
+            width: 64px; height: 64px;
+            border-radius: var(--radius-xs);
+            object-fit: cover;
+            background: var(--gray-100);
+            flex-shrink: 0;
+        }
+        .recent-order .ro-info { flex: 1; min-width: 0; }
+        .recent-order .ro-info .ro-id {
+            font-size: 0.78rem; color: var(--gray-500);
+            font-weight: 500; margin-bottom: 2px;
+        }
+        .recent-order .ro-info .ro-name {
+            font-size: 0.9rem; font-weight: 500;
+            color: var(--primary);
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .recent-order .ro-info .ro-date {
+            font-size: 0.72rem; color: var(--gray-400);
+            margin-top: 2px;
+        }
+        .recent-order .ro-status {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            flex-shrink: 0;
+        }
+        .ro-status.delivered { background: #eafaf1; color: var(--success); }
+        .ro-status.shipped { background: #eaf2f8; color: var(--info); }
+        .ro-status.processing { background: #fef9e7; color: var(--warning); }
+        .ro-status.pending { background: #f4f6f7; color: var(--gray-500); }
+
+        /* ===== LOYALTY CARD (overview) ===== */
+        .loyalty-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2a2a4e 100%);
+            color: var(--white);
+            border-radius: var(--radius);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(201,168,76,0.2);
+        }
+        .loyalty-card::before {
+            content: '';
+            position: absolute; top: -60%; right: -20%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(201,168,76,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .loyalty-card .lc-tier {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: linear-gradient(135deg, var(--gold) 0%, #d4a017 100%);
+            color: var(--primary);
+            font-size: 0.68rem; font-weight: 700;
+            padding: 3px 12px; border-radius: 30px;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            margin-bottom: 12px;
+            position: relative; z-index: 1;
+        }
+        .loyalty-card .lc-points {
+            font-family: var(--font-display);
+            font-size: 2.4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--accent);
+            position: relative; z-index: 1;
+        }
+        .loyalty-card .lc-label {
+            font-size: 0.78rem;
+            opacity: 0.7;
+            margin-bottom: 18px;
+            position: relative; z-index: 1;
+        }
+        .loyalty-card .lc-progress {
+            position: relative; z-index: 1;
+        }
+        .loyalty-card .lc-progress .bar-bg {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .loyalty-card .lc-progress .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--gold) 100%);
+            border-radius: 30px;
+            width: 68%;
+            transition: width 0.8s ease;
+        }
+        .loyalty-card .lc-progress .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            opacity: 0.7;
+        }
+        .loyalty-card .lc-progress .progress-text strong {
+            color: var(--accent);
+        }
+        .loyalty-card .lc-actions {
+            display: flex; gap: 8px; margin-top: 16px;
+            position: relative; z-index: 1;
+        }
+        .loyalty-card .lc-actions button {
+            flex: 1;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex; align-items: center;
+            justify-content: center; gap: 6px;
+        }
+        .loyalty-card .lc-actions .btn-primary {
+            background: var(--accent); color: var(--primary);
+            font-weight: 600;
+        }
+        .loyalty-card .lc-actions .btn-primary:hover { background: var(--accent-dark); }
+        .loyalty-card .lc-actions .btn-outline {
+            background: rgba(255,255,255,0.08);
+            color: var(--white);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .loyalty-card .lc-actions .btn-outline:hover { background: rgba(255,255,255,0.15); }
+
+        /* ===== NOTIFICATIONS LIST ===== */
+        .notif-list .notif-item {
+            display: flex; gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
+            align-items: flex-start;
+        }
+        .notif-list .notif-item:last-child { border-bottom: none; }
+        .notif-list .notif-item.unread {
+            background: linear-gradient(90deg, rgba(201,168,76,0.05) 0%, transparent 100%);
+            margin: 0 -22px;
+            padding: 14px 22px;
+        }
+        .notif-list .notif-item .notif-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center;
+            justify-content: center; flex-shrink: 0;
+            font-size: 0.85rem;
+        }
+        .notif-list .notif-item .notif-icon.success { background: #eafaf1; color: var(--success); }
+        .notif-list .notif-item .notif-icon.info { background: #eaf2f8; color: var(--info); }
+        .notif-list .notif-item .notif-icon.warning { background: #fef9e7; color: var(--warning); }
+        .notif-list .notif-item .notif-icon.gift { background: #fde8e8; color: var(--error); }
+        .notif-list .notif-item .notif-body { flex: 1; min-width: 0; }
+        .notif-list .notif-item .notif-body .notif-text {
+            font-size: 0.85rem; color: var(--gray-700);
+            line-height: 1.5; margin-bottom: 4px;
+        }
+        .notif-list .notif-item .notif-body .notif-time {
+            font-size: 0.72rem; color: var(--gray-400);
+        }
+        .notif-list .notif-item .notif-dot {
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        /* ===== ORDERS PANEL ===== */
+        .orders-toolbar {
+            display: flex; justify-content: space-between;
+            align-items: center; gap: 12px;
+            margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .orders-toolbar .order-filter {
+            display: flex; gap: 6px; flex-wrap: wrap;
+        }
+        .orders-toolbar .order-filter button {
+            padding: 7px 16px;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            background: var(--white);
+            border: 1.5px solid var(--gray-200);
+            transition: var(--transition);
+        }
+        .orders-toolbar .order-filter button:hover {
+            border-color: var(--accent); color: var(--accent);
+        }
+        .orders-toolbar .order-filter button.active {
+            background: var(--primary); color: var(--white);
+            border-color: var(--primary);
+        }
+        .orders-toolbar .order-search {
+            position: relative;
+        }
+        .orders-toolbar .order-search input {
+            padding: 8px 14px 8px 34px;
+            border-radius: 30px;
+            border: 1.5px solid var(--gray-200);
+            background: var(--white);
+            font-size: 0.82rem;
+            font-family: var(--font-body);
+            width: 220px;
+            transition: var(--transition);
+        }
+        .orders-toolbar .order-search input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(201,168,76,0.12);
+        }
+        .orders-toolbar .order-search i {
+            position: absolute; left: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400); font-size: 0.78rem;
+        }
+
+        .order-list {
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        .order-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-100);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .order-item:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-light);
+        }
+        .order-item .order-top {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 16px 22px;
+            background: var(--off-white);
+            border-bottom: 1px solid var(--gray-100);
+            gap: 12px; flex-wrap: wrap;
+        }
+        .order-item .order-top .order-meta {
+            display: flex; align-items: center;
+            gap: 20px; flex-wrap: wrap;
+        }
+        .order-item .order-top .order-meta .meta-item {
+            display: flex; flex-direction: column;
+        }
+        .order-item .order-top .order-meta .meta-item .meta-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--gray-400);
+            font-weight: 600;
+        }
+        .order-item .order-top .order-meta .meta-item .meta-value {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .order-item .order-body {
+            padding: 18px 22px;
+        }
+        .order-item .order-body .order-products {
+            display: flex; gap: 12px;
+            overflow-x: auto; padding-bottom: 4px;
+            margin-bottom: 14px;
+            scrollbar-width: thin;
+        }
+        .order-item .order-body .order-products::-webkit-scrollbar { height: 4px; }
+        .order-item .order-body .order-products::-webkit-scrollbar-thumb {
+            background: var(--gray-300); border-radius: 4px;
+        }
+        .order-item .order-body .order-products .op-item {
+            display: flex; gap: 10px;
+            align-items: center;
+            padding: 8px 14px 8px 8px;
+            border-radius: var(--radius-xs);
+            background: var(--off-white);
+            flex-shrink: 0;
+            min-width: 200px;
+        }
+        .order-item .order-body .order-products .op-item img {
+            width: 44px; height: 44px;
+            border-radius: var(--radius-xs);
+            object-fit: cover;
+            background: var(--gray-100);
+            flex-shrink: 0;
+        }
+        .order-item .order-body .order-products .op-item .op-info {
+            min-width: 0;
+        }
+        .order-item .order-body .order-products .op-item .op-info .op-name {
+            font-size: 0.8rem; font-weight: 500;
+            color: var(--primary);
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .order-item .order-body .order-products .op-item .op-info .op-qty {
+            font-size: 0.7rem; color: var(--gray-500);
+        }
+        .order-item .order-body .order-actions {
+            display: flex; gap: 8px;
+            flex-wrap: wrap;
+        }
+        .order-item .order-body .order-actions .oa-btn {
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 6px;
+            border: 1.5px solid var(--gray-200);
+            color: var(--gray-600);
+            background: var(--white);
+        }
+        .order-item .order-body .order-actions .oa-btn:hover {
+            border-color: var(--accent); color: var(--accent);
+        }
+        .order-item .order-body .order-actions .oa-btn.primary {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        .order-item .order-body .order-actions .oa-btn.primary:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--primary);
+        }
+
+        /* ===== ORDER TRACKER (visual) ===== */
+        .order-tracker {
+            display: flex;
+            align-items: center;
+            padding: 16px 0 8px;
+            gap: 0;
+            margin-bottom: 10px;
+        }
+        .order-tracker .track-step {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            text-align: center;
+        }
+        .order-tracker .track-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: calc(50% + 18px);
+            right: calc(-50% + 18px);
+            height: 2px;
+            background: var(--gray-200);
+            z-index: 0;
+        }
+        .order-tracker .track-step.done:not(:last-child)::after {
+            background: var(--success);
+        }
+        .order-tracker .track-step.active:not(:last-child)::after {
+            background: linear-gradient(90deg, var(--success) 0%, var(--gray-200) 100%);
+        }
+        .order-tracker .track-step .track-dot {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            display: flex; align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--gray-400);
+            position: relative; z-index: 1;
+            transition: var(--transition);
+        }
+        .order-tracker .track-step.done .track-dot {
+            background: var(--success);
+            border-color: var(--success);
+            color: #fff;
+        }
+        .order-tracker .track-step.active .track-dot {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--primary);
+            font-weight: 700;
+            animation: pulseDot 1.8s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.5); }
+            50% { box-shadow: 0 0 0 8px rgba(201,168,76,0); }
+        }
+        .order-tracker .track-step .track-label {
+            font-size: 0.68rem;
+            color: var(--gray-500);
+            margin-top: 6px;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+        .order-tracker .track-step.done .track-label,
+        .order-tracker .track-step.active .track-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        @media (max-width: 640px) {
+            .order-tracker .track-step .track-label { font-size: 0.6rem; }
+            .order-tracker .track-step .track-dot { width: 26px; height: 26px; }
+            .order-tracker .track-step:not(:last-child)::after {
+                top: 12px;
+                left: calc(50% + 15px);
+                right: calc(-50% + 15px);
+            }
+        }
+
+        /* ===== REWARDS PANEL ===== */
+        .rewards-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            border-radius: var(--radius);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .rewards-hero::before {
+            content: '';
+            position: absolute; top: -50%; right: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(201,168,76,0.25) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .rewards-hero .rh-content {
+            position: relative; z-index: 1;
+            display: flex; justify-content: space-between;
+            align-items: center; gap: 24px;
+            flex-wrap: wrap;
+        }
+        .rewards-hero .rh-left {
+            flex: 1; min-width: 250px;
+        }
+        .rewards-hero .rh-tier {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, var(--gold) 0%, #d4a017 100%);
+            color: var(--primary);
+            font-size: 0.72rem; font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 14px;
+        }
+        .rewards-hero .rh-points {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--accent);
+        }
+        .rewards-hero .rh-points-label {
+            font-size: 0.9rem;
+            opacity: 0.75;
+            margin-bottom: 20px;
+        }
+        .rewards-hero .rh-progress {
+            max-width: 400px;
+        }
+        .rewards-hero .rh-progress .rh-bar-bg {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .rewards-hero .rh-progress .rh-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--gold) 100%);
+            border-radius: 30px;
+            width: 68%;
+            transition: width 1s ease;
+        }
+        .rewards-hero .rh-progress .rh-progress-text {
+            display: flex; justify-content: space-between;
+            font-size: 0.78rem; opacity: 0.75;
+        }
+        .rewards-hero .rh-progress .rh-progress-text strong { color: var(--accent); }
+
+        .rewards-hero .rh-right {
+            display: flex; flex-direction: column;
+            gap: 10px; align-items: flex-end;
+            flex-shrink: 0;
+        }
+        .rewards-hero .rh-right .btn-redeem {
+            padding: 12px 28px;
+            border-radius: 60px;
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 8px;
+            border: none;
+            white-space: nowrap;
+        }
+        .rewards-hero .rh-right .btn-redeem:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+        }
+        .rewards-hero .rh-right .rh-note {
+            font-size: 0.72rem; opacity: 0.6;
+        }
+        @media (max-width: 640px) {
+            .rewards-hero { padding: 24px 18px; }
+            .rewards-hero .rh-right { width: 100%; align-items: stretch; }
+            .rewards-hero .rh-right .btn-redeem { justify-content: center; }
+        }
+
+        /* Tier cards */
+        .tier-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .tier-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-100);
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+        }
+        .tier-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        .tier-card.current {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+        .tier-card .tc-icon {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+        }
+        .tier-card.bronze .tc-icon { background: rgba(205,127,50,0.15); color: var(--bronze); }
+        .tier-card.silver .tc-icon { background: rgba(192,192,192,0.2); color: var(--silver); }
+        .tier-card.gold .tc-icon { background: rgba(245,197,66,0.2); color: var(--gold); }
+        .tier-card .tc-name {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 2px;
+        }
+        .tier-card .tc-requirement {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-bottom: 10px;
+        }
+        .tier-card .tc-benefits {
+            font-size: 0.78rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+        .tier-card .tc-benefits span {
+            display: block;
+        }
+        .tier-card .tc-benefits i {
+            color: var(--success); margin-right: 4px;
+            font-size: 0.7rem;
+        }
+        .tier-card .badge-current {
+            position: absolute;
+            top: 12px; right: 12px;
+            background: var(--accent);
+            color: var(--primary);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 30px;
+            text-transform: uppercase;
+        }
+        @media (max-width: 768px) {
+            .tier-cards { grid-template-columns: 1fr; }
+        }
+
+        /* Rewards history */
+        .rewards-history {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-100);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        .rewards-history .rh-head {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .rewards-history .rh-head h3 {
+            font-size: 1rem; font-weight: 600; color: var(--primary);
+        }
+        .rewards-history .rh-item {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 14px 22px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .rewards-history .rh-item:last-child { border-bottom: none; }
+        .rewards-history .rh-item .rh-item-info .rh-item-title {
+            font-size: 0.85rem; font-weight: 500; color: var(--primary);
+        }
+        .rewards-history .rh-item .rh-item-info .rh-item-date {
+            font-size: 0.72rem; color: var(--gray-400);
+        }
+        .rewards-history .rh-item .rh-item-points {
+            font-size: 0.9rem; font-weight: 700;
+            color: var(--success);
+        }
+        .rewards-history .rh-item .rh-item-points.negative {
+            color: var(--error);
+        }
+
+        /* ===== PAYMENT METHODS PANEL ===== */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .payment-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: var(--radius);
+            padding: 22px;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.08);
+            min-height: 170px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .payment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(201,168,76,0.3);
+        }
+        .payment-card::before {
+            content: '';
+            position: absolute; top: -50%; right: -30%;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(201,168,76,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .payment-card .pc-top {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            position: relative; z-index: 1;
+        }
+        .payment-card .pc-brand {
+            font-size: 1.4rem;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .payment-card .pc-brand .card-chip {
+            width: 34px; height: 26px;
+            border-radius: 5px;
+            background: linear-gradient(135deg, var(--gold) 0%, #d4a017 100%);
+            position: relative;
+        }
+        .payment-card .pc-brand .card-chip::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px; height: 10px;
+            border-radius: 2px;
+            border: 1px solid rgba(26,26,46,0.3);
+        }
+        .payment-card .pc-default {
+            background: var(--accent);
+            color: var(--primary);
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 30px;
+            text-transform: uppercase;
+        }
+        .payment-card .pc-number {
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            font-family: monospace;
+            margin: 14px 0 4px;
+            position: relative; z-index: 1;
+        }
+        .payment-card .pc-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            position: relative; z-index: 1;
+        }
+        .payment-card .pc-info .pc-label {
+            opacity: 0.6; font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .payment-card .pc-actions {
+            display: flex; gap: 8px;
+            margin-top: 14px;
+            position: relative; z-index: 1;
+        }
+        .payment-card .pc-actions button {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.7);
+            transition: var(--transition);
+            padding: 2px 6px;
+        }
+        .payment-card .pc-actions button:hover { color: var(--accent); }
+        .payment-card .pc-actions button.danger:hover { color: var(--error); }
+
+        .add-payment {
+            grid-column: span 2;
+            padding: 24px;
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius);
+            background: var(--white);
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .add-payment:hover {
+            border-color: var(--accent);
+            background: var(--off-white);
+        }
+        .add-payment i {
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .add-payment p {
+            font-size: 0.88rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+        @media (max-width: 640px) {
+            .payment-grid { grid-template-columns: 1fr; }
+            .add-payment { grid-column: span 1; }
+        }
+
+        /* ===== ADDRESSES PANEL ===== */
+        .addr-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .addr-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 2px solid var(--gray-100);
+            padding: 20px;
+            transition: var(--transition);
+            position: relative;
+        }
+        .addr-card:hover {
+            border-color: var(--accent-light);
+            box-shadow: var(--shadow-sm);
+        }
+        .addr-card.default {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, var(--white) 0%, rgba(201,168,76,0.04) 100%);
+        }
+        .addr-card .addr-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--off-white);
+            color: var(--gray-600);
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 12px;
+        }
+        .addr-card .addr-tag.home { background: #eaf2f8; color: var(--info); }
+        .addr-card .addr-tag.work { background: #fef9e7; color: var(--warning); }
+        .addr-card .addr-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .addr-card .addr-lines {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        .addr-card .addr-phone {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .addr-card .addr-phone i { color: var(--accent); font-size: 0.72rem; }
+        .addr-card .addr-actions {
+            display: flex; gap: 14px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--gray-100);
+        }
+        .addr-card .addr-actions button {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--gray-500);
+            transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .addr-card .addr-actions button:hover { color: var(--accent); }
+        .addr-card .addr-actions button.danger:hover { color: var(--error); }
+        .addr-card .badge-default {
+            position: absolute;
+            top: 16px; right: 16px;
+            background: var(--accent);
+            color: var(--primary);
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 12px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        @media (max-width: 768px) {
+            .addr-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== SETTINGS PANEL ===== */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .settings-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-100);
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+        }
+        .settings-card h3 {
+            font-size: 1rem; font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .settings-card h3 i { color: var(--accent); font-size: 0.9rem; }
+        .settings-card .sc-sub {
+            font-size: 0.82rem; color: var(--gray-500);
+            margin-bottom: 18px;
+        }
+        .settings-card .form-group { margin-bottom: 14px; }
+        .settings-card .form-group label {
+            display: block; font-size: 0.78rem;
+            font-weight: 600; color: var(--gray-700);
+            margin-bottom: 4px;
+        }
+        .settings-card .form-group input,
+        .settings-card .form-group select {
+            width: 100%; padding: 10px 14px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem; font-family: var(--font-body);
+            transition: var(--transition);
+            background: var(--white);
+            color: var(--gray-800);
+        }
+        .settings-card .form-group input:focus,
+        .settings-card .form-group select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(201,168,76,0.12);
+        }
+        .settings-card .btn-save {
+            padding: 11px 28px;
+            border-radius: 60px;
+            background: var(--primary);
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .settings-card .btn-save:hover {
+            background: var(--accent); color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(201,168,76,0.3);
+        }
+        .settings-card .toggle-row {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-100);
+            gap: 12px;
+        }
+        .settings-card .toggle-row:last-of-type { border-bottom: none; }
+        .settings-card .toggle-row .tr-label { font-size: 0.85rem; color: var(--gray-700); }
+        .settings-card .toggle-row .tr-sub {
+            font-size: 0.72rem; color: var(--gray-400);
+            margin-top: 2px;
+        }
+        .settings-card .toggle-row .toggle {
+            width: 42px; height: 24px;
+            background: var(--gray-300);
+            border-radius: 30px;
+            position: relative;
+            transition: var(--transition);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .settings-card .toggle-row .toggle.active { background: var(--accent); }
+        .settings-card .toggle-row .toggle .thumb {
+            width: 18px; height: 18px;
+            background: var(--white);
+            border-radius: 50%;
+            position: absolute;
+            top: 3px; left: 3px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        .settings-card .toggle-row .toggle.active .thumb { left: 21px; }
+
+        .danger-zone {
+            background: #fde8e8;
+            border: 1px solid #f5c6c6;
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-top: 24px;
+        }
+        .danger-zone h4 {
+            color: var(--error); font-size: 0.92rem;
+            font-weight: 600; margin-bottom: 4px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .danger-zone p {
+            font-size: 0.82rem; color: #a33;
+            margin-bottom: 12px;
+        }
+        .danger-zone .btn-danger {
+            padding: 9px 20px;
+            border-radius: 60px;
+            background: var(--error);
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+        .danger-zone .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+        @media (max-width: 1024px) {
+            .settings-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            display: none;
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--white);
+            border-top: 1px solid var(--gray-200);
+            padding: 6px 0 env(safe-area-inset-bottom, 8px);
+            z-index: 999;
+            justify-content: space-around; align-items: center;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+        }
+        .bottom-nav a {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 2px; font-size: 0.6rem; color: var(--gray-500);
+            transition: var(--transition); padding: 4px 12px; position: relative;
+        }
+        .bottom-nav a i { font-size: 1.2rem; }
+        .bottom-nav a.active { color: var(--accent); }
+        .bottom-nav a .badge {
+            position: absolute; top: -2px; right: 2px;
+            background: var(--accent); color: #fff;
+            font-size: 0.5rem; font-weight: 600;
+            width: 16px; height: 16px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .bottom-nav { display: flex; }
+            body { padding-bottom: 64px; }
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 80px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--primary); color: var(--white);
+            padding: 12px 28px; border-radius: 60px;
+            font-size: 0.9rem; font-weight: 500;
+            box-shadow: var(--shadow-lg); z-index: 9999;
+            opacity: 0; visibility: hidden;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1; visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        @media (max-width: 640px) {
+            .toast {
+                font-size: 0.8rem; padding: 10px 20px;
+                bottom: 80px; white-space: normal; max-width: 90%;
+            }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--gray-900);
+            color: rgba(255,255,255,0.8);
+            padding: 48px 0 0; margin-top: 0;
+        }
+        .footer .grid {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr;
+            gap: 36px; padding-bottom: 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .footer .brand .logo {
+            font-family: var(--font-display);
+            font-size: 1.6rem; font-weight: 700; color: var(--white);
+        }
+        .footer .brand .logo span { color: var(--accent); }
+        .footer .brand p {
+            font-size: 0.85rem; opacity: 0.7; max-width: 280px;
+            margin: 8px 0 16px; line-height: 1.6;
+        }
+        .footer .brand .socials { display: flex; gap: 10px; }
+        .footer .brand .socials a {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.6);
+            transition: var(--transition); font-size: 1rem;
+        }
+        .footer .brand .socials a:hover {
+            background: var(--accent); color: var(--primary); transform: translateY(-2px);
+        }
+        .footer .col h4 {
+            color: var(--white); font-size: 0.95rem;
+            font-weight: 600; margin-bottom: 14px;
+        }
+        .footer .col a {
+            display: block; padding: 4px 0; font-size: 0.85rem;
+            opacity: 0.7; transition: var(--transition);
+        }
+        .footer .col a:hover { opacity: 1; color: var(--accent); padding-left: 4px; }
+        .footer .payments {
+            display: flex; flex-wrap: wrap; align-items: center;
+            gap: 16px; padding: 20px 0 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            justify-content: space-between;
+        }
+        .footer .payments .label { font-size: 0.8rem; opacity: 0.6; font-weight: 500; }
+        .footer .payments .icons { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .footer .payments .icons span {
+            font-size: 0.75rem; opacity: 0.5;
+            background: rgba(255,255,255,0.04);
+            padding: 4px 12px; border-radius: 4px;
+        }
+        .footer .bottom {
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 18px 0;
+            font-size: 0.8rem; opacity: 0.5; flex-wrap: wrap; gap: 8px;
+        }
+        .footer .bottom .heart { color: #e74c3c; }
+        @media (max-width: 1024px) {
+            .footer .grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+        }
+        @media (max-width: 640px) {
+            .footer .grid { grid-template-columns: 1fr; gap: 20px; }
+            .footer .payments { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .footer .bottom { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ANNOUNCEMENT -->
+    <div class="announcement-bar" id="announcement" role="banner">
+        <div class="track">
+            <span><i class="fas fa-truck"></i> Free Delivery Across India</span>
+            <span><i class="fas fa-fire"></i> Trending Deals — Shop Now</span>
+            <span><i class="fas fa-shield-alt"></i> Secure Payments with UPI, Cards &amp; More</span>
+            <span><i class="fas fa-undo-alt"></i> Easy Returns Available</span>
+            <span><i class="fas fa-truck"></i> Free Delivery Across India</span>
+            <span><i class="fas fa-fire"></i> Trending Deals — Shop Now</span>
+            <span><i class="fas fa-shield-alt"></i> Secure Payments with UPI, Cards &amp; More</span>
+            <span><i class="fas fa-undo-alt"></i> Easy Returns Available</span>
+        </div>
+        <button class="close-btn" aria-label="Close" onclick="document.getElementById('announcement').style.display='none'">✕</button>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header" id="header" role="banner">
+        <div class="container">
+            <a href="#" class="logo">Welcmart <small>™</small></a>
+            <nav class="nav" aria-label="Main">
+                <a href="#">Home</a>
+                <a href="#">Men</a>
+                <a href="#">Women</a>
+                <a href="#">Footwear</a>
+                <a href="#">Accessories</a>
+                <a href="#">Beauty</a>
+                <a href="#">Home &amp; Lifestyle</a>
+                <a href="#">New Arrivals</a>
+                <a href="#">Sale</a>
+                <a href="#" class="active">Account</a>
+            </nav>
+            <div class="actions">
+                <button class="search-toggle" aria-label="Search" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
+                <button aria-label="Account"><i class="fas fa-user"></i></button>
+                <button aria-label="Wishlist" id="wishlistBtn"><i class="fas fa-heart"></i><span class="badge" id="wishlistCount">0</span></button>
+                <button aria-label="Cart" id="cartBtn"><i class="fas fa-shopping-bag"></i><span class="badge" id="cartCount">0</span></button>
+                <button class="hamburger" aria-label="Menu" id="hamburgerBtn" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu" role="dialog">
+        <div class="close"><button aria-label="Close" id="closeMobileMenu">✕</button></div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Men</a>
+            <a href="#">Women</a>
+            <a href="#">Footwear</a>
+            <a href="#">Accessories</a>
+            <a href="#">Beauty</a>
+            <a href="#">Home &amp; Lifestyle</a>
+            <a href="#">New Arrivals</a>
+            <a href="#">Sale</a>
+            <a href="#" class="active">Account</a>
+        </nav>
+        <div class="bottom-links">
+            <a href="#">Wishlist</a>
+            <a href="#">Track Order</a>
+            <a href="#">Contact Us</a>
+            <a href="#" onclick="showToast('👋 Logged out'); return false;">Logout</a>
+        </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-overlay" id="searchOverlay" role="dialog">
+        <div class="panel">
+            <button class="close-search" onclick="toggleSearch()">✕</button>
+            <input type="text" placeholder="Search products..." id="searchInput" />
+            <div class="suggestions">
+                <span>Dresses</span><span>Sneakers</span><span>Watches</span>
+                <span>Bags</span><span>Beauty</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ACCOUNT HERO ===== -->
+    <section class="account-hero" aria-label="Account hero">
+        <div class="container">
+            <div class="hero-top">
+                <div class="user-block">
+                    <div class="user-avatar">
+                        JD
+                        <span class="online-dot"></span>
+                    </div>
+                    <div class="details">
+                        <h1>Hey, John <span class="wave">👋</span></h1>
+                        <div class="email"><i class="fas fa-envelope"></i> john.doe@example.com</div>
+                        <div class="member-since">
+                            <i class="fas fa-crown"></i> Gold Member · Since Jan 2024
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <button class="btn-hero primary" onclick="showToast('🛍️ Continue shopping');">
+                        <i class="fas fa-shopping-bag"></i> Shop Now
+                    </button>
+                    <button class="btn-hero" onclick="showToast('📞 Support would open here');">
+                        <i class="fas fa-headset"></i> Support
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick stats -->
+            <div class="quick-stats">
+                <div class="stat-box" onclick="switchTab('orders')">
+                    <div class="stat-top">
+                        <div class="stat-icon"><i class="fas fa-box"></i></div>
+                        <span class="stat-trend"><i class="fas fa-arrow-up"></i> 2 new</span>
+                    </div>
+                    <div class="stat-value" id="statOrders">12</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-box" onclick="switchTab('rewards')">
+                    <div class="stat-top">
+                        <div class="stat-icon"><i class="fas fa-gift"></i></div>
+                        <span class="stat-trend"><i class="fas fa-star"></i> Gold</span>
+                    </div>
+                    <div class="stat-value" id="statPoints">2,450</div>
+                    <div class="stat-label">Reward Points</div>
+                </div>
+                <div class="stat-box" onclick="switchTab('wishlist')">
+                    <div class="stat-top">
+                        <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                    </div>
+                    <div class="stat-value" id="statWishlist">10</div>
+                    <div class="stat-label">Wishlist Items</div>
+                </div>
+                <div class="stat-box" onclick="switchTab('notifications')">
+                    <div class="stat-top">
+                        <div class="stat-icon"><i class="fas fa-bell"></i></div>
+                        <span class="stat-trend"><i class="fas fa-circle" style="font-size:0.4rem;color:var(--error);"></i> 3 new</span>
+                    </div>
+                    <div class="stat-value" id="statNotifs">3</div>
+                    <div class="stat-label">Notifications</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TAB NAVIGATION ===== -->
+    <nav class="account-tabs" aria-label="Account navigation">
+        <div class="container">
+            <div class="tabs-scroll">
+                <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview')">
+                    <i class="fas fa-chart-pie"></i> Overview
+                </button>
+                <button class="tab-btn" data-tab="orders" onclick="switchTab('orders')">
+                    <i class="fas fa-box"></i> Orders <span class="badge">3</span>
+                </button>
+                <button class="tab-btn" data-tab="wishlist" onclick="switchTab('wishlist')">
+                    <i class="fas fa-heart"></i> Wishlist
+                </button>
+                <button class="tab-btn" data-tab="rewards" onclick="switchTab('rewards')">
+                    <i class="fas fa-gift"></i> Rewards
+                </button>
+                <button class="tab-btn" data-tab="addresses" onclick="switchTab('addresses')">
+                    <i class="fas fa-map-marked-alt"></i> Addresses
+                </button>
+                <button class="tab-btn" data-tab="payments" onclick="switchTab('payments')">
+                    <i class="fas fa-credit-card"></i> Payment
+                </button>
+                <button class="tab-btn" data-tab="notifications" onclick="switchTab('notifications')">
+                    <i class="fas fa-bell"></i> Notifications <span class="badge">3</span>
+                </button>
+                <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== DASHBOARD CONTENT ===== -->
+    <section class="dashboard-content">
+        <div class="container">
+
+            <!-- ===== OVERVIEW ===== -->
+            <div class="panel active" id="panel-overview">
+                <div class="dash-grid">
+                    <!-- Recent Orders -->
+                    <div class="card">
+                        <div class="card-head">
+                            <h3><i class="fas fa-clock"></i> Recent Orders</h3>
+                            <a href="#" class="link" onclick="switchTab('orders'); return false;">View All <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="card-body" id="recentOrders">
+                            <!-- rendered -->
+                        </div>
+                    </div>
+                    <!-- Loyalty Card -->
+                    <div class="loyalty-card">
+                        <div class="lc-tier"><i class="fas fa-crown"></i> Gold Member</div>
+                        <div class="lc-points">2,450</div>
+                        <div class="lc-label">Welcome Points Earned</div>
+                        <div class="lc-progress">
+                            <div class="bar-bg"><div class="bar-fill"></div></div>
+                            <div class="progress-text">
+                                <span><strong>2,450</strong> / 3,600 pts</span>
+                                <span>680 to Platinum</span>
+                            </div>
+                        </div>
+                        <div class="lc-actions">
+                            <button class="btn-primary" onclick="switchTab('rewards')">
+                                <i class="fas fa-gift"></i> Redeem
+                            </button>
+                            <button class="btn-outline" onclick="showToast('📖 Viewing rewards catalog');">
+                                <i class="fas fa-list"></i> Catalog
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dash-grid">
+                    <!-- Notifications preview -->
+                    <div class="card">
+                        <div class="card-head">
+                            <h3><i class="fas fa-bell"></i> Recent Notifications</h3>
+                            <a href="#" class="link" onclick="switchTab('notifications'); return false;">View All <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="card-body notif-list" id="recentNotifs">
+                            <!-- rendered -->
+                        </div>
+                    </div>
+                    <!-- Quick links -->
+                    <div class="card">
+                        <div class="card-head">
+                            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="display:flex;flex-direction:column;gap:10px;">
+                                <button class="oa-btn" onclick="switchTab('addresses')" style="justify-content:flex-start;padding:12px 16px;border-radius:var(--radius-sm);width:100%;">
+                                    <i class="fas fa-map-marker-alt"></i> Manage Addresses
+                                </button>
+                                <button class="oa-btn" onclick="switchTab('payments')" style="justify-content:flex-start;padding:12px 16px;border-radius:var(--radius-sm);width:100%;">
+                                    <i class="fas fa-credit-card"></i> Payment Methods
+                                </button>
+                                <button class="oa-btn" onclick="switchTab('settings')" style="justify-content:flex-start;padding:12px 16px;border-radius:var(--radius-sm);width:100%;">
+                                    <i class="fas fa-lock"></i> Change Password
+                                </button>
+                                <button class="oa-btn" onclick="showToast('📞 Contacting support...');" style="justify-content:flex-start;padding:12px 16px;border-radius:var(--radius-sm);width:100%;">
+                                    <i class="fas fa-headset"></i> Contact Support
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ORDERS ===== -->
+            <div class="panel" id="panel-orders">
+                <div class="panel-title">My Orders</div>
+                <div class="panel-subtitle">Track, return, or buy items again.</div>
+
+                <div class="orders-toolbar">
+                    <div class="order-filter" id="orderFilter">
+                        <button class="active" data-filter="all">All</button>
+                        <button data-filter="processing">Processing</button>
+                        <button data-filter="shipped">Shipped</button>
+                        <button data-filter="delivered">Delivered</button>
+                        <button data-filter="cancelled">Cancelled</button>
+                    </div>
+                    <div class="order-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="orderSearchInput" placeholder="Search orders..." />
+                    </div>
+                </div>
+
+                <div class="order-list" id="ordersList">
+                    <!-- rendered -->
+                </div>
+            </div>
+
+            <!-- ===== WISHLIST ===== -->
+            <div class="panel" id="panel-wishlist">
+                <div class="panel-title">My Wishlist</div>
+                <div class="panel-subtitle">Items you've saved for later.</div>
+                <div id="wishlistContent">
+                    <!-- rendered -->
+                </div>
+            </div>
+
+            <!-- ===== REWARDS ===== -->
+            <div class="panel" id="panel-rewards">
+                <div class="panel-title">Rewards &amp; Loyalty</div>
+                <div class="panel-subtitle">Earn points, unlock tiers, and redeem exclusive rewards.</div>
+
+                <div class="rewards-hero">
+                    <div class="rh-content">
+                        <div class="rh-left">
+                            <div class="rh-tier"><i class="fas fa-crown"></i> Gold Member</div>
+                            <div class="rh-points">2,450</div>
+                            <div class="rh-points-label">Welcome Points available to redeem</div>
+                            <div class="rh-progress">
+                                <div class="rh-bar-bg"><div class="rh-bar-fill"></div></div>
+                                <div class="rh-progress-text">
+                                    <span><strong>2,450</strong> / 3,600 pts</span>
+                                    <span>680 points to Platinum</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rh-right">
+                            <button class="btn-redeem" onclick="showToast('🎁 Rewards catalog would open here')">
+                                <i class="fas fa-gift"></i> Redeem Points
+                            </button>
+                            <div class="rh-note">100 pts = ₹10 off</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tier-cards">
+                    <div class="tier-card bronze">
+                        <div class="tc-icon"><i class="fas fa-medal"></i></div>
+                        <div class="tc-name">Bronze</div>
+                        <div class="tc-requirement">0 - 1,000 points</div>
+                        <div class="tc-benefits">
+                            <span><i class="fas fa-check"></i> 1 point per ₹100</span>
+                            <span><i class="fas fa-check"></i> Free shipping above ₹499</span>
+                            <span><i class="fas fa-check"></i> Birthday discount</span>
+                        </div>
+                    </div>
+                    <div class="tier-card silver">
+                        <div class="tc-icon"><i class="fas fa-medal"></i></div>
+                        <div class="tc-name">Silver</div>
+                        <div class="tc-requirement">1,000 - 2,000 points</div>
+                        <div class="tc-benefits">
+                            <span><i class="fas fa-check"></i> 1.5 points per ₹100</span>
+                            <span><i class="fas fa-check"></i> Free express shipping</span>
+                            <span><i class="fas fa-check"></i> Early access to sales</span>
+                        </div>
+                    </div>
+                    <div class="tier-card gold current">
+                        <span class="badge-current">You</span>
+                        <div class="tc-icon"><i class="fas fa-crown"></i></div>
+                        <div class="tc-name">Gold</div>
+                        <div class="tc-requirement">2,000 - 3,600 points</div>
+                        <div class="tc-benefits">
+                            <span><i class="fas fa-check"></i> 2 points per ₹100</span>
+                            <span><i class="fas fa-check"></i> Free priority shipping</span>
+                            <span><i class="fas fa-check"></i> Exclusive member offers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rewards-history">
+                    <div class="rh-head">
+                        <h3>Points History</h3>
+                    </div>
+                    <div class="rh-item">
+                        <div class="rh-item-info">
+                            <div class="rh-item-title">Order #WM-2026-12345</div>
+                            <div class="rh-item-date">Aug 25, 2026</div>
+                        </div>
+                        <div class="rh-item-points">+ 250 pts</div>
+                    </div>
+                    <div class="rh-item">
+                        <div class="rh-item-info">
+                            <div class="rh-item-title">Order #WM-2026-12346</div>
+                            <div class="rh-item-date">Aug 20, 2026</div>
+                        </div>
+                        <div class="rh-item-points">+ 180 pts</div>
+                    </div>
+                    <div class="rh-item">
+                        <div class="rh-item-info">
+                            <div class="rh-item-title">Redeemed: ₹200 off coupon</div>
+                            <div class="rh-item-date">Aug 15, 2026</div>
+                        </div>
+                        <div class="rh-item-points negative">− 2,000 pts</div>
+                    </div>
+                    <div class="rh-item">
+                        <div class="rh-item-info">
+                            <div class="rh-item-title">Welcome Bonus</div>
+                            <div class="rh-item-date">Jan 15, 2024</div>
+                        </div>
+                        <div class="rh-item-points">+ 500 pts</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ADDRESSES ===== -->
+            <div class="panel" id="panel-addresses">
+                <div class="panel-title">Saved Addresses</div>
+                <div class="panel-subtitle">Manage your shipping and billing addresses.</div>
+
+                <div class="addr-grid" id="addressGrid">
+                    <!-- rendered -->
+                </div>
+                <button class="oa-btn primary" onclick="addAddress()">
+                    <i class="fas fa-plus"></i> Add New Address
+                </button>
+            </div>
+
+            <!-- ===== PAYMENT METHODS ===== -->
+            <div class="panel" id="panel-payments">
+                <div class="panel-title">Payment Methods</div>
+                <div class="panel-subtitle">Securely saved cards and payment options.</div>
+
+                <div class="payment-grid" id="paymentGrid">
+                    <!-- rendered -->
+                </div>
+            </div>
+
+            <!-- ===== NOTIFICATIONS ===== -->
+            <div class="panel" id="panel-notifications">
+                <div class="panel-title">Notifications</div>
+                <div class="panel-subtitle">Stay updated with your orders, offers, and rewards.</div>
+
+                <div class="notif-list" id="notifFullList">
+                    <!-- rendered -->
+                </div>
+            </div>
+
+            <!-- ===== SETTINGS ===== -->
+            <div class="panel" id="panel-settings">
+                <div class="panel-title">Account Settings</div>
+                <div class="panel-subtitle">Manage your profile, security, and preferences.</div>
+
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-user-edit"></i> Personal Information</h3>
+                        <div class="sc-sub">Update your name and contact details.</div>
+                        <form onsubmit="event.preventDefault(); showToast('✅ Profile updated!');">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" value="John" />
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" value="Doe" />
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" value="john.doe@example.com" />
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" value="+91 98765 43210" />
+                            </div>
+                            <button type="submit" class="btn-save"><i class="fas fa-save"></i> Save Changes</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-lock"></i> Password &amp; Security</h3>
+                        <div class="sc-sub">Change your password to keep your account secure.</div>
+                        <form onsubmit="event.preventDefault(); changePassword();">
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" id="pwCurrent" placeholder="Enter current password" />
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" id="pwNew" placeholder="Enter new password" />
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <input type="password" id="pwConfirm" placeholder="Confirm new password" />
+                            </div>
+                            <button type="submit" class="btn-save"><i class="fas fa-shield-alt"></i> Update Password</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="settings-grid" style="margin-top:24px;">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-bell"></i> Notification Preferences</h3>
+                        <div class="sc-sub">Choose how we communicate with you.</div>
+                        <div class="toggle-row">
+                            <div>
+                                <div class="tr-label">Email Notifications</div>
+                                <div class="tr-sub">Order updates, offers, and news</div>
+                            </div>
+                            <div class="toggle active" onclick="togglePref(this)"><span class="thumb"></span></div>
+                        </div>
+                        <div class="toggle-row">
+                            <div>
+                                <div class="tr-label">SMS Alerts</div>
+                                <div class="tr-sub">Order status via text message</div>
+                            </div>
+                            <div class="toggle active" onclick="togglePref(this)"><span class="thumb"></span></div>
+                        </div>
+                        <div class="toggle-row">
+                            <div>
+                                <div class="tr-label">WhatsApp Updates</div>
+                                <div class="tr-sub">Real-time order and delivery updates</div>
+                            </div>
+                            <div class="toggle" onclick="togglePref(this)"><span class="thumb"></span></div>
+                        </div>
+                        <div class="toggle-row">
+                            <div>
+                                <div class="tr-label">Personalized Recommendations</div>
+                                <div class="tr-sub">Based on your browsing and purchase history</div>
+                            </div>
+                            <div class="toggle active" onclick="togglePref(this)"><span class="thumb"></span></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-globe"></i> Preferences</h3>
+                        <div class="sc-sub">Language, currency, and regional settings.</div>
+                        <div class="form-group">
+                            <label>Language</label>
+                            <select>
+                                <option>English (India)</option>
+                                <option>हिन्दी (Hindi)</option>
+                                <option>मराठी (Marathi)</option>
+                                <option>தமிழ் (Tamil)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Currency</label>
+                            <select>
+                                <option>INR — Indian Rupee (₹)</option>
+                                <option>USD — US Dollar ($)</option>
+                                <option>EUR — Euro (€)</option>
+                                <option>GBP — Pound Sterling (£)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Time Zone</label>
+                            <select>
+                                <option>IST — India Standard Time (GMT+5:30)</option>
+                                <option>GMT — Greenwich Mean Time</option>
+                                <option>EST — Eastern Standard Time</option>
+                            </select>
+                        </div>
+                        <button class="btn-save" onclick="showToast('✅ Preferences saved!')"><i class="fas fa-check"></i> Save Preferences</button>
+                    </div>
+                </div>
+
+                <div class="danger-zone">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                    <p>Once you delete your account, there is no going back. This action permanently removes all your data including orders, wishlist, and rewards points.</p>
+                    <button class="btn-danger" onclick="deleteAccount()"><i class="fas fa-trash-alt"></i> Delete My Account</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" aria-label="Mobile">
+        <a href="#"><i class="fas fa-home"></i>Home</a>
+        <a href="#"><i class="fas fa-th-large"></i>Shop</a>
+        <a href="#" onclick="toggleSearch();return false;"><i class="fas fa-search"></i>Search</a>
+        <a href="#" id="bottomWishlist"><i class="fas fa-heart"></i><span class="badge" id="bottomWishCount">0</span>Wishlist</a>
+        <a href="#" class="active"><i class="fas fa-user"></i>Account</a>
+    </nav>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="grid">
+                <div class="brand">
+                    <div class="logo">Welcmart <span>™</span></div>
+                    <p>Welcome Mart — Your destination for fashion, lifestyle and everyday essentials.</p>
+                    <div class="socials">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+                        <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="col">
+                    <h4>Shop</h4>
+                    <a href="#">Men's Fashion</a>
+                    <a href="#">Women's Fashion</a>
+                    <a href="#">Footwear</a>
+                    <a href="#">Accessories</a>
+                    <a href="#">Beauty</a>
+                    <a href="#">Home &amp; Lifestyle</a>
+                    <a href="#">New Arrivals</a>
+                    <a href="#">Sale</a>
+                </div>
+                <div class="col">
+                    <h4>Customer Care</h4>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Track Order</a>
+                    <a href="#">Shipping Information</a>
+                    <a href="#">Return &amp; Refund</a>
+                    <a href="#">FAQs</a>
+                    <a href="#">Help Center</a>
+                </div>
+                <div class="col">
+                    <h4>Company</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms &amp; Conditions</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+            <div class="payments">
+                <span class="label">We Accept</span>
+                <div class="icons">
+                    <span>Visa</span><span>Mastercard</span><span>RuPay</span><span>UPI</span><span>Razorpay</span><span>Net Banking</span>
+                </div>
+            </div>
+            <div class="bottom">
+                <span>© 2026 Welcome Mart. All Rights Reserved.</span>
+                <span>Made with <span class="heart">❤</span> for shoppers.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== DATA =====
+        const orders = [{
+            id: '#WM-2026-12345',
+            date: 'Aug 25, 2026',
+            status: 'delivered',
+            step: 4,
+            total: 9997,
+            items: [
+                { name: 'Leather Biker Jacket', qty: 1, price: 4999, image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=100&q=80' },
+                { name: 'Classic White Sneakers', qty: 2, price: 2499, image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=100&q=80' }
+            ]
+        }, {
+            id: '#WM-2026-12346',
+            date: 'Aug 20, 2026',
+            status: 'shipped',
+            step: 3,
+            total: 3198,
+            items: [
+                { name: 'Floral Maxi Dress', qty: 1, price: 2499, image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100&q=80' },
+                { name: 'Gold Hoop Earrings', qty: 1, price: 699, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=100&q=80' }
+            ]
+        }, {
+            id: '#WM-2026-12347',
+            date: 'Aug 15, 2026',
+            status: 'processing',
+            step: 2,
+            total: 2197,
+            items: [
+                { name: 'Vitamin C Serum', qty: 2, price: 699, image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&q=80' },
+                { name: 'Hyaluronic Acid Cream', qty: 1, price: 799, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=100&q=80' }
+            ]
+        }];
+
+        const wishlistItems = [{
+            id: 1, name: 'Leather Crossbody Bag', price: 1499,
+            image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&q=80'
+        }, {
+            id: 2, name: 'Aviator Sunglasses', price: 999,
+            image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=200&q=80'
+        }, {
+            id: 3, name: 'Argan Oil Shampoo', price: 699,
+            image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&q=80'
+        }, {
+            id: 4, name: 'Minimalist Watch', price: 1899,
+            image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80'
+        }];
+
+        const addresses = [{
+            id: 1, tag: 'home', label: 'Home', name: 'John Doe',
+            address: '123 Fashion Street, Bandra West',
+            city: 'Mumbai', state: 'Maharashtra', pincode: '400001',
+            phone: '+91 98765 43210', default: true
+        }, {
+            id: 2, tag: 'work', label: 'Work', name: 'John Doe',
+            address: '456 Park Avenue, Juhu',
+            city: 'Mumbai', state: 'Maharashtra', pincode: '400049',
+            phone: '+91 98765 43210', default: false
+        }];
+
+        const paymentMethods = [{
+            id: 1, brand: 'Visa', type: 'Credit Card', last4: '4821',
+            expiry: '12/27', holder: 'JOHN DOE', default: true
+        }, {
+            id: 2, brand: 'Mastercard', type: 'Debit Card', last4: '9034',
+            expiry: '06/26', holder: 'JOHN DOE', default: false
+        }];
+
+        const notifications = [{
+            id: 1, type: 'success', icon: 'fa-box',
+            text: '<strong>Order #WM-2026-12345</strong> has been delivered. Enjoy your purchase!',
+            time: '2 hours ago', unread: true
+        }, {
+            id: 2, type: 'gift', icon: 'fa-gift',
+            text: 'You\'ve earned <strong>250 reward points</strong> from your recent order!',
+            time: '1 day ago', unread: true
+        }, {
+            id: 3, type: 'info', icon: 'fa-truck',
+            text: 'Your order <strong>#WM-2026-12346</strong> has been shipped and is on its way.',
+            time: '2 days ago', unread: true
+        }, {
+            id: 4, type: 'warning', icon: 'fa-clock',
+            text: 'Flash sale ends in 6 hours! Grab your favorites before they\'re gone.',
+            time: '3 days ago', unread: false
+        }, {
+            id: 5, type: 'success', icon: 'fa-star',
+            text: 'Welcome to <strong>Gold Tier</strong>! Enjoy exclusive member benefits.',
+            time: '1 week ago', unread: false
+        }, {
+            id: 6, type: 'info', icon: 'fa-heart',
+            text: 'The item on your wishlist is <strong>back in stock</strong>. Order now!',
+            time: '2 weeks ago', unread: false
+        }];
+
+        let cart = [];
+        let currentOrderFilter = 'all';
+        let currentOrderSearch = '';
+
+        // ===== TOAST =====
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 2600);
+        }
+
+        // ===== BADGES =====
+        function updateBadges() {
+            const cartCount = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+            document.getElementById('cartCount').textContent = cartCount;
+            document.getElementById('bottomWishCount').textContent = wishlistItems.length;
+            document.getElementById('wishlistCount').textContent = wishlistItems.length;
+        }
+
+        // ===== TAB SWITCHING =====
+        function switchTab(tab) {
+            document.querySelectorAll('.account-tabs .tab-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.tab === tab);
+            });
+            document.querySelectorAll('.panel').forEach(p => {
+                p.classList.toggle('active', p.id === 'panel-' + tab);
+            });
+            // Scroll to content
+            document.querySelector('.dashboard-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ===== RENDER: RECENT ORDERS =====
+        function renderRecentOrders() {
+            const container = document.getElementById('recentOrders');
+            const recent = orders.slice(0, 3);
+            container.innerHTML = recent.map(o => `
+                <div class="recent-order">
+                    <img src="${o.items[0].image}" alt="${o.items[0].name}" loading="lazy" />
+                    <div class="ro-info">
+                        <div class="ro-id">${o.id}</div>
+                        <div class="ro-name">${o.items[0].name}${o.items.length > 1 ? ` +${o.items.length - 1} more` : ''}</div>
+                        <div class="ro-date">${o.date} · ₹${o.total.toLocaleString()}</div>
+                    </div>
+                    <span class="ro-status ${o.status}">${o.status}</span>
+                </div>
+            `).join('');
+        }
+
+        // ===== RENDER: RECENT NOTIFS =====
+        function renderRecentNotifs() {
+            const container = document.getElementById('recentNotifs');
+            const recent = notifications.slice(0, 3);
+            container.innerHTML = recent.map(n => `
+                <div class="notif-item ${n.unread ? 'unread' : ''}">
+                    <div class="notif-icon ${n.type}"><i class="fas ${n.icon}"></i></div>
+                    <div class="notif-body">
+                        <div class="notif-text">${n.text}</div>
+                        <div class="notif-time">${n.time}</div>
+                    </div>
+                    ${n.unread ? '<div class="notif-dot"></div>' : ''}
+                </div>
+            `).join('');
+        }
+
+        // ===== RENDER: ORDERS PANEL =====
+        function renderOrders() {
+            const container = document.getElementById('ordersList');
+            let filtered = orders;
+
+            if (currentOrderFilter !== 'all') {
+                filtered = filtered.filter(o => o.status === currentOrderFilter);
+            }
+            if (currentOrderSearch) {
+                const q = currentOrderSearch.toLowerCase();
+                filtered = filtered.filter(o =>
+                    o.id.toLowerCase().includes(q) ||
+                    o.items.some(i => i.name.toLowerCase().includes(q))
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:60px 20px;background:var(--white);border-radius:var(--radius);border:1px dashed var(--gray-300);">
+                        <i class="fas fa-box-open" style="font-size:2.5rem;color:var(--gray-300);display:block;margin-bottom:12px;"></i>
+                        <h4 style="font-size:1.05rem;color:var(--gray-700);margin-bottom:4px;">No orders found</h4>
+                        <p style="font-size:0.88rem;color:var(--gray-500);">Try adjusting your filters or search term.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const trackSteps = [
+                { key: 'placed', label: 'Placed', icon: 'fa-clipboard-check' },
+                { key: 'processing', label: 'Processing', icon: 'fa-cog' },
+                { key: 'shipped', label: 'Shipped', icon: 'fa-truck' },
+                { key: 'delivered', label: 'Delivered', icon: 'fa-home' }
+            ];
+
+            container.innerHTML = filtered.map(order => {
+                const step = order.step;
+                const trackerHTML = `
+                    <div class="order-tracker">
+                        ${trackSteps.map((s, i) => {
+                            const idx = i + 1;
+                            let cls = '';
+                            if (idx < step) cls = 'done';
+                            else if (idx === step) cls = 'active';
+                            return `
+                                <div class="track-step ${cls}">
+                                    <div class="track-dot"><i class="fas ${idx < step ? 'fa-check' : s.icon}"></i></div>
+                                    <div class="track-label">${s.label}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+
+                const productsHTML = order.items.map(i => `
+                    <div class="op-item">
+                        <img src="${i.image}" alt="${i.name}" loading="lazy" />
+                        <div class="op-info">
+                            <div class="op-name">${i.name}</div>
+                            <div class="op-qty">Qty: ${i.qty}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="order-item">
+                        <div class="order-top">
+                            <div class="order-meta">
+                                <div class="meta-item">
+                                    <span class="meta-label">Order ID</span>
+                                    <span class="meta-value">${order.id}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Date</span>
+                                    <span class="meta-value">${order.date}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Total</span>
+                                    <span class="meta-value">₹${order.total.toLocaleString()}</span>
+                                </div>
+                            </div>
+                            <span class="ro-status ${order.status}">${order.status}</span>
+                        </div>
+                        <div class="order-body">
+                            ${trackerHTML}
+                            <div class="order-products">${productsHTML}</div>
+                            <div class="order-actions">
+                                <button class="oa-btn primary" onclick="showToast('📍 Tracking order ${order.id}')"><i class="fas fa-map-marker-alt"></i> Track</button>
+                                <button class="oa-btn" onclick="showToast('📄 Invoice downloaded')"><i class="fas fa-file-download"></i> Invoice</button>
+                                <button class="oa-btn" onclick="showToast('🔁 Reordering items')"><i class="fas fa-redo"></i> Reorder</button>
+                                ${order.status === 'delivered' ? `<button class="oa-btn" onclick="showToast('↩️ Return request started')"><i class="fas fa-undo-alt"></i> Return</button>` : ''}
+                                <button class="oa-btn" onclick="showToast('📞 Contacting support')"><i class="fas fa-headset"></i> Help</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== RENDER: WISHLIST PANEL =====
+        function renderWishlist() {
+            const container = document.getElementById('wishlistContent');
+            if (wishlistItems.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:60px 20px;background:var(--white);border-radius:var(--radius);border:1px dashed var(--gray-300);">
+                        <i class="far fa-heart" style="font-size:2.5rem;color:var(--accent);display:block;margin-bottom:12px;"></i>
+                        <h4 style="font-size:1.05rem;color:var(--gray-700);margin-bottom:4px;">Your wishlist is empty</h4>
+                        <p style="font-size:0.88rem;color:var(--gray-500);">Save items you love to see them here.</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
+                    ${wishlistItems.map(item => `
+                        <div style="background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-100);overflow:hidden;transition:var(--transition);" onmouseover="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='none';this.style.transform='none';">
+                            <img src="${item.image}" alt="${item.name}" style="width:100%;aspect-ratio:1/1;object-fit:cover;" loading="lazy" />
+                            <div style="padding:12px 14px 14px;">
+                                <div style="font-size:0.85rem;font-weight:500;color:var(--primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                                <div style="font-weight:700;color:var(--primary);font-size:0.95rem;margin-top:2px;">₹${item.price.toLocaleString()}</div>
+                                <div style="display:flex;gap:6px;margin-top:10px;">
+                                    <button style="flex:1;padding:7px 0;border-radius:60px;background:var(--primary);color:var(--white);font-weight:600;font-size:0.72rem;transition:var(--transition);" onclick="showToast('🛒 ${item.name} added to cart!')">
+                                        <i class="fas fa-shopping-bag"></i> Add
+                                    </button>
+                                    <button style="width:36px;padding:7px 0;border-radius:60px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:0.72rem;transition:var(--transition);" onclick="showToast('💔 Removed from wishlist')">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // ===== RENDER: ADDRESSES =====
+        function renderAddresses() {
+            const container = document.getElementById('addressGrid');
+            container.innerHTML = addresses.map(a => `
+                <div class="addr-card ${a.default ? 'default' : ''}">
+                    ${a.default ? '<span class="badge-default">Default</span>' : ''}
+                    <span class="addr-tag ${a.tag}"><i class="fas fa-${a.tag === 'home' ? 'home' : 'briefcase'}"></i> ${a.label}</span>
+                    <div class="addr-name">${a.name}</div>
+                    <div class="addr-lines">
+                        ${a.address}<br />
+                        ${a.city}, ${a.state} - ${a.pincode}
+                    </div>
+                    <div class="addr-phone"><i class="fas fa-phone"></i> ${a.phone}</div>
+                    <div class="addr-actions">
+                        <button onclick="showToast('✏️ Editing address')"><i class="fas fa-edit"></i> Edit</button>
+                        ${!a.default ? `<button onclick="setDefaultAddr(${a.id})"><i class="fas fa-check-circle"></i> Set Default</button>` : ''}
+                        <button class="danger" onclick="removeAddr(${a.id})"><i class="fas fa-trash-alt"></i> Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setDefaultAddr(id) {
+            addresses.forEach(a => a.default = a.id === id);
+            renderAddresses();
+            showToast('✅ Default address updated');
+        }
+
+        function removeAddr(id) {
+            if (!confirm('Remove this address?')) return;
+            const idx = addresses.findIndex(a => a.id === id);
+            if (idx > -1) addresses.splice(idx, 1);
+            renderAddresses();
+            showToast('🗑️ Address removed');
+        }
+
+        function addAddress() {
+            showToast('📝 New address form would open here');
+        }
+
+        // ===== RENDER: PAYMENT METHODS =====
+        function renderPayments() {
+            const container = document.getElementById('paymentGrid');
+            let html = paymentMethods.map(p => `
+                <div class="payment-card">
+                    <div class="pc-top">
+                        <div class="pc-brand">
+                            <div class="card-chip"></div>
+                            <span style="font-weight:700;letter-spacing:0.02em;">${p.brand}</span>
+                        </div>
+                        ${p.default ? '<span class="pc-default">Default</span>' : ''}
+                    </div>
+                    <div class="pc-number">•••• •••• •••• ${p.last4}</div>
+                    <div class="pc-info">
+                        <div>
+                            <div class="pc-label">Card Holder</div>
+                            <div>${p.holder}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="pc-label">Expires</div>
+                            <div>${p.expiry}</div>
+                        </div>
+                    </div>
+                    <div class="pc-actions">
+                        ${!p.default ? `<button onclick="setDefaultCard(${p.id})"><i class="fas fa-check-circle"></i> Set Default</button>` : ''}
+                        <button onclick="showToast('✏️ Editing card')"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="danger" onclick="removeCard(${p.id})"><i class="fas fa-trash-alt"></i> Remove</button>
+                    </div>
+                </div>
+            `).join('');
+
+            html += `
+                <div class="add-payment" onclick="showToast('💳 Add new card form')">
+                    <i class="fas fa-plus-circle"></i>
+                    <p>Add New Payment Method</p>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function setDefaultCard(id) {
+            paymentMethods.forEach(p => p.default = p.id === id);
+            renderPayments();
+            showToast('✅ Default payment method updated');
+        }
+
+        function removeCard(id) {
+            if (!confirm('Remove this card?')) return;
+            const idx = paymentMethods.findIndex(p => p.id === id);
+            if (idx > -1) paymentMethods.splice(idx, 1);
+            renderPayments();
+            showToast('🗑️ Card removed');
+        }
+
+        // ===== RENDER: NOTIFICATIONS =====
+        function renderNotifications() {
+            const container = document.getElementById('notifFullList');
+            container.innerHTML = notifications.map(n => `
+                <div class="notif-item ${n.unread ? 'unread' : ''}" style="padding:16px 20px;background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--gray-100);margin-bottom:8px;border-bottom:1px solid var(--gray-100);">
+                    <div class="notif-icon ${n.type}"><i class="fas ${n.icon}"></i></div>
+                    <div class="notif-body">
+                        <div class="notif-text">${n.text}</div>
+                        <div class="notif-time">${n.time}</div>
+                    </div>
+                    ${n.unread ? '<div class="notif-dot"></div>' : ''}
+                </div>
+            `).join('');
+        }
+
+        // ===== ORDER FILTERS =====
+        document.querySelectorAll('#orderFilter button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#orderFilter button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentOrderFilter = btn.dataset.filter;
+                renderOrders();
+            });
+        });
+
+        document.getElementById('orderSearchInput').addEventListener('input', function() {
+            currentOrderSearch = this.value.trim();
+            renderOrders();
+        });
+
+        // ===== SETTINGS FUNCTIONS =====
+        function togglePref(el) {
+            el.classList.toggle('active');
+            showToast(el.classList.contains('active') ? '✅ Preference enabled' : '🔕 Preference disabled');
+        }
+
+        function changePassword() {
+            const cur = document.getElementById('pwCurrent').value;
+            const nw = document.getElementById('pwNew').value;
+            const cf = document.getElementById('pwConfirm').value;
+            if (!cur || !nw || !cf) { showToast('Please fill in all password fields'); return; }
+            if (nw !== cf) { showToast('❌ Passwords do not match'); return; }
+            if (nw.length < 6) { showToast('❌ Password must be at least 6 characters'); return; }
+            showToast('✅ Password updated successfully!');
+            document.getElementById('pwCurrent').value = '';
+            document.getElementById('pwNew').value = '';
+            document.getElementById('pwConfirm').value = '';
+        }
+
+        function deleteAccount() {
+            if (confirm('⚠️ This will permanently delete your account. Are you absolutely sure?')) {
+                if (confirm('This is your last chance. Delete account forever?')) {
+                    showToast('🗑️ Account deleted. Redirecting...');
+                }
+            }
+        }
+
+        // ===== SEARCH =====
+        function toggleSearch() {
+            const overlay = document.getElementById('searchOverlay');
+            overlay.classList.toggle('open');
+            if (overlay.classList.contains('open')) {
+                document.getElementById('searchInput').focus();
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('searchOverlay').classList.contains('open')) toggleSearch();
+                if (document.getElementById('mobileMenu').classList.contains('open')) toggleMobileMenu();
+            }
+        });
+
+        // ===== MOBILE MENU =====
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const overlay = document.getElementById('mobileOverlay');
+            menu.classList.toggle('open');
+            overlay.classList.toggle('open');
+            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+            document.getElementById('hamburgerBtn').setAttribute('aria-expanded', menu.classList.contains('open'));
+        }
+        document.getElementById('hamburgerBtn').addEventListener('click', toggleMobileMenu);
+        document.getElementById('closeMobileMenu').addEventListener('click', toggleMobileMenu);
+        document.getElementById('mobileOverlay').addEventListener('click', toggleMobileMenu);
+
+        // ===== HEADER SCROLL =====
+        function handleScroll() {
+            const header = document.getElementById('header');
+            header.classList.toggle('scrolled', window.scrollY > 40);
+        }
+        window.addEventListener('scroll', handleScroll);
+
+        // ===== INIT =====
+        updateBadges();
+        renderRecentOrders();
+        renderRecentNotifs();
+        renderOrders();
+        renderWishlist();
+        renderAddresses();
+        renderPayments();
+        renderNotifications();
+
+        console.log('✨ Welcome Mart — Dashboard v2 loaded');
+    </script>
+
+</body>
+</html>
