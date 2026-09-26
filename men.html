@@ -2686,7 +2686,7 @@
 
         // ===== STATE =====
         let cart = [];
-        let wishlist = [];
+        let wishlist = JSON.parse(localStorage.getItem('welcmart_wishlist') || '[]');
         let currentCategory = 'all';
         let currentProduct = null;
         let selectedSize = '';
@@ -2975,6 +2975,7 @@
             // If detail is open, update detail wishlist button
             if (currentProduct && currentProduct.id === id) {
                 updateDetailWishlist();
+                localStorage.setItem('welcmart_wishlist', JSON.stringify(wishlist));
             }
         }
 
