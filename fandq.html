@@ -1456,7 +1456,7 @@
 
         // ===== CART & WISHLIST (dummy state) =====
         let cart = [];
-        let wishlist = [];
+        let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
 
         // ===== TOAST =====
         function showToast(msg) {
