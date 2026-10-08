@@ -2158,7 +2158,7 @@
 
         // ===== STATE =====
         let cart = [];
-        let wishlist = [];
+        let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
         let currentCategory = 'all';
         let currentProduct = null;
         let selectedSize = '';
