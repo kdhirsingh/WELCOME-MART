@@ -2685,7 +2685,7 @@
         }];
 
         // ===== STATE =====
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('welcomeMartCart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
         let currentCategory = 'all';
         let currentProduct = null;
@@ -3000,6 +3000,10 @@
 
         // ===== CART =====
         function addToCart(id) {
+            localStorage.setItem(
+    'welcomeMartCart',
+    JSON.stringify(cart)
+);
             const p = menProducts.find(item => item.id === id);
             if (!p) return;
             const existing = cart.find(item => item.id === id);
