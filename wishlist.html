@@ -1689,6 +1689,36 @@
             addedDays: 10,
             isNew: false
         }];
+        
+function loadSharedWishlist() {
+    const saved = JSON.parse(
+        localStorage.getItem('welcomeMartWishlist') || '[]'
+    );
+
+    wishlistItems = saved.map(item => ({
+        id: item.id,
+        collectionId: item.collectionId || 'style',
+        name: item.name,
+        category: item.category || 'Saved Product',
+        price: Number(item.price) || 0,
+        original: Number(item.original) || Number(item.price) || 0,
+        rating: Number(item.rating) || 0,
+        reviews: Number(item.reviews) || 0,
+        image: item.image || item.img || '',
+        inStock: item.inStock !== false,
+        stockCount: item.stockCount || 1,
+        priceDrop: item.priceDrop || false,
+        dropAmount: item.dropAmount || 0,
+        addedDays: item.addedDays || 0,
+        isNew: item.isNew || false
+    }));
+
+    renderCollections();
+    updateBadges();
+    updateStats();
+    renderWishlist();
+}
+
 
         // ===== STATE =====
         let cart = [];
