@@ -2952,6 +2952,10 @@
 
         // ===== WISHLIST =====
 function toggleWishlist(id) {
+    localStorage.setItem(
+    'welcomeMartWishlist',
+    JSON.stringify(wishlist)
+);
     const p = accessoriesProducts.find(item => item.id === id);
     if (!p) return;
 
