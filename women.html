@@ -2685,7 +2685,7 @@
         }];
 
         // ===== STATE =====
-        let cart = [];
+        let calet cart = JSON.parse(localStorage.getItem('welcomeMartCart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
         let currentCategory = 'all';
         let currentProduct = null;
@@ -2962,6 +2962,10 @@
                 wishlist.push({ id: p.id, name: p.name, price: p.price, img: p.images[0] });
                 showToast(`❤️ ${p.name} added to wishlist!`);
             }
+             localStorage.setItem(
+                'welcomeMartWishlist',
+                JSON.stringify(wishlist)
+            );
             updateWishlistUI();
             renderProducts(currentCategory);
             if (currentProduct && currentProduct.id === id) updateDetailWishlist();
@@ -3070,6 +3074,10 @@
         }
 
         function updateCartUI() {
+            localStorage.setItem(
+        'welcomeMartCart',
+        JSON.stringify(cart)
+    );
             const count = cart.reduce((sum, item) => sum + item.qty, 0);
             document.getElementById('cartCount').textContent = count;
             document.getElementById('bottomCartCount').textContent = count;
