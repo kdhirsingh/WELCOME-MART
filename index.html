@@ -2727,7 +2727,7 @@
             localStorage.setItem(
     'welcomeMartCart',
     JSON.stringify(cart)
-);
+    );
             const count = cart.reduce((sum, item) => sum + item.qty, 0);
             cartCount = count;
             document.getElementById('cartCount').textContent = count;
