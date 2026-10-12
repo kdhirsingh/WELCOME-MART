@@ -2993,6 +2993,10 @@
         }
 
         function updateWishlistUI() {
+             localStorage.setItem(
+        'welcomeMartWishlist',
+        JSON.stringify(wishlist)
+        );
             const count = wishlist.length;
             document.getElementById('wishlistCount').textContent = count;
             document.getElementById('bottomWishCount').textContent = count;
