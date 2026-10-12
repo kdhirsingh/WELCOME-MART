@@ -2685,7 +2685,7 @@
         }];
 
         // ===== STATE =====
-        let calet cart = JSON.parse(localStorage.getItem('welcomeMartCart')) || [];
+        let cart = JSON.parse(localStorage.getItem('welcomeMartCart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
         let currentCategory = 'all';
         let currentProduct = null;
@@ -3077,7 +3077,7 @@
             localStorage.setItem(
         'welcomeMartCart',
         JSON.stringify(cart)
-    );
+          );
             const count = cart.reduce((sum, item) => sum + item.qty, 0);
             document.getElementById('cartCount').textContent = count;
             document.getElementById('bottomCartCount').textContent = count;
