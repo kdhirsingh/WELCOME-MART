@@ -2264,13 +2264,28 @@ function loadSharedWishlist() {
         }
         window.addEventListener('scroll', handleScroll);
 
-        // ===== CART TOGGLE =====
-        function toggleCart() {
-            showToast('🛒 Cart drawer would open here.');
-        }
+        // ===== CART TOGGLE ===== 
+function toggleCart() {
+    const overlay = document.getElementById('cartOverlay');
+    const drawer = document.getElementById('cartDrawer');
 
-        
+    if (!overlay || !drawer) {
+        showToast('Cart drawer is missing from this page.');
+        return;
+    }
 
+    const isOpen = drawer.classList.contains('open');
+
+    if (isOpen) {
+        overlay.classList.remove('open');
+        drawer.classList.remove('open');
+        document.body.style.overflow = '';
+    } else {
+        overlay.classList.add('open');
+        drawer.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+}
         // ===== INIT =====
         loadData();
         loadSharedWishlist();
