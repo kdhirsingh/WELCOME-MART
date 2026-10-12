@@ -1712,11 +1712,6 @@ function loadSharedWishlist() {
         addedDays: item.addedDays || 0,
         isNew: item.isNew || false
     }));
-
-    renderCollections();
-    updateBadges();
-    updateStats();
-    renderWishlist();
 }
 
 
@@ -2276,10 +2271,12 @@ function loadSharedWishlist() {
             showToast('🛒 Cart drawer would open here.');
         }
 
-        // ===== INIT =====
-        loadData();
-        renderCollections();
-        renderWishlist();
+        
+ // ===== INIT =====
+ loadData();
+ loadSharedWishlist();
+ renderCollections();
+ renderWishlist();
 
         console.log('💖 Welcome Mart — Wishlist Collections page loaded');
         console.log(`📦 ${wishlistItems.length} items, ${collections.length - 1} collections`);
