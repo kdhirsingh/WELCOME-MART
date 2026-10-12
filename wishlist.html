@@ -2272,11 +2272,16 @@ function loadSharedWishlist() {
         }
 
         
- // ===== INIT =====
- loadData();
- loadSharedWishlist();
- renderCollections();
- renderWishlist();
+
+        // ===== INIT =====
+        loadData();
+        loadSharedWishlist();
+
+        updateBadges();
+        updateStats();
+
+        renderCollections();
+        renderWishlist();
 
         console.log('💖 Welcome Mart — Wishlist Collections page loaded');
         console.log(`📦 ${wishlistItems.length} items, ${collections.length - 1} collections`);
