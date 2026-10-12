@@ -2685,7 +2685,7 @@
         }];
 
         // ===== STATE =====
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('welcomeMartCart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
         let currentCategory = 'all';
         let currentProduct = null;
@@ -2980,6 +2980,10 @@
         }
 
         function updateWishlistUI() {
+            localStorage.setItem(
+        'welcomeMartWishlist',
+        JSON.stringify(wishlist)
+        );
             const count = wishlist.length;
             document.getElementById('wishlistCount').textContent = count;
             document.getElementById('bottomWishCount').textContent = count;
@@ -2987,6 +2991,10 @@
 
         // ===== CART =====
         function addToCart(id) {
+            localStorage.setItem(
+    'welcomeMartCart',
+    JSON.stringify(cart)
+);
             const p = footwearProducts.find(item => item.id === id);
             if (!p) return;
             const existing = cart.find(item => item.id === id);
