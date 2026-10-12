@@ -1723,11 +1723,17 @@
         }
 
         function saveWishlist() {
-            localStorage.setItem('welcmart_wishlist_v2', JSON.stringify(wishlistItems));
+            localStorage.setItem(
+        'welcomeMartWishlist',
+        JSON.stringify(wishlistItems)
+    );
         }
 
         function saveCart() {
-            localStorage.setItem('welcmart_cart', JSON.stringify(cart));
+            localStorage.setItem(
+        'welcomeMartCart',
+        JSON.stringify(cart)
+    );
         }
 
         // ===== UPDATE BADGES & STATS =====
