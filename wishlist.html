@@ -1733,34 +1733,32 @@ function loadSharedWishlist() {
             toast._timeout = setTimeout(() => toast.classList.remove('show'), 2600);
         }
 
+        
         // ===== LOAD DATA =====
         function loadData() {
-            const storedCart = localStorage.getItem('welcmart_cart');
+            const storedCart = localStorage.getItem('welcomeMartCart');
             if (storedCart) {
-                try { cart = JSON.parse(storedCart); } catch(e) { cart = []; }
+                try {
+                    cart = JSON.parse(storedCart);
+                } catch (e) {
+                    cart = [];
+                }
+            } else {
+                cart = [];
             }
-            const storedWish = localStorage.getItem('welcmart_wishlist_v2');
+
+            const storedWish = localStorage.getItem('welcomeMartWishlist');
             if (storedWish) {
-                try { wishlistItems = JSON.parse(storedWish); } catch(e) { /* keep default */ }
+                try {
+                    wishlistItems = JSON.parse(storedWish);
+                } catch (e) {
+                    wishlistItems = [];
+                }
             }
+
             updateBadges();
             updateStats();
         }
-
-        function saveWishlist() {
-            localStorage.setItem(
-        'welcomeMartWishlist',
-        JSON.stringify(wishlistItems)
-    );
-        }
-
-        function saveCart() {
-            localStorage.setItem(
-        'welcomeMartCart',
-        JSON.stringify(cart)
-    );
-        }
-
         // ===== UPDATE BADGES & STATS =====
         function updateBadges() {
             const cartCount = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
