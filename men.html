@@ -3089,6 +3089,10 @@
         }
 
         function updateCartUI() {
+            localStorage.setItem(
+        'welcomeMartCart',
+        JSON.stringify(cart)
+         );
             const count = cart.reduce((sum, item) => sum + item.qty, 0);
             document.getElementById('cartCount').textContent = count;
             document.getElementById('bottomCartCount').textContent = count;
