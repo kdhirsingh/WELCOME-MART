@@ -2998,7 +2998,7 @@
             if (!p) return;
             const existing = cart.find(item => item.id === id);
             if (existing) {
-                existing.qty += 0;
+                existing.qty += 1;
             } else {
                 cart.push({ id: p.id, name: p.name, price: p.price, img: p.images[0], qty: 1, variant: 'Default' });
             }
