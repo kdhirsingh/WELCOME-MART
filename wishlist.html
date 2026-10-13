@@ -1266,51 +1266,179 @@
             .footer .bottom { flex-direction: column; text-align: center; }
         }
         
-/* ===== WISHLIST CART DRAWER FIX ===== */
+/* ===== WISHLIST CART DRAWER ===== */
 .cart-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.48);
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 9998;
 }
-
 .cart-overlay.open {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
-
 .cart-drawer {
     position: fixed;
     top: 0;
     right: 0;
-    width: min(420px, 100%);
+    width: min(430px, 100%);
     height: 100vh;
     height: 100dvh;
     background: #fff;
+    color: var(--gray-800);
     z-index: 9999;
-    transform: translateX(100%);
+    transform: translateX(105%);
     visibility: hidden;
     transition: transform 0.3s ease, visibility 0.3s ease;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    box-shadow: var(--shadow-xl);
 }
-
 .cart-drawer.open {
     transform: translateX(0);
     visibility: visible;
 }
-
+.cart-drawer .header-cart {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 20px;
+    border-bottom: 1px solid var(--gray-200);
+}
+.cart-drawer .header-cart h3 { font-size: 1.15rem; color: var(--primary); }
+.cart-drawer .header-cart .close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    color: var(--gray-600);
+}
+.cart-drawer .header-cart .close:hover { background: var(--gray-100); }
+.cart-drawer .free-ship {
+    margin: 16px 20px 8px;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--off-white);
+    font-size: 0.78rem;
+    color: var(--gray-700);
+}
+.cart-drawer .free-ship .bar {
+    height: 5px;
+    margin-top: 9px;
+    background: var(--gray-200);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.cart-drawer .free-ship .fill {
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    border-radius: 10px;
+    transition: width 0.2s ease;
+}
 .cart-drawer .items {
     flex: 1;
     overflow-y: auto;
     min-height: 100px;
+    padding: 8px 20px;
 }
-
+.cart-drawer .cart-item {
+    display: grid;
+    grid-template-columns: 68px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-100);
+}
+.cart-drawer .cart-item img {
+    width: 68px;
+    height: 78px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: var(--gray-100);
+}
+.cart-drawer .cart-item .item-name {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--primary);
+    overflow-wrap: anywhere;
+}
+.cart-drawer .cart-item .item-price {
+    font-size: 0.82rem;
+    color: var(--gray-600);
+    margin: 3px 0 8px;
+}
+.cart-drawer .qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+}
+.cart-drawer .qty-controls button {
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--gray-200);
+    border-radius: 50%;
+    color: var(--primary);
+}
+.cart-drawer .qty-controls button:hover { border-color: var(--accent); }
+.cart-drawer .remove-cart-item {
+    color: var(--gray-400);
+    padding: 6px;
+}
+.cart-drawer .remove-cart-item:hover { color: var(--error); }
+.cart-drawer .totals {
+    padding: 16px 20px;
+    border-top: 1px solid var(--gray-200);
+}
+.cart-drawer .totals .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 5px 0;
+    font-size: 0.85rem;
+}
+.cart-drawer .totals .row.total {
+    margin-top: 5px;
+    padding-top: 12px;
+    border-top: 1px solid var(--gray-200);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+.cart-drawer .actions {
+    display: grid;
+    gap: 10px;
+    padding: 0 20px 22px;
+}
+.cart-drawer .btn-checkout,
+.cart-drawer .btn-continue {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: var(--transition);
+}
+.cart-drawer .btn-checkout {
+    background: var(--primary);
+    color: #fff;
+}
+.cart-drawer .btn-checkout:hover { background: var(--accent-dark); color: var(--primary); }
+.cart-drawer .btn-continue {
+    border: 1px solid var(--gray-300);
+    color: var(--gray-700);
+    background: #fff;
+}
+.cart-drawer .btn-continue:hover { border-color: var(--accent); color: var(--primary); }
     </style>
 </head>
 <body>
@@ -1779,26 +1907,32 @@
         }];
         
 function loadSharedWishlist() {
-    const saved = JSON.parse(
-        localStorage.getItem('welcomeMartWishlist') || '[]'
-    );
+    let saved = [];
+    try {
+        saved = JSON.parse(localStorage.getItem('welcomeMartWishlist') || '[]');
+        if (!Array.isArray(saved)) saved = [];
+    } catch (error) {
+        console.error('Could not read saved wishlist:', error);
+        saved = [];
+    }
 
     wishlistItems = saved.map(item => ({
+        ...item,
         id: item.id,
         collectionId: item.collectionId || 'style',
-        name: item.name,
+        name: item.name || 'Saved Product',
         category: item.category || 'Saved Product',
         price: Number(item.price) || 0,
         original: Number(item.original) || Number(item.price) || 0,
         rating: Number(item.rating) || 0,
         reviews: Number(item.reviews) || 0,
-        image: item.image || item.img || '',
+        image: item.image || item.img || (Array.isArray(item.images) ? item.images[0] : '') || '',
         inStock: item.inStock !== false,
-        stockCount: item.stockCount || 1,
-        priceDrop: item.priceDrop || false,
-        dropAmount: item.dropAmount || 0,
-        addedDays: item.addedDays || 0,
-        isNew: item.isNew || false
+        stockCount: Number(item.stockCount) || 1,
+        priceDrop: Boolean(item.priceDrop),
+        dropAmount: Number(item.dropAmount) || 0,
+        addedDays: Number(item.addedDays) || 0,
+        isNew: Boolean(item.isNew)
     }));
 }
 
@@ -1822,6 +1956,27 @@ function loadSharedWishlist() {
         }
 
         
+        // ===== SHARED STORAGE HELPERS =====
+        function saveWishlist() {
+            localStorage.setItem('welcomeMartWishlist', JSON.stringify(wishlistItems));
+        }
+
+        function saveCart() {
+            localStorage.setItem('welcomeMartCart', JSON.stringify(cart));
+            updateBadges();
+            updateCartUI();
+        }
+
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, character => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[character]);
+        }
+
+        function inlineId(value) {
+            return String(value ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+
         // ===== LOAD DATA =====
         function loadData() {
             const storedCart = localStorage.getItem('welcomeMartCart');
@@ -1849,17 +2004,98 @@ function loadSharedWishlist() {
         }
         // ===== UPDATE BADGES & STATS =====
         function updateBadges() {
-            const cartCount = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
-            document.getElementById('cartCount').textContent = cartCount;
-            document.getElementById('bottomCartCount').textContent = cartCount;
-            document.getElementById('wishlistCount').textContent = wishlistItems.length;
-            document.getElementById('bottomWishCount').textContent = wishlistItems.length;
+            const cartCount = cart.reduce((sum, item) => sum + (Number(item.qty || item.quantity) || 1), 0);
+            const setText = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            };
+            setText('cartCount', cartCount);
+            setText('bottomCartCount', cartCount);
+            setText('wishlistCount', wishlistItems.length);
+            setText('bottomWishCount', wishlistItems.length);
         }
 
         function updateStats() {
-            document.getElementById('statTotal').textContent = wishlistItems.length;
-            document.getElementById('statPriceDrops').textContent = wishlistItems.filter(i => i.priceDrop).length;
-            document.getElementById('statOutOfStock').textContent = wishlistItems.filter(i => !i.inStock).length;
+            const setText = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            };
+            setText('statTotal', wishlistItems.length);
+            setText('statPriceDrops', wishlistItems.filter(i => i.priceDrop).length);
+            setText('statOutOfStock', wishlistItems.filter(i => !i.inStock).length);
+        }
+
+        // ===== CART DRAWER CONTENT =====
+        function updateCartUI() {
+            const container = document.getElementById('cartItems');
+            if (!container) return;
+
+            const quantityOf = item => Number(item.qty || item.quantity) || 1;
+            const count = cart.reduce((sum, item) => sum + quantityOf(item), 0);
+            const subtotal = cart.reduce((sum, item) => sum + ((Number(item.price) || 0) * quantityOf(item)), 0);
+            const countElement = document.getElementById('cartItemCount');
+            const subtotalElement = document.getElementById('cartSubtotal');
+            const totalElement = document.getElementById('cartTotal');
+            if (countElement) countElement.textContent = `(${count})`;
+            if (subtotalElement) subtotalElement.textContent = `₹${subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            if (totalElement) totalElement.textContent = `₹${subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            const shipping = document.getElementById('cartFreeShip');
+            if (shipping) {
+                const remaining = Math.max(0, 450 - subtotal);
+                const fill = shipping.querySelector('.fill');
+                if (fill) fill.style.width = `${Math.min(100, (subtotal / 450) * 100)}%`;
+                shipping.firstChild.textContent = remaining > 0
+                    ? `Add ₹${remaining.toLocaleString('en-IN')} more for Free Delivery`
+                    : 'You have unlocked Free Delivery!';
+            }
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color:var(--gray-500);text-align:center;padding:30px 0;">Your cart is empty.</p>';
+                return;
+            }
+
+            container.innerHTML = cart.map(item => {
+                const id = escapeHTML(String(item.id));
+                const name = escapeHTML(item.name || 'Product');
+                const image = escapeHTML(item.image || item.img || (Array.isArray(item.images) ? item.images[0] : '') || '');
+                const price = Number(item.price) || 0;
+                const qty = quantityOf(item);
+                return `
+                    <div class="cart-item" data-id="${id}">
+                        <img src="${image}" alt="${name}" loading="lazy">
+                        <div>
+                            <div class="item-name">${name}</div>
+                            <div class="item-price">₹${price.toLocaleString('en-IN')}</div>
+                            <div class="qty-controls">
+                                <button type="button" aria-label="Decrease quantity" onclick="changeCartQty(this.closest('.cart-item').dataset.id, -1)">−</button>
+                                <span>${qty}</span>
+                                <button type="button" aria-label="Increase quantity" onclick="changeCartQty(this.closest('.cart-item').dataset.id, 1)">+</button>
+                            </div>
+                        </div>
+                        <button type="button" class="remove-cart-item" aria-label="Remove item" onclick="removeCartItem(this.closest('.cart-item').dataset.id)"><i class="fas fa-trash"></i></button>
+                    </div>`;
+            }).join('');
+        }
+
+        function changeCartQty(id, change) {
+            const item = cart.find(product => String(product.id) === String(id));
+            if (!item) return;
+            const currentQty = Number(item.qty || item.quantity) || 1;
+            const nextQty = currentQty + change;
+            if (nextQty <= 0) {
+                cart = cart.filter(product => String(product.id) !== String(id));
+            } else {
+                item.qty = nextQty;
+                delete item.quantity;
+            }
+            saveCart();
+        }
+
+        function removeCartItem(id) {
+            cart = cart.filter(item => String(item.id) !== String(id));
+            saveCart();
+            showToast('🛍️ Item removed from cart.');
         }
 
         // ===== RENDER COLLECTIONS =====
@@ -1981,7 +2217,7 @@ function loadSharedWishlist() {
 
             // Re-apply selection state
             selectedIds.forEach(id => {
-                const card = document.querySelector(`.wl-card[data-id="${id}"]`);
+                const card = [...document.querySelectorAll('.wl-card')].find(el => el.dataset.id === String(id));
                 if (card) {
                     card.classList.add('selected');
                     const cb = card.querySelector('.select-checkbox');
@@ -1995,7 +2231,7 @@ function loadSharedWishlist() {
         function buildCard(item) {
             const discount = item.original ? Math.round((1 - item.price / item.original) * 100) : 0;
             const stars = '★'.repeat(Math.floor(item.rating)) + '☆'.repeat(5 - Math.floor(item.rating));
-            const isSelected = selectedIds.has(item.id) ? 'selected' : '';
+            const isSelected = selectedIds.has(String(item.id)) ? 'selected' : '';
             const isNotified = notifiedIds.has(item.id);
 
             // Badges
@@ -2010,13 +2246,13 @@ function loadSharedWishlist() {
             let primaryAction = '';
             if (item.inStock) {
                 primaryAction = `
-                    <button class="btn-add-cart" onclick="addToCart(${item.id}, event)">
+                    <button class="btn-add-cart" onclick="addToCart('${inlineId(item.id)}', event)">
                         <i class="fas fa-shopping-bag"></i> Add to Cart
                     </button>
                 `;
             } else {
                 primaryAction = `
-                    <button class="btn-notify ${isNotified ? 'notified' : ''}" onclick="notifyMe(${item.id}, event)">
+                    <button class="btn-notify ${isNotified ? 'notified' : ''}" onclick="notifyMe('${inlineId(item.id)}', event)">
                         <i class="fas ${isNotified ? 'fa-check' : 'fa-bell'}"></i> ${isNotified ? 'Notified' : 'Notify Me'}
                     </button>
                 `;
@@ -2024,11 +2260,11 @@ function loadSharedWishlist() {
 
             return `
                 <div class="wl-card ${isSelected}" data-id="${item.id}">
-                    <input type="checkbox" class="select-checkbox" ${isSelected ? 'checked' : ''} onclick="toggleSelect(${item.id}, event)" aria-label="Select item" />
+                    <input type="checkbox" class="select-checkbox" ${isSelected ? 'checked' : ''} onclick="toggleSelect('${inlineId(item.id)}', event)" aria-label="Select item" />
                     <div class="img-wrap">
                         <img src="${item.image}" alt="${item.name}" loading="lazy" />
                         <div class="badge-stack">${badges}</div>
-                        <button class="remove-btn" onclick="removeItem(${item.id}, event)" aria-label="Remove from wishlist">
+                        <button class="remove-btn" onclick="removeItem('${inlineId(item.id)}', event)" aria-label="Remove from wishlist">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -2050,7 +2286,7 @@ function loadSharedWishlist() {
                     </div>
                     <div class="card-actions">
                         ${primaryAction}
-                        <button class="btn-more" onclick="openCollectionMenu(${item.id}, event)" aria-label="More options">
+                        <button class="btn-more" onclick="openCollectionMenu('${inlineId(item.id)}', event)" aria-label="More options">
                             <i class="fas fa-ellipsis-h"></i>
                         </button>
                     </div>
@@ -2086,12 +2322,10 @@ function loadSharedWishlist() {
         // ===== SELECTION =====
         function toggleSelect(id, event) {
             if (event) event.stopPropagation();
-            if (selectedIds.has(id)) {
-                selectedIds.delete(id);
-            } else {
-                selectedIds.add(id);
-            }
-            const card = document.querySelector(`.wl-card[data-id="${id}"]`);
+            id = String(id);
+            if (selectedIds.has(id)) selectedIds.delete(String(id));
+            else selectedIds.add(id);
+            const card = [...document.querySelectorAll('.wl-card')].find(el => el.dataset.id === id);
             if (card) card.classList.toggle('selected', selectedIds.has(id));
             updateBulkBar();
         }
@@ -2115,7 +2349,7 @@ function loadSharedWishlist() {
             if (selectedIds.size === 0) return;
             let addedCount = 0;
             selectedIds.forEach(id => {
-                const item = wishlistItems.find(i => i.id === id);
+                const item = wishlistItems.find(i => String(i.id) === String(id));
                 if (item && item.inStock) {
                     addToCartSilent(item);
                     addedCount++;
@@ -2129,7 +2363,7 @@ function loadSharedWishlist() {
             if (selectedIds.size === 0) return;
             if (!confirm(`Remove ${selectedIds.size} item${selectedIds.size > 1 ? 's' : ''} from your wishlist?`)) return;
             const count = selectedIds.size;
-            wishlistItems = wishlistItems.filter(i => !selectedIds.has(i.id));
+            wishlistItems = wishlistItems.filter(i => !selectedIds.has(String(i.id)));
             saveWishlist();
             clearSelection();
             updateBadges();
@@ -2142,14 +2376,14 @@ function loadSharedWishlist() {
         // ===== ADD TO CART =====
         function addToCart(id, event) {
             if (event) event.stopPropagation();
-            const item = wishlistItems.find(i => i.id === id);
+            const item = wishlistItems.find(i => String(i.id) === String(id));
             if (!item) return;
             if (!item.inStock) {
                 showToast('⚠️ This item is out of stock.');
                 return;
             }
             addToCartSilent(item);
-            const btn = document.querySelector(`.wl-card[data-id="${id}"] .btn-add-cart`);
+            const btn = [...document.querySelectorAll('.wl-card')].find(el => el.dataset.id === String(id))?.querySelector('.btn-add-cart');
             if (btn) {
                 btn.classList.add('added');
                 btn.innerHTML = '<i class="fas fa-check"></i> Added!';
@@ -2182,7 +2416,7 @@ function loadSharedWishlist() {
         // ===== NOTIFY ME =====
         function notifyMe(id, event) {
             if (event) event.stopPropagation();
-            const item = wishlistItems.find(i => i.id === id);
+            const item = wishlistItems.find(i => String(i.id) === String(id));
             if (!item) return;
             const btn = document.querySelector(`.wl-card[data-id="${id}"] .btn-notify`);
             if (notifiedIds.has(id)) {
@@ -2205,10 +2439,10 @@ function loadSharedWishlist() {
         // ===== REMOVE ITEM =====
         function removeItem(id, event) {
             if (event) event.stopPropagation();
-            const item = wishlistItems.find(i => i.id === id);
+            const item = wishlistItems.find(i => String(i.id) === String(id));
             if (!item) return;
-            wishlistItems = wishlistItems.filter(i => i.id !== id);
-            selectedIds.delete(id);
+            wishlistItems = wishlistItems.filter(i => String(i.id) !== String(id));
+            selectedIds.delete(String(id));
             saveWishlist();
             updateBadges();
             updateStats();
@@ -2221,7 +2455,7 @@ function loadSharedWishlist() {
         function openCollectionMenu(id, event) {
             if (event) event.stopPropagation();
             const menu = document.getElementById('collectionMenu');
-            const item = wishlistItems.find(i => i.id === id);
+            const item = wishlistItems.find(i => String(i.id) === String(id));
             if (!item) return;
 
             let html = `<div class="menu-title">Move to Collection</div>`;
@@ -2229,15 +2463,15 @@ function loadSharedWishlist() {
                 if (c.id === 'all') return;
                 const isCurrent = c.id === item.collectionId;
                 html += `
-                    <button onclick="moveToCollection(${id}, '${c.id}', event)">
+                    <button onclick="moveToCollection('${inlineId(id)}', '${inlineId(c.id)}', event)">
                         <i class="fas ${isCurrent ? 'fa-check' : c.icon}"></i>
                         ${c.name}
                     </button>
                 `;
             });
             html += `<div class="divider"></div>`;
-            html += `<button onclick="createCollectionForItem(${id}, event)"><i class="fas fa-plus"></i> New Collection</button>`;
-            html += `<button onclick="removeItem(${id}, event); closeCollectionMenu();"><i class="fas fa-trash-alt"></i> Remove from Wishlist</button>`;
+            html += `<button onclick="createCollectionForItem('${inlineId(id)}', event)"><i class="fas fa-plus"></i> New Collection</button>`;
+            html += `<button onclick="removeItem('${inlineId(id)}', event); closeCollectionMenu();"><i class="fas fa-trash-alt"></i> Remove from Wishlist</button>`;
 
             menu.innerHTML = html;
             menu.classList.add('open');
@@ -2262,7 +2496,7 @@ function loadSharedWishlist() {
 
         function moveToCollection(id, collectionId, event) {
             if (event) event.stopPropagation();
-            const item = wishlistItems.find(i => i.id === id);
+            const item = wishlistItems.find(i => String(i.id) === String(id));
             if (!item) return;
             item.collectionId = collectionId;
             saveWishlist();
@@ -2280,7 +2514,7 @@ function loadSharedWishlist() {
             if (!name || !name.trim()) return;
             const collectionId = 'col_' + Date.now();
             collections.push({ id: collectionId, name: name.trim(), icon: 'fa-folder' });
-            const item = wishlistItems.find(i => i.id === id);
+            const item = wishlistItems.find(i => String(i.id) === String(id));
             if (item) item.collectionId = collectionId;
             saveWishlist();
             renderCollections();
@@ -2352,35 +2586,38 @@ function loadSharedWishlist() {
         }
         window.addEventListener('scroll', handleScroll);
 
-        // ===== CART TOGGLE ===== 
-function toggleCart() {
-    const overlay = document.getElementById('cartOverlay');
-    const drawer = document.getElementById('cartDrawer');
+        // ===== CART TOGGLE =====
+        function toggleCart() {
+            const overlay = document.getElementById('cartOverlay');
+            const drawer = document.getElementById('cartDrawer');
+            if (!overlay || !drawer) {
+                showToast('Cart drawer is missing from this page.');
+                return;
+            }
+            const isOpen = drawer.classList.contains('open');
+            overlay.classList.toggle('open', !isOpen);
+            drawer.classList.toggle('open', !isOpen);
+            document.body.style.overflow = isOpen ? '' : 'hidden';
+            if (!isOpen) updateCartUI();
+        }
 
-    if (!overlay || !drawer) {
-        showToast('Cart drawer is missing from this page.');
-        return;
-    }
+        const headerCartButton = document.getElementById('cartBtn');
+        if (headerCartButton) headerCartButton.addEventListener('click', toggleCart);
 
-    const isOpen = drawer.classList.contains('open');
+        function openCheckout() {
+            if (!cart.length) {
+                showToast('Your cart is empty.');
+                return;
+            }
+            window.location.href = 'checkout.html';
+        }
 
-    if (isOpen) {
-        overlay.classList.remove('open');
-        drawer.classList.remove('open');
-        document.body.style.overflow = '';
-    } else {
-        overlay.classList.add('open');
-        drawer.classList.add('open');
-        document.body.style.overflow = 'hidden';
-    }
-}
         // ===== INIT =====
         loadData();
         loadSharedWishlist();
-
         updateBadges();
         updateStats();
-
+        updateCartUI();
         renderCollections();
         renderWishlist();
 
