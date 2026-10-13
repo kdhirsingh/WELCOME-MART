@@ -1789,33 +1789,40 @@ userAvatar.addEventListener('click', function() {
                 hamburgerBtn.setAttribute('aria-expanded', 'false');
             });
 
-            mobileAccountLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                mobileMenu.classList.remove('open');
-                mobileOverlay.classList.remove('open');
-                document.body.style.overflow = '';
-                hamburgerBtn.setAttribute('aria-expanded', 'false');
-                if (isLoggedIn) {
-    window.location.href = 'myaccount.html';
-} else {
-    openModal();
+           
+mobileAccountLink.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    mobileMenu.classList.remove('open');
+    mobileOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+
+    if (isLoggedIn) {
+        window.location.href = 'myaccount.html';
+    } else {
+        openModal();
+    }
+}); // IMPORTANT: This closing line was missing!
+
+// ===== HEADER SCROLL EFFECT =====
+function handleScroll() {
+    const header = document.getElementById('header');
+
+    if (window.scrollY > 40) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
 }
-            // ===== HEADER SCROLL EFFECT =====
-            function handleScroll() {
-                const header = document.getElementById('header');
-                if (window.scrollY > 40) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            }
-            window.addEventListener('scroll', handleScroll);
 
-            // ===== INIT =====
-            checkLoginState();
+window.addEventListener('scroll', handleScroll);
 
-            console.log('🚀 Welcome Mart — Login modal integrated.');
-            console.log(`👤 Logged in: ${isLoggedIn}`);
+// ===== INIT =====
+checkLoginState();
+
+console.log('🚀 Welcome Mart — Login modal integrated.');
+console.log(`👤 Logged in: ${isLoggedIn}`);
         })();
     </script>
 
