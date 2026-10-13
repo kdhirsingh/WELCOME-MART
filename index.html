@@ -566,6 +566,46 @@
             color: var(--primary);
         }
 
+        /* Search results */
+        .search-overlay .search-results {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            max-height: 52vh;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+        .search-overlay .search-results:empty {
+            display: none;
+        }
+        .search-overlay .search-results .product-card {
+            min-width: 0;
+        }
+        .search-overlay .search-results .product-card .info {
+            padding: 10px;
+        }
+        .search-overlay .search-results .product-card .title {
+            font-size: 0.82rem;
+        }
+        .search-overlay .search-results .product-card .progress {
+            display: none;
+        }
+        .search-overlay .search-results .no-results {
+            grid-column: 1 / -1;
+            padding: 18px 8px;
+            text-align: center;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+        @media (max-width: 480px) {
+            .search-overlay .panel {
+                padding: 24px 16px;
+            }
+            .search-overlay .search-results {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* ===== HERO ===== */
         .hero {
             position: relative;
@@ -2198,12 +2238,13 @@
             <button class="close-search" aria-label="Close search" onclick="toggleSearch()">✕</button>
             <input type="text" placeholder="Search for products, brands &amp; more..." id="searchInput" aria-label="Search input" />
             <div class="suggestions">
-                <span>Dresses</span>
-                <span>Sneakers</span>
-                <span>Watches</span>
-                <span>Bags</span>
-                <span>Beauty</span>
+                <span onclick="useSearchSuggestion('Dresses')">Dresses</span>
+                <span onclick="useSearchSuggestion('Sneakers')">Sneakers</span>
+                <span onclick="useSearchSuggestion('Watches')">Watches</span>
+                <span onclick="useSearchSuggestion('Bags')">Bags</span>
+                <span onclick="useSearchSuggestion('Beauty')">Beauty</span>
             </div>
+            <div id="searchResults" class="search-results" aria-live="polite"></div>
         </div>
     </div>
 
@@ -2969,6 +3010,52 @@ function updateWishlistButtons() {
                 document.body.style.overflow = '';
             }
         }
+
+        // Search the products currently listed on the homepage.
+        function performSearch() {
+            const input = document.getElementById('searchInput');
+            const resultsBox = document.getElementById('searchResults');
+            if (!input || !resultsBox) return;
+
+            const query = input.value.trim().toLowerCase();
+            if (!query) {
+                resultsBox.innerHTML = '';
+                return;
+            }
+
+            const allSearchProducts = [
+                ...flashProducts,
+                ...trendingProducts,
+                ...newArrivals,
+                ...bestSellers
+            ];
+
+            const matches = allSearchProducts.filter(product => {
+                const searchableText = [
+                    product.name,
+                    product.category,
+                    product.brand,
+                    product.tag
+                ].filter(Boolean).join(' ').toLowerCase();
+                return searchableText.includes(query);
+            });
+
+            if (matches.length === 0) {
+                resultsBox.innerHTML = '<div class="no-results">No products found. Try another product name, such as shirt, sneakers, bag or watch.</div>';
+                return;
+            }
+
+            resultsBox.innerHTML = matches.map(product => productCard(product)).join('');
+        }
+
+        function useSearchSuggestion(term) {
+            const input = document.getElementById('searchInput');
+            if (!input) return;
+            input.value = term;
+            performSearch();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', performSearch);
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (document.getElementById('searchOverlay').classList.contains('open')) toggleSearch();
