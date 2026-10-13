@@ -1658,21 +1658,25 @@
             // ===== EVENT LISTENERS =====
 
             // Account button click
-            accountBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (isLoggedIn) {
-                    // Show account dropdown or profile
-                    showToast('👤 Opening your account...', 'info');
-                } else {
-                    openModal();
-                }
-            });
+           accountBtn.addEventListener('click', function(e) {
+    e.preventDefault();
 
+    if (isLoggedIn) {
+        window.location.href = 'myaccount.html';
+    } else {
+        openModal();
+    }
+});
             // Avatar click (when logged in)
-            userAvatar.addEventListener('click', function() {
-                showToast('👤 My Account — coming soon!', 'info');
-            });
-
+            
+ // Avatar click (when logged in)
+userAvatar.addEventListener('click', function() {
+    if (isLoggedIn) {
+        window.location.href = 'myaccount.html';
+    } else {
+        openModal();
+    }
+});
             // Status sign-in link
             statusSignInLink.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1790,12 +1794,10 @@
                 document.body.style.overflow = '';
                 hamburgerBtn.setAttribute('aria-expanded', 'false');
                 if (isLoggedIn) {
-                    showToast('👤 My Account — coming soon!', 'info');
-                } else {
-                    openModal();
-                }
-            });
-
+    window.location.href = 'myaccount.html';
+} else {
+    openModal();
+}
             // ===== HEADER SCROLL EFFECT =====
             function handleScroll() {
                 const header = document.getElementById('header');
