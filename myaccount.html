@@ -1792,12 +1792,18 @@
             <div class="hero-top">
                 <div class="user-block">
                     <div class="user-avatar">
-                        JD
-                        <span class="online-dot"></span>
-                    </div>
-                    <div class="details">
-                        <h1>Hey, John <span class="wave">👋</span></h1>
-                        <div class="email"><i class="fas fa-envelope"></i> john.doe@example.com</div>
+    <span id="accountInitials">JD</span>
+    <span class="online-dot"></span>
+</div>
+
+<h1 id="accountGreeting">
+    Hey, John <span class="wave">👋</span>
+</h1>
+
+<div class="email">
+    <i class="fas fa-envelope"></i>
+    <span id="accountEmail">john.doe@example.com</span>
+</div>
                         <div class="member-since">
                             <i class="fas fa-crown"></i> Gold Member · Since Jan 2024
                         </div>
@@ -2800,8 +2806,50 @@
             header.classList.toggle('scrolled', window.scrollY > 40);
         }
         window.addEventListener('scroll', handleScroll);
+// ===== LOAD CUSTOMER HEADER (TEMPORARY DEMO) =====
+function loadDemoAccountHeader() {
+    let user;
 
+    try {
+        user = JSON.parse(
+            localStorage.getItem('welcmart_user') || 'null'
+        );
+    } catch (error) {
+        console.error('Unable to read customer data:', error);
+        return;
+    }
+
+    if (!user) return;
+
+    const fullName = (user.name || 'Customer').trim();
+    const firstName = fullName.split(/\s+/)[0];
+
+    const initials = fullName
+        .split(/\s+/)
+        .map(part => part[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+
+    document.getElementById('accountInitials').textContent =
+        initials;
+
+    document.getElementById('accountEmail').textContent =
+        user.email || '';
+
+    const greeting = document.getElementById('accountGreeting');
+    const wave = document.createElement('span');
+
+    wave.className = 'wave';
+    wave.textContent = '👋';
+
+    greeting.replaceChildren(
+        document.createTextNode(`Hey, ${firstName} `),
+        wave
+    );
+}
         // ===== INIT =====
+        loadDemoAccountHeader();
         updateBadges();
         renderRecentOrders();
         renderRecentNotifs();
