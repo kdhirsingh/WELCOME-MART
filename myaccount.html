@@ -2340,36 +2340,65 @@
 
     <script>
         // ===== DATA =====
-        const orders = [{
-            id: '#WM-2026-12345',
-            date: 'Aug 25, 2026',
-            status: 'delivered',
-            step: 4,
-            total: 9997,
-            items: [
-                { name: 'Leather Biker Jacket', qty: 1, price: 4999, image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=100&q=80' },
-                { name: 'Classic White Sneakers', qty: 2, price: 2499, image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=100&q=80' }
-            ]
-        }, {
-            id: '#WM-2026-12346',
-            date: 'Aug 20, 2026',
-            status: 'shipped',
-            step: 3,
-            total: 3198,
-            items: [
-                { name: 'Floral Maxi Dress', qty: 1, price: 2499, image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100&q=80' },
-                { name: 'Gold Hoop Earrings', qty: 1, price: 699, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=100&q=80' }
-            ]
-        }, {
-            id: '#WM-2026-12347',
-            date: 'Aug 15, 2026',
-            status: 'processing',
-            step: 2,
-            total: 2197,
-            items: [
-                { name: 'Vitamin C Serum', qty: 2, price: 699, image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=100&q=80' },
-                { name: 'Hyaluronic Acid Cream', qty: 1, price: 799, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=100&q=80' }
-            ]
+        
+function readAccountStorage(key, fallback = []) {
+    try {
+        const value = JSON.parse(localStorage.getItem(key) || 'null');
+        return Array.isArray(value) ? value : fallback;
+    } catch (error) {
+        console.error('Storage read error:', key, error);
+        return fallback;
+    }
+}
+
+function getCurrentAccountUser() {
+    try {
+        return JSON.parse(localStorage.getItem('welcmart_user') || 'null');
+    } catch (error) {
+        return null;
+    }
+}
+
+function loadCustomerOrders() {
+    const user = getCurrentAccountUser();
+
+    if (!user || !user.email) return [];
+
+    const email = user.email.trim().toLowerCase();
+
+    return readAccountStorage('welcomeMartOrders')
+        .filter(order =>
+            (order.customerEmail || '').trim().toLowerCase() === email
+        )
+        .map(order => {
+            const status = (order.status || 'processing').toLowerCase();
+
+            const stepMap = {
+                placed: 1,
+                processing: 2,
+                shipped: 3,
+                delivered: 4
+            };
+
+            return {
+                ...order,
+                date: order.date
+                    ? new Date(order.date).toLocaleDateString('en-IN')
+                    : '',
+                status,
+                step: stepMap[status] || 1,
+                items: (order.items || []).map(item => ({
+                    ...item,
+                    name: item.name || item.title || 'Product',
+                    qty: Number(item.qty ?? item.quantity ?? 1),
+                    image: item.image || item.images?.[0] || ''
+                })),
+                total: Number(order.total || 0)
+            };
+        });
+}
+
+let orders = loadCustomerOrders();
         }];
 
         const wishlistItems = [{
@@ -2436,19 +2465,39 @@
         }
 
         // ===== BADGES =====
-function updateBadges() {
-    cart = readStoredArray('welcomeMartCart');
-    wishlistItems = readStoredArray('welcomeMartWishlist');
 
-    const cartCount = cart.reduce((sum, item) => {
-        return sum + Number(item.qty ?? item.quantity ?? 1);
-    }, 0);
+function updateBadges() {
+    cart = readAccountStorage('welcomeMartCart');
+    wishlistItems = readAccountStorage('welcomeMartWishlist');
+    orders = loadCustomerOrders();
+
+    const cartCount = cart.reduce(
+        (sum, item) => sum + Number(item.qty ?? item.quantity ?? 1),
+        0
+    );
 
     document.getElementById('cartCount').textContent = cartCount;
+    document.getElementById('bottomCartCount').textContent = cartCount;
+
     document.getElementById('wishlistCount').textContent = wishlistItems.length;
     document.getElementById('bottomWishCount').textContent = wishlistItems.length;
-
     document.getElementById('statWishlist').textContent = wishlistItems.length;
+
+    document.getElementById('statOrders').textContent = orders.length;
+
+    // Rewards: points are counted only for delivered orders.
+    // This assumes 1 point per ₹100 of delivered order value.
+    const deliveredOrders = orders.filter(
+        order => order.status === 'delivered'
+    );
+
+    const points = deliveredOrders.reduce(
+        (sum, order) => sum + Math.floor(order.total / 100),
+        0
+    );
+
+    document.getElementById('statPoints').textContent =
+        points.toLocaleString('en-IN');
 }
         // ===== TAB SWITCHING =====
         function switchTab(tab) {
