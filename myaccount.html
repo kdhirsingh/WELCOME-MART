@@ -2373,17 +2373,7 @@
         }];
 
         const wishlistItems = [{
-            id: 1, name: 'Leather Crossbody Bag', price: 1499,
-            image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&q=80'
-        }, {
-            id: 2, name: 'Aviator Sunglasses', price: 999,
-            image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=200&q=80'
-        }, {
-            id: 3, name: 'Argan Oil Shampoo', price: 699,
-            image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&q=80'
-        }, {
-            id: 4, name: 'Minimalist Watch', price: 1899,
-            image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80'
+            let wishlistItems = readStoredArray('welcomeMartWishlist');
         }];
 
         const addresses = [{
@@ -2446,13 +2436,20 @@
         }
 
         // ===== BADGES =====
-        function updateBadges() {
-            const cartCount = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
-            document.getElementById('cartCount').textContent = cartCount;
-            document.getElementById('bottomWishCount').textContent = wishlistItems.length;
-            document.getElementById('wishlistCount').textContent = wishlistItems.length;
-        }
+function updateBadges() {
+    cart = readStoredArray('welcomeMartCart');
+    wishlistItems = readStoredArray('welcomeMartWishlist');
 
+    const cartCount = cart.reduce((sum, item) => {
+        return sum + Number(item.qty ?? item.quantity ?? 1);
+    }, 0);
+
+    document.getElementById('cartCount').textContent = cartCount;
+    document.getElementById('wishlistCount').textContent = wishlistItems.length;
+    document.getElementById('bottomWishCount').textContent = wishlistItems.length;
+
+    document.getElementById('statWishlist').textContent = wishlistItems.length;
+}
         // ===== TAB SWITCHING =====
         function switchTab(tab) {
             document.querySelectorAll('.account-tabs .tab-btn').forEach(b => {
