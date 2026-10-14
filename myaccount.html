@@ -2466,39 +2466,18 @@ let orders = loadCustomerOrders();
 
         // ===== BADGES =====
 
-function updateBadges() {
-    cart = readAccountStorage('welcomeMartCart');
-    wishlistItems = readAccountStorage('welcomeMartWishlist');
-    orders = loadCustomerOrders();
+        // ===== BADGES =====
+        function updateBadges() {
+            const cartCount = cart.reduce(
+                (sum, item) => sum + Number(item.qty || item.quantity || 1),
+                0
+            );
 
-    const cartCount = cart.reduce(
-        (sum, item) => sum + Number(item.qty ?? item.quantity ?? 1),
-        0
-    );
-
-    document.getElementById('cartCount').textContent = cartCount;
-    document.getElementById('bottomCartCount').textContent = cartCount;
-
-    document.getElementById('wishlistCount').textContent = wishlistItems.length;
-    document.getElementById('bottomWishCount').textContent = wishlistItems.length;
-    document.getElementById('statWishlist').textContent = wishlistItems.length;
-
-    document.getElementById('statOrders').textContent = orders.length;
-
-    // Rewards: points are counted only for delivered orders.
-    // This assumes 1 point per ₹100 of delivered order value.
-    const deliveredOrders = orders.filter(
-        order => order.status === 'delivered'
-    );
-
-    const points = deliveredOrders.reduce(
-        (sum, order) => sum + Math.floor(order.total / 100),
-        0
-    );
-
-    document.getElementById('statPoints').textContent =
-        points.toLocaleString('en-IN');
-}
+            document.getElementById('cartCount').textContent = cartCount;
+            document.getElementById('bottomCartCount').textContent = cartCount;
+            document.getElementById('wishlistCount').textContent = wishlistItems.length;
+            document.getElementById('bottomWishCount').textContent = wishlistItems.length;
+        }
         // ===== TAB SWITCHING =====
         function switchTab(tab) {
             document.querySelectorAll('.account-tabs .tab-btn').forEach(b => {
@@ -2890,7 +2869,13 @@ function loadDemoAccountHeader() {
         return;
     }
 
-    const fullName = (user.name || 'Customer').trim();
+    const emailName = (user.email || '').split('@')[0];
+
+const fullName = (
+    user.name ||
+    emailName ||
+    'Customer'
+).trim();
     const firstName = fullName.split(/\s+/)[0];
 
     const initials = fullName
