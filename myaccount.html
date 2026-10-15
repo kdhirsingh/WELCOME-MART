@@ -2400,29 +2400,26 @@ function loadCustomerOrders() {
 
 let orders = loadCustomerOrders();
 
-        const wishlistItems = [{
-            let wishlistItems = readStoredArray('welcomeMartWishlist');
-        }];
+        let wishlistItems = readAccountStorage('welcomeMartWishlist');
 
-        const addresses = [{
-            id: 1, tag: 'home', label: 'Home', name: 'John Doe',
-            address: '123 Fashion Street, Bandra West',
-            city: 'Mumbai', state: 'Maharashtra', pincode: '400001',
-            phone: '+91 98765 43210', default: true
-        }, {
-            id: 2, tag: 'work', label: 'Work', name: 'John Doe',
-            address: '456 Park Avenue, Juhu',
-            city: 'Mumbai', state: 'Maharashtra', pincode: '400049',
-            phone: '+91 98765 43210', default: false
-        }];
+        function accountStorageKey(section) {
+            const user = getCurrentAccountUser();
+            const email = (user && user.email ? user.email : 'guest').trim().toLowerCase();
+            return `welcmart_${section}_${email}`;
+        }
+        function readAccountListForUser(section) {
+            try {
+                const value = JSON.parse(localStorage.getItem(accountStorageKey(section)) || '[]');
+                return Array.isArray(value) ? value : [];
+            } catch (error) { return []; }
+        }
+        function saveAccountListForUser(section, list) {
+            try { localStorage.setItem(accountStorageKey(section), JSON.stringify(list)); }
+            catch (error) { showToast('Unable to save in this browser.'); }
+        }
 
-        const paymentMethods = [{
-            id: 1, brand: 'Visa', type: 'Credit Card', last4: '4821',
-            expiry: '12/27', holder: 'JOHN DOE', default: true
-        }, {
-            id: 2, brand: 'Mastercard', type: 'Debit Card', last4: '9034',
-            expiry: '06/26', holder: 'JOHN DOE', default: false
-        }];
+        let addresses = readAccountListForUser('addresses');
+        let paymentMethods = readAccountListForUser('payments');
 
         const notifications = [{
             id: 1, type: 'success', icon: 'fa-box',
@@ -2450,7 +2447,7 @@ let orders = loadCustomerOrders();
             time: '2 weeks ago', unread: false
         }];
 
-        let cart = [];
+        let cart = readAccountStorage('welcomeMartCart');
         let currentOrderFilter = 'all';
         let currentOrderSearch = '';
 
@@ -2462,8 +2459,6 @@ let orders = loadCustomerOrders();
             clearTimeout(toast._timeout);
             toast._timeout = setTimeout(() => toast.classList.remove('show'), 2600);
         }
-
-        // ===== BADGES =====
 
         // ===== BADGES =====
         function updateBadges() {
@@ -2493,17 +2488,20 @@ let orders = loadCustomerOrders();
         function renderRecentOrders() {
             const container = document.getElementById('recentOrders');
             const recent = orders.slice(0, 3);
-            container.innerHTML = recent.map(o => `
+            if (!recent.length) { container.innerHTML = '<p>No orders yet. Your placed orders will appear here.</p>'; return; }
+            container.innerHTML = recent.map(o => {
+                const firstItem = (o.items || [])[0] || {image:'', name:'Order items'};
+                return `
                 <div class="recent-order">
-                    <img src="${o.items[0].image}" alt="${o.items[0].name}" loading="lazy" />
+                    <img src="${firstItem.image || ''}" alt="${firstItem.name || 'Order items'}" loading="lazy" />
                     <div class="ro-info">
-                        <div class="ro-id">${o.id}</div>
-                        <div class="ro-name">${o.items[0].name}${o.items.length > 1 ? ` +${o.items.length - 1} more` : ''}</div>
+                        <div class="ro-id">${o.id || 'Order'}</div>
+                        <div class="ro-name">${firstItem.name || 'Order items'}${(o.items || []).length > 1 ? ` +${o.items.length - 1} more` : ''}</div>
                         <div class="ro-date">${o.date} · ₹${o.total.toLocaleString()}</div>
                     </div>
                     <span class="ro-status ${o.status}">${o.status}</span>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         // ===== RENDER: RECENT NOTIFS =====
@@ -2526,6 +2524,7 @@ let orders = loadCustomerOrders();
         function renderOrders() {
             const container = document.getElementById('ordersList');
             let filtered = orders;
+            if (!orders.length) { container.innerHTML = '<div style="padding:28px;background:#fff;border-radius:12px">No orders yet. Orders will appear here after checkout is connected.</div>'; return; }
 
             if (currentOrderFilter !== 'all') {
                 filtered = filtered.filter(o => o.status === currentOrderFilter);
@@ -2534,7 +2533,7 @@ let orders = loadCustomerOrders();
                 const q = currentOrderSearch.toLowerCase();
                 filtered = filtered.filter(o =>
                     o.id.toLowerCase().includes(q) ||
-                    o.items.some(i => i.name.toLowerCase().includes(q))
+                    (o.items || []).some(i => (i.name || '').toLowerCase().includes(q))
                 );
             }
 
@@ -2659,95 +2658,101 @@ let orders = loadCustomerOrders();
         // ===== RENDER: ADDRESSES =====
         function renderAddresses() {
             const container = document.getElementById('addressGrid');
+            if (!addresses.length) {
+                container.innerHTML = '<div class="empty-state" style="padding:24px;background:#fff;border-radius:12px">No saved addresses yet. Select “Add New Address” to add one.</div>';
+                return;
+            }
             container.innerHTML = addresses.map(a => `
                 <div class="addr-card ${a.default ? 'default' : ''}">
                     ${a.default ? '<span class="badge-default">Default</span>' : ''}
-                    <span class="addr-tag ${a.tag}"><i class="fas fa-${a.tag === 'home' ? 'home' : 'briefcase'}"></i> ${a.label}</span>
-                    <div class="addr-name">${a.name}</div>
-                    <div class="addr-lines">
-                        ${a.address}<br />
-                        ${a.city}, ${a.state} - ${a.pincode}
-                    </div>
-                    <div class="addr-phone"><i class="fas fa-phone"></i> ${a.phone}</div>
+                    <span class="addr-tag ${a.tag === 'work' ? 'work' : 'home'}"><i class="fas fa-${a.tag === 'work' ? 'briefcase' : 'home'}"></i> ${a.label}</span>
+                    <div class="addr-name">${escapeHTML(a.name)}</div>
+                    <div class="addr-lines">${escapeHTML(a.address)}<br />${escapeHTML(a.city)}, ${escapeHTML(a.state)} - ${escapeHTML(a.pincode)}</div>
+                    <div class="addr-phone"><i class="fas fa-phone"></i> ${escapeHTML(a.phone)}</div>
                     <div class="addr-actions">
-                        <button onclick="showToast('✏️ Editing address')"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="editAddress(${a.id})"><i class="fas fa-edit"></i> Edit</button>
                         ${!a.default ? `<button onclick="setDefaultAddr(${a.id})"><i class="fas fa-check-circle"></i> Set Default</button>` : ''}
                         <button class="danger" onclick="removeAddr(${a.id})"><i class="fas fa-trash-alt"></i> Remove</button>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
-
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+        function addressForm(existing = {}) {
+            const name = prompt('Full name:', existing.name || (getCurrentAccountUser()?.name || ''));
+            if (name === null) return null;
+            const address = prompt('Street address:', existing.address || ''); if (address === null) return null;
+            const city = prompt('City:', existing.city || ''); if (city === null) return null;
+            const state = prompt('State:', existing.state || ''); if (state === null) return null;
+            const pincode = prompt('PIN code:', existing.pincode || ''); if (pincode === null) return null;
+            const phone = prompt('Phone number:', existing.phone || (getCurrentAccountUser()?.phone || '')); if (phone === null) return null;
+            const tag = (prompt('Address type: home or work', existing.tag || 'home') || 'home').toLowerCase() === 'work' ? 'work' : 'home';
+            if (![name,address,city,state,pincode,phone].every(v => v.trim())) { showToast('Please fill all address fields.'); return null; }
+            return { name:name.trim(), address:address.trim(), city:city.trim(), state:state.trim(), pincode:pincode.trim(), phone:phone.trim(), tag, label:tag === 'work' ? 'Work' : 'Home' };
+        }
+        function addAddress() {
+            const data = addressForm(); if (!data) return;
+            data.id = Date.now(); data.default = addresses.length === 0;
+            addresses.push(data); saveAccountListForUser('addresses', addresses); renderAddresses();
+            showToast('Address saved in this browser.');
+        }
+        function editAddress(id) {
+            const item = addresses.find(a => a.id === id); if (!item) return;
+            const data = addressForm(item); if (!data) return;
+            Object.assign(item, data); saveAccountListForUser('addresses', addresses); renderAddresses();
+            showToast('Address updated.');
+        }
         function setDefaultAddr(id) {
             addresses.forEach(a => a.default = a.id === id);
-            renderAddresses();
-            showToast('✅ Default address updated');
+            saveAccountListForUser('addresses', addresses); renderAddresses(); showToast('Default address updated.');
         }
-
         function removeAddr(id) {
             if (!confirm('Remove this address?')) return;
-            const idx = addresses.findIndex(a => a.id === id);
-            if (idx > -1) addresses.splice(idx, 1);
-            renderAddresses();
-            showToast('🗑️ Address removed');
-        }
-
-        function addAddress() {
-            showToast('📝 New address form would open here');
+            const wasDefault = addresses.find(a => a.id === id)?.default;
+            addresses = addresses.filter(a => a.id !== id);
+            if (wasDefault && addresses.length) addresses[0].default = true;
+            saveAccountListForUser('addresses', addresses); renderAddresses(); showToast('Address removed.');
         }
 
         // ===== RENDER: PAYMENT METHODS =====
         function renderPayments() {
             const container = document.getElementById('paymentGrid');
-            let html = paymentMethods.map(p => `
-                <div class="payment-card">
-                    <div class="pc-top">
-                        <div class="pc-brand">
-                            <div class="card-chip"></div>
-                            <span style="font-weight:700;letter-spacing:0.02em;">${p.brand}</span>
-                        </div>
-                        ${p.default ? '<span class="pc-default">Default</span>' : ''}
-                    </div>
-                    <div class="pc-number">•••• •••• •••• ${p.last4}</div>
-                    <div class="pc-info">
-                        <div>
-                            <div class="pc-label">Card Holder</div>
-                            <div>${p.holder}</div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div class="pc-label">Expires</div>
-                            <div>${p.expiry}</div>
-                        </div>
-                    </div>
-                    <div class="pc-actions">
-                        ${!p.default ? `<button onclick="setDefaultCard(${p.id})"><i class="fas fa-check-circle"></i> Set Default</button>` : ''}
-                        <button onclick="showToast('✏️ Editing card')"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="danger" onclick="removeCard(${p.id})"><i class="fas fa-trash-alt"></i> Remove</button>
-                    </div>
-                </div>
-            `).join('');
-
-            html += `
-                <div class="add-payment" onclick="showToast('💳 Add new card form')">
-                    <i class="fas fa-plus-circle"></i>
-                    <p>Add New Payment Method</p>
-                </div>
-            `;
-            container.innerHTML = html;
+            const cards = paymentMethods.map(p => `
+                <div class="payment-card"><div class="pc-top"><div class="pc-brand"><div class="card-chip"></div><span style="font-weight:700">${escapeHTML(p.brand)}</span></div>${p.default ? '<span class="pc-default">Default</span>' : ''}</div>
+                <div class="pc-number">•••• •••• •••• ${escapeHTML(p.last4)}</div>
+                <div class="pc-info"><div><div class="pc-label">Card Holder</div><div>${escapeHTML(p.holder)}</div></div><div style="text-align:right"><div class="pc-label">Expires</div><div>${escapeHTML(p.expiry)}</div></div></div>
+                <div class="pc-actions">${!p.default ? `<button onclick="setDefaultCard(${p.id})">Set Default</button>` : ''}<button onclick="editCard(${p.id})"><i class="fas fa-edit"></i> Edit</button><button class="danger" onclick="removeCard(${p.id})"><i class="fas fa-trash-alt"></i> Remove</button></div></div>`).join('');
+            container.innerHTML = (cards || '<div style="padding:20px">No demo payment methods saved yet.</div>') + '<div class="add-payment" role="button" tabindex="0" onclick="addPaymentMethod()"><i class="fas fa-plus-circle"></i><p>Add New Payment Method</p></div>';
         }
-
+        function paymentForm(existing = {}) {
+            const brand = prompt('Card brand (Visa, Mastercard, RuPay, etc.):', existing.brand || 'Visa'); if (brand === null) return null;
+            const last4 = prompt('Last 4 digits only (do not enter full card number):', existing.last4 || ''); if (last4 === null) return null;
+            const holder = prompt('Card holder name:', existing.holder || (getCurrentAccountUser()?.name || '')); if (holder === null) return null;
+            const expiry = prompt('Expiry MM/YY:', existing.expiry || ''); if (expiry === null) return null;
+            if (!brand.trim() || !/^\d{4}$/.test(last4.trim()) || !holder.trim() || !/^\d{2}\/\d{2}$/.test(expiry.trim())) { showToast('Enter brand, last 4 digits, holder and expiry MM/YY.'); return null; }
+            return {brand:brand.trim(), last4:last4.trim(), holder:holder.trim().toUpperCase(), expiry:expiry.trim()};
+        }
+        function addPaymentMethod() {
+            const data = paymentForm(); if (!data) return;
+            data.id = Date.now(); data.default = paymentMethods.length === 0;
+            paymentMethods.push(data); saveAccountListForUser('payments', paymentMethods); renderPayments(); showToast('Demo payment method saved in this browser.');
+        }
+        function editCard(id) {
+            const card = paymentMethods.find(p => p.id === id); if (!card) return;
+            const data = paymentForm(card); if (!data) return;
+            Object.assign(card, data); saveAccountListForUser('payments', paymentMethods); renderPayments(); showToast('Demo payment method updated.');
+        }
         function setDefaultCard(id) {
             paymentMethods.forEach(p => p.default = p.id === id);
-            renderPayments();
-            showToast('✅ Default payment method updated');
+            saveAccountListForUser('payments', paymentMethods); renderPayments(); showToast('Default demo payment method updated.');
         }
-
         function removeCard(id) {
-            if (!confirm('Remove this card?')) return;
-            const idx = paymentMethods.findIndex(p => p.id === id);
-            if (idx > -1) paymentMethods.splice(idx, 1);
-            renderPayments();
-            showToast('🗑️ Card removed');
+            if (!confirm('Remove this demo payment method?')) return;
+            const wasDefault = paymentMethods.find(p => p.id === id)?.default;
+            paymentMethods = paymentMethods.filter(p => p.id !== id);
+            if (wasDefault && paymentMethods.length) paymentMethods[0].default = true;
+            saveAccountListForUser('payments', paymentMethods); renderPayments(); showToast('Payment method removed.');
         }
 
         // ===== RENDER: NOTIFICATIONS =====
@@ -2783,20 +2788,33 @@ let orders = loadCustomerOrders();
         // ===== SETTINGS FUNCTIONS =====
         function togglePref(el) {
             el.classList.toggle('active');
-            showToast(el.classList.contains('active') ? '✅ Preference enabled' : '🔕 Preference disabled');
+            const all = [...document.querySelectorAll('.toggle-row .toggle')].map((node, index) => ({index, active:node.classList.contains('active')}));
+            localStorage.setItem(accountStorageKey('preferences'), JSON.stringify(all));
+            showToast(el.classList.contains('active') ? 'Preference enabled and saved.' : 'Preference disabled and saved.');
+        }
+        function loadPreferences() {
+            try {
+                const prefs = JSON.parse(localStorage.getItem(accountStorageKey('preferences')) || 'null');
+                if (Array.isArray(prefs)) prefs.forEach(p => { const node = document.querySelectorAll('.toggle-row .toggle')[p.index]; if (node) node.classList.toggle('active', !!p.active); });
+            } catch (error) { console.warn('Could not load preferences', error); }
         }
 
+        let demoPasswordForThisPage = null;
         function changePassword() {
             const cur = document.getElementById('pwCurrent').value;
             const nw = document.getElementById('pwNew').value;
             const cf = document.getElementById('pwConfirm').value;
-            if (!cur || !nw || !cf) { showToast('Please fill in all password fields'); return; }
-            if (nw !== cf) { showToast('❌ Passwords do not match'); return; }
-            if (nw.length < 6) { showToast('❌ Password must be at least 6 characters'); return; }
-            showToast('✅ Password updated successfully!');
+            if (!cur || !nw || !cf) { showToast('Please fill in all password fields.'); return; }
+            if (nw !== cf) { showToast('Passwords do not match.'); return; }
+            if (nw.length < 6) { showToast('Password must be at least 6 characters.'); return; }
+            if (!getCurrentAccountUser()) { showToast('Please sign in first.'); return; }
+            if (demoPasswordForThisPage !== null && cur !== demoPasswordForThisPage) { showToast('Current demo password is incorrect.'); return; }
+            // Demo interaction only. Never store a password in browser storage; server authentication is needed for a real change.
+            demoPasswordForThisPage = nw;
             document.getElementById('pwCurrent').value = '';
             document.getElementById('pwNew').value = '';
             document.getElementById('pwConfirm').value = '';
+            showToast('Demo password flow tested. A real password change requires server authentication.');
         }
 
         function deleteAccount() {
