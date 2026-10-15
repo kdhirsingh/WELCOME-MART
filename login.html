@@ -1479,15 +1479,41 @@
             // ===== CHECK LOGIN STATE =====
             function checkLoginState() {
                 const saved = localStorage.getItem('welcmart_user');
-                if (saved) {
-                    try {
-                        const user = JSON.parse(saved);
-                        isLoggedIn = true;
-                        userName = user.name || 'User';
-                        updateUIForLoggedIn(user);
-                    } catch (e) {
-                        // ignore
+                if (!saved) return;
+
+                try {
+                    const sessionUser = JSON.parse(saved);
+                    const registeredUsers = getRegisteredUsers();
+                    // Do not trust an old/demo session unless this account exists
+                    // in the registration list created by this login page.
+                    const registeredUser = registeredUsers.find(user =>
+                        normalizeEmail(user.email) === normalizeEmail(sessionUser && sessionUser.email)
+                    );
+
+                    if (!sessionUser || !sessionUser.email || !registeredUser) {
+                        localStorage.removeItem('welcmart_user');
+                        isLoggedIn = false;
+                        userName = '';
+                        document.querySelector('.account-btn').classList.remove('hidden');
+                        userAvatar.classList.remove('show');
+                        userStatus.textContent = 'You are not signed in.';
+                        statusSignInLink.textContent = 'Sign In';
+                        return;
                     }
+
+                    // Use the registered profile as the source of truth, not stale
+                    // hardcoded/demo user data from a previous version.
+                    const activeUser = {
+                        name: registeredUser.name,
+                        email: registeredUser.email,
+                        mobile: registeredUser.mobile || '',
+                        loggedInAt: sessionUser.loggedInAt || new Date().toISOString()
+                    };
+                    isLoggedIn = true;
+                    userName = activeUser.name;
+                    updateUIForLoggedIn(activeUser);
+                } catch (e) {
+                    localStorage.removeItem('welcmart_user');
                 }
             }
 
@@ -1509,9 +1535,16 @@
                     logout();
                 };
 
-                // Update wishlist/cart counts (demo)
-                document.getElementById('wishlistCount').textContent = '3';
-                document.getElementById('cartCount').textContent = '2';
+                // Read current counts instead of showing hardcoded demo numbers.
+                try {
+                    const wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist') || '[]');
+                    const cart = JSON.parse(localStorage.getItem('welcomeMartCart') || '[]');
+                    document.getElementById('wishlistCount').textContent = String(Array.isArray(wishlist) ? wishlist.length : 0);
+                    document.getElementById('cartCount').textContent = String(Array.isArray(cart) ? cart.length : 0);
+                } catch (error) {
+                    document.getElementById('wishlistCount').textContent = '0';
+                    document.getElementById('cartCount').textContent = '0';
+                }
 
                 // Save state
                 localStorage.setItem('welcmart_user', JSON.stringify(user));
@@ -1520,6 +1553,7 @@
             // ===== LOGOUT =====
             function logout() {
                 isLoggedIn = false;
+                userName = '';
                 localStorage.removeItem('welcmart_user');
 
                 // Show account button, hide avatar
@@ -1597,62 +1631,141 @@
                 }
             }
 
-            // ===== HANDLE LOGIN =====
-            function handleLogin(e) {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value.trim();
-                const mobile = document.getElementById('loginMobile').value.trim();
-                const password = document.getElementById('loginPassword').value.trim();
+            // ===== DEMO ACCOUNT STORAGE (localStorage only; not production authentication) =====
+            const USERS_KEY = 'welcmart_users';
 
-                const identifier = email || mobile;
-                if (!identifier) {
-                    showToast('⚠️ Please enter your email or mobile number.', 'info');
-                    return;
+            function getRegisteredUsers() {
+                try {
+                    const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+                    return Array.isArray(users) ? users : [];
+                } catch (error) {
+                    return [];
                 }
-                if (!password || password.length < 4) {
-                    showToast('⚠️ Please enter your password.', 'info');
-                    return;
-                }
-
-                // Simulate login
-                const name = 'John Doe';
-                const user = { name: name, email: email || 'user@example.com' };
-                updateUIForLoggedIn(user);
-                closeModal();
-                showToast(`✅ Welcome back, ${name}!`, 'success');
             }
 
-            // ===== HANDLE SIGNUP =====
+            function saveRegisteredUsers(users) {
+                localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            }
+
+            function normalizeEmail(value) {
+                return String(value || '').trim().toLowerCase();
+            }
+
+            function normalizeMobile(value) {
+                return String(value || '').replace(/[^0-9]/g, '');
+            }
+
+            // ===== HANDLE LOGIN: only previously registered credentials are accepted =====
+            function handleLogin(e) {
+                if (e) e.preventDefault();
+
+                const emailMode = loginEmailGroup.style.display !== 'none';
+                const email = normalizeEmail(document.getElementById('loginEmail').value);
+                const mobile = document.getElementById('loginMobile').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                const identifier = emailMode ? email : normalizeMobile(mobile);
+
+                if (!identifier) {
+                    showToast(emailMode ? 'Please enter your email address.' : 'Please enter your mobile number.', 'info');
+                    return;
+                }
+                if (!password) {
+                    showToast('Please enter your password.', 'info');
+                    return;
+                }
+
+                const registeredUsers = getRegisteredUsers();
+                const matchedUser = registeredUsers.find(user => {
+                    const emailMatches = emailMode && normalizeEmail(user.email) === identifier;
+                    const mobileMatches = !emailMode && normalizeMobile(user.mobile) === identifier;
+                    return (emailMatches || mobileMatches) && user.password === password;
+                });
+
+                if (!matchedUser) {
+                    showToast('Incorrect email/mobile or password. Please create an account first if you are new.', 'info');
+                    return;
+                }
+
+                const activeUser = {
+                    name: matchedUser.name,
+                    email: matchedUser.email,
+                    mobile: matchedUser.mobile || '',
+                    loggedInAt: new Date().toISOString()
+                };
+                isLoggedIn = true;
+                userName = activeUser.name;
+                updateUIForLoggedIn(activeUser);
+                closeModal();
+                showToast(`Welcome back, ${activeUser.name}!`, 'success');
+            }
+
+            // ===== HANDLE SIGNUP: prevent duplicate email/mobile registrations =====
             function handleSignup(e) {
-                e.preventDefault();
+                if (e) e.preventDefault();
+
                 const firstName = document.getElementById('signupFirstName').value.trim();
                 const lastName = document.getElementById('signupLastName').value.trim();
-                const email = document.getElementById('signupEmail').value.trim();
-                const mobile = document.getElementById('signupMobile').value.trim();
-                const password = document.getElementById('signupPassword').value.trim();
+                const email = normalizeEmail(document.getElementById('signupEmail').value);
+                const mobileRaw = document.getElementById('signupMobile').value.trim();
+                const mobile = normalizeMobile(mobileRaw);
+                const password = document.getElementById('signupPassword').value;
 
                 if (!firstName) {
-                    showToast('⚠️ Please enter your first name.', 'info');
+                    showToast('Please enter your first name.', 'info');
                     return;
                 }
-                if (!email) {
-                    showToast('⚠️ Please enter your email address.', 'info');
+                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    showToast('Please enter a valid email address.', 'info');
                     return;
                 }
-                if (!mobile) {
-                    showToast('⚠️ Please enter your mobile number.', 'info');
+                if (mobile.length < 10) {
+                    showToast('Please enter a valid mobile number (at least 10 digits).', 'info');
                     return;
                 }
-                if (!password || password.length < 6) {
-                    showToast('⚠️ Password must be at least 6 characters.', 'info');
+                if (password.length < 6) {
+                    showToast('Password must be at least 6 characters.', 'info');
+                    return;
+                }
+
+                const registeredUsers = getRegisteredUsers();
+                const duplicate = registeredUsers.some(user =>
+                    normalizeEmail(user.email) === email ||
+                    (mobile && normalizeMobile(user.mobile) === mobile)
+                );
+
+                if (duplicate) {
+                    showToast('An account with this email or mobile number already exists. Please sign in.', 'info');
+                    switchTab('login');
+                    tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === 'login'));
+                    document.getElementById('loginEmail').value = email;
+                    setLoginMethod('email');
                     return;
                 }
 
                 const fullName = `${firstName} ${lastName}`.trim();
-                const user = { name: fullName, email: email };
-                updateUIForLoggedIn(user);
+                const newUser = {
+                    name: fullName,
+                    email,
+                    mobile: mobileRaw,
+                    password,
+                    createdAt: new Date().toISOString()
+                };
+
+                registeredUsers.push(newUser);
+                saveRegisteredUsers(registeredUsers);
+
+                // Set the shared session key that myaccount.html reads.
+                const activeUser = {
+                    name: newUser.name,
+                    email: newUser.email,
+                    mobile: newUser.mobile,
+                    loggedInAt: new Date().toISOString()
+                };
+                isLoggedIn = true;
+                userName = activeUser.name;
+                updateUIForLoggedIn(activeUser);
                 closeModal();
-                showToast(`🎉 Welcome to Welcome Mart, ${firstName}!`, 'success');
+                showToast(`Welcome to Welcome Mart, ${firstName}!`, 'success');
             }
 
             // ===== EVENT LISTENERS =====
@@ -1759,11 +1872,8 @@ userAvatar.addEventListener('click', function() {
                     const provider = this.classList.contains('google') ? 'Google' :
                         this.classList.contains('fb') ? 'Facebook' :
                         this.classList.contains('apple') ? 'Apple' : 'Social';
-                    // Simulate social login
-                    const user = { name: 'Social User', email: 'social@example.com' };
-                    updateUIForLoggedIn(user);
-                    closeModal();
-                    showToast(`🔐 Signed in with ${provider}!`, 'success');
+                    // OAuth providers are visual placeholders until real provider setup is configured.
+                    showToast(`${provider} sign-in is not connected yet. Please use email and password.`, 'info');
                 });
             });
 
