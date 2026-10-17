@@ -351,6 +351,7 @@
             margin-left: 6px;
         }
         .topbar .profile-btn:hover { background: var(--gray-100); }
+        .profile-menu-wrap{position:relative}.profile-dropdown{position:absolute;right:0;top:calc(100% + 10px);min-width:190px;background:#fff;border:1px solid var(--gray-200);border-radius:12px;box-shadow:var(--shadow-lg);padding:8px;z-index:300}.profile-dropdown[hidden]{display:none!important}.profile-dropdown-label{padding:9px 10px;font-size:.72rem;color:var(--gray-500);border-bottom:1px solid var(--gray-200);overflow-wrap:anywhere}.profile-dropdown button{display:flex;align-items:center;gap:10px;width:100%;padding:10px;border-radius:8px;text-align:left;color:var(--error);font-size:.83rem}.profile-dropdown button:hover{background:#fdedec}.live-store-link:hover{color:var(--white)!important}
         .topbar .profile-btn .avatar {
             width: 32px; height: 32px;
             border-radius: 50%;
@@ -1348,11 +1349,74 @@
 
         /* Utility */
         .hide { display: none !important; }
+
+
+        /* ===== ADMIN LOGIN GATE (added; existing dashboard styling retained) ===== */
+        .admin-login-overlay{position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(10,10,25,.44);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+        .admin-login-overlay[hidden]{display:none!important}
+        .admin-login-card{width:min(900px,100%);min-height:440px;display:grid;grid-template-columns: .95fr 1.05fr;background:var(--white);border:1px solid rgba(201,168,76,.35);border-radius:22px;overflow:hidden;box-shadow:0 30px 100px rgba(0,0,0,.32);}
+        .admin-login-brand{background:linear-gradient(145deg,#0f0f1e 0%,#1a1a2e 68%,#252547 100%);color:#fff;padding:42px 36px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+        .admin-login-brand:after{content:"";position:absolute;width:280px;height:280px;border:1px solid rgba(201,168,76,.22);border-radius:50%;right:-95px;bottom:-95px;box-shadow:0 0 0 28px rgba(201,168,76,.035),0 0 0 58px rgba(201,168,76,.025);}
+        .admin-login-logo{font:700 1.65rem var(--font-display);letter-spacing:-.03em;position:relative;z-index:1}.admin-login-logo span{color:var(--accent)}
+        .admin-login-brand h2{font:700 clamp(1.8rem,3vw,2.35rem)/1.15 var(--font-display);margin:30px 0 12px;position:relative;z-index:1}
+        .admin-login-brand p{color:rgba(255,255,255,.67);font-size:.88rem;max-width:300px;position:relative;z-index:1}
+        .admin-login-secure{font-size:.75rem;color:var(--accent-light);display:flex;align-items:center;gap:9px;position:relative;z-index:1;margin-top:36px}
+        .admin-login-form{padding:42px clamp(24px,5vw,54px);display:flex;flex-direction:column;justify-content:center;min-width:0}
+        .admin-login-form .login-kicker{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:8px}
+        .admin-login-form h3{font:700 1.65rem var(--font-display);color:var(--primary);margin-bottom:6px}
+        .admin-login-form .login-sub{font-size:.82rem;color:var(--gray-500);margin-bottom:24px}
+        .admin-login-field{margin-bottom:14px}.admin-login-field label{display:block;font-size:.76rem;font-weight:700;color:var(--gray-700);margin-bottom:6px}
+        .admin-login-field input{width:100%;padding:12px 14px;border:1.5px solid var(--gray-200);border-radius:10px;background:#fff;color:var(--primary);font:inherit;font-size:.87rem;outline:none;transition:var(--transition)}
+        .admin-login-field input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(201,168,76,.13)}
+        .admin-login-btn{width:100%;display:flex;justify-content:center;align-items:center;gap:9px;padding:13px 18px;border-radius:30px;background:var(--primary);color:#fff;font-size:.86rem;font-weight:700;transition:var(--transition);margin-top:5px}
+        .forgot-password-link{display:block;margin:13px auto 0;color:var(--accent-dark);font-size:.8rem;font-weight:700;text-decoration:underline;text-underline-offset:3px}.forgot-password-link:hover{color:var(--primary)}
+        .admin-login-btn:hover{background:var(--accent);color:var(--primary);transform:translateY(-1px)}.admin-login-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+        .admin-login-msg{font-size:.78rem;min-height:22px;margin-top:12px;color:var(--gray-600);overflow-wrap:anywhere}.admin-login-msg.error{color:var(--error)}.admin-login-msg.success{color:#16834a}
+        .admin-login-foot{font-size:.7rem;color:var(--gray-400);margin-top:15px;line-height:1.55}
+        #adminOtpStep[hidden],#adminEmailStep[hidden]{display:none!important}
+        @media(max-width:680px){.admin-login-overlay{padding:12px}.admin-login-card{grid-template-columns:1fr;max-width:440px;min-height:0}.admin-login-brand{padding:22px 24px}.admin-login-brand h2{font-size:1.55rem;margin:18px 0 7px}.admin-login-brand p{font-size:.77rem}.admin-login-secure{margin-top:16px}.admin-login-form{padding:28px 24px}.admin-login-form h3{font-size:1.4rem}}
+
     </style>
 </head>
 <body>
 
-<div class="admin-layout">
+
+<!-- Admin authentication overlay. The dashboard remains behind it and is blurred. -->
+<div class="admin-login-overlay" id="adminLoginOverlay" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
+  <div class="admin-login-card">
+    <section class="admin-login-brand">
+      <div class="admin-login-logo">Welcome Mart<span>.</span></div>
+      <div><h2>Control your store.<br>Securely.</h2><p>Sign in to manage products, orders, customers and store insights.</p></div>
+      <div class="admin-login-secure"><i class="fas fa-shield-halved"></i> Protected admin access · Email + mobile OTP</div>
+    </section>
+    <section class="admin-login-form">
+      <div id="adminEmailStep">
+        <div class="login-kicker">Administrator access</div>
+        <h3 id="adminLoginTitle">Welcome back</h3>
+        <p class="login-sub">Use your authorized admin account to continue.</p>
+        <div class="admin-login-field"><label for="adminEmail">Admin email</label><input id="adminEmail" type="email" autocomplete="username" placeholder="admin@yourdomain.com" required></div>
+        <div class="admin-login-field"><label for="adminPassword">Account password</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="Enter your password" required></div>
+        <button class="admin-login-btn" id="adminContinueBtn" type="button"><i class="fas fa-lock"></i> Verify admin account</button>
+        <button type="button" class="forgot-password-link" id="adminForgotPasswordBtn">Forgot password?</button>
+      </div>
+      <div id="adminOtpStep" hidden>
+        <div class="login-kicker">Two-step verification</div><h3>Verify your mobile</h3>
+        <p class="login-sub" id="adminOtpDescription">Enter the OTP sent to your registered admin phone.</p>
+        <div class="admin-login-field"><label for="adminPhone">Registered mobile number</label><input id="adminPhone" type="tel" autocomplete="tel" placeholder="+91XXXXXXXXXX" required></div>
+        <div id="adminRecaptchaContainer"></div>
+        <button class="admin-login-btn" id="adminSendOtpBtn" type="button"><i class="fas fa-paper-plane"></i> Send OTP</button>
+        <div class="admin-login-field" id="adminOtpField" hidden style="margin-top:14px"><label for="adminOtp">6-digit OTP</label><input id="adminOtp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="Enter verification code"></div>
+        <button class="admin-login-btn" id="adminVerifyOtpBtn" type="button" hidden><i class="fas fa-check-circle"></i> Verify OTP &amp; open dashboard</button>
+        <button class="btn-secondary" id="adminBackBtn" type="button" style="margin-top:12px;justify-content:center;width:100%">Back</button>
+      </div>
+      <div class="admin-login-msg" id="adminLoginMessage" aria-live="polite"></div>
+      <div class="admin-login-foot">Security: Firebase must be configured before login works. Real store-wide products, orders, stock and customer data require a shared database and secure server-side rules; browser storage is only local to this device.</div>
+    </section>
+  </div>
+</div>
+<div id="adminAuthRecaptcha" style="position:fixed;bottom:0;left:0;z-index:-1"></div>
+
+<div class="admin-layout" id="adminDashboard">
 
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar" id="sidebar" aria-label="Admin navigation">
@@ -1376,6 +1440,9 @@
             <div class="nav-item" data-view="customers" onclick="switchView('customers')">
                 <i class="fas fa-users"></i> Customers
             </div>
+            <div class="nav-item" data-view="coupons" onclick="switchView('coupons')">
+                <i class="fas fa-ticket-alt"></i> Coupons & Discounts
+            </div>
         </div>
 
         <div class="nav-section">
@@ -1391,11 +1458,9 @@
 
         <div class="nav-section">
             <div class="section-title">System</div>
+            <a class="nav-item live-store-link" href="index.html" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Live Store <i class="fas fa-arrow-up-right-from-square" style="margin-left:auto;font-size:.7rem"></i></a>
             <div class="nav-item" data-view="settings" onclick="switchView('settings')">
                 <i class="fas fa-cog"></i> Settings
-            </div>
-            <div class="nav-item" onclick="showToast('👋 Logged out successfully');">
-                <i class="fas fa-sign-out-alt"></i> Logout
             </div>
         </div>
 
@@ -1436,11 +1501,16 @@
                     <i class="fas fa-envelope"></i>
                     <span class="dot"></span>
                 </button>
-                <button class="profile-btn" onclick="showToast('👤 Profile menu')">
-                    <div class="avatar">JD</div>
-                    <div class="name">John Doe</div>
+                <div class="profile-menu-wrap">
+                  <button class="profile-btn" id="profileMenuToggle" aria-haspopup="true" aria-expanded="false" title="Account menu" onclick="toggleProfileMenu()">
+                    <div class="avatar">AD</div><div class="name">Admin</div>
                     <i class="fas fa-chevron-down" style="font-size:0.65rem;color:var(--gray-400);"></i>
-                </button>
+                  </button>
+                  <div class="profile-dropdown" id="profileDropdown" hidden>
+                    <div class="profile-dropdown-label" id="profileEmailLabel">Administrator</div>
+                    <button type="button" onclick="wmAdminLogout()"><i class="fas fa-right-from-bracket"></i> Logout</button>
+                  </div>
+                </div>
             </div>
         </header>
 
@@ -1451,7 +1521,7 @@
             <section class="view active" id="view-dashboard">
                 <div class="view-header">
                     <div class="vh-left">
-                        <h1>Welcome back, John 👋</h1>
+                        <h1>Welcome back, Admin 👋</h1>
                         <p>Here's what's happening with your store today.</p>
                     </div>
                     <div class="vh-right">
@@ -1738,6 +1808,23 @@
                         </table>
                     </div>
                 </div>
+            </section>
+
+            <!-- ===== COUPONS VIEW ===== -->
+            <section class="view" id="view-coupons">
+                <div class="view-header"><div class="vh-left"><h1>Coupons & Discounts</h1><p>Create and manage promotional codes saved in this browser.</p></div>
+                  <div class="vh-right"><button class="btn-primary" onclick="openCouponForm()"><i class="fas fa-plus"></i> Add Coupon</button></div></div>
+                <div class="settings-card" style="margin-bottom:18px">
+                  <h3><i class="fas fa-ticket-alt"></i> Create coupon</h3><p class="sc-sub">These codes are admin-side records only until checkout is connected to the same database.</p>
+                  <form id="couponForm" onsubmit="saveCoupon(event)">
+                    <div class="form-row"><div class="form-group"><label>Coupon code *</label><input id="couponCode" required maxlength="24" placeholder="WELCOME10" style="width:100%;padding:10px;border:1px solid var(--gray-200);border-radius:8px;text-transform:uppercase"></div>
+                    <div class="form-group"><label>Discount type</label><select id="couponType" style="width:100%;padding:10px;border:1px solid var(--gray-200);border-radius:8px"><option value="percent">Percentage (%)</option><option value="fixed">Fixed amount (₹)</option></select></div>
+                    <div class="form-group"><label>Discount value *</label><input id="couponValue" type="number" min="1" required style="width:100%;padding:10px;border:1px solid var(--gray-200);border-radius:8px"></div>
+                    <div class="form-group"><label>Minimum order (₹)</label><input id="couponMin" type="number" min="0" value="0" style="width:100%;padding:10px;border:1px solid var(--gray-200);border-radius:8px"></div></div>
+                    <button class="btn-primary" type="submit"><i class="fas fa-save"></i> Save Coupon</button>
+                  </form>
+                </div>
+                <div class="table-card"><div class="table-head"><h3>Saved coupons</h3></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Code</th><th>Discount</th><th>Minimum order</th><th>Status</th><th>Action</th></tr></thead><tbody id="couponRows"></tbody></table></div></div>
             </section>
 
             <!-- ===== ANALYTICS VIEW ===== -->
@@ -2102,6 +2189,136 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+
+<!-- Firebase SDKs: configure your own Firebase project before publishing -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+/* REQUIRED CONFIG: replace every placeholder with values from Firebase Console.
+   This front-end gate is not a substitute for Firestore Security Rules or server-side authorization. */
+const WELCOME_MART_FIREBASE_CONFIG = {
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  appId: "YOUR_FIREBASE_APP_ID"
+};
+const WELCOME_MART_ADMIN_EMAIL = "YOUR_ADMIN_EMAIL@example.com"; // lowercase exact admin email
+let wmAuth = null, wmDb = null, wmRecaptcha = null, wmAdminUser = null, wmMfaResolver = null, wmMfaVerificationId = null, wmMfaHint = null, wmMfaMode = 'enroll';
+let wmPhoneOtpVerified = false;
+const wmAuthConfigured = () => WELCOME_MART_FIREBASE_CONFIG.apiKey !== "YOUR_FIREBASE_API_KEY" && WELCOME_MART_ADMIN_EMAIL !== "YOUR_ADMIN_EMAIL@example.com" && window.firebase;
+function wmSetLoginMessage(message, type='') { const el=document.getElementById('adminLoginMessage'); if(!el)return; el.textContent=message; el.className='admin-login-msg'+(type?' '+type:''); }
+function wmShowEmailStep(){document.getElementById('adminEmailStep').hidden=false;document.getElementById('adminOtpStep').hidden=true;document.getElementById('adminOtpField').hidden=true;document.getElementById('adminVerifyOtpBtn').hidden=true;wmSetLoginMessage('');}
+function wmShowOtpStep(){document.getElementById('adminEmailStep').hidden=true;document.getElementById('adminOtpStep').hidden=false;wmSetLoginMessage('Account verified. Continue with your registered mobile OTP.','success');}
+function wmLockDashboard(){document.getElementById('adminLoginOverlay').hidden=false;document.getElementById('adminDashboard').setAttribute('aria-hidden','true');}
+function wmUnlockDashboard(){document.getElementById('adminLoginOverlay').hidden=true;document.getElementById('adminDashboard').removeAttribute('aria-hidden');}
+function wmInitFirebase(){if(!wmAuthConfigured()){wmSetLoginMessage('Setup required: add your Firebase config and admin email in this file, then enable Email/Password and Phone sign-in in Firebase.','error');return false;}try{if(!firebase.apps.length)firebase.initializeApp(WELCOME_MART_FIREBASE_CONFIG);wmAuth=firebase.auth();wmDb=firebase.firestore();return true;}catch(e){wmSetLoginMessage('Firebase initialization failed. Check your configuration.','error');return false;}}
+function wmInitRecaptcha(){if(wmRecaptcha){try{wmRecaptcha.clear()}catch(e){}wmRecaptcha=null;}wmRecaptcha=new firebase.auth.RecaptchaVerifier('adminAuthRecaptcha',{size:'invisible',callback:()=>{},'expired-callback':()=>wmSetLoginMessage('reCAPTCHA expired. Please send the OTP again.','error')},wmAuth);return wmRecaptcha.render();}
+async function wmContinueAdminLogin(){
+  const email=(document.getElementById('adminEmail').value||'').trim().toLowerCase();
+  const password=document.getElementById('adminPassword').value;
+  if(!email||!password){wmSetLoginMessage('Enter your admin email and password.','error');return;}
+  if(email!==WELCOME_MART_ADMIN_EMAIL.toLowerCase()){wmSetLoginMessage('This email is not authorized for admin access.','error');return;}
+  if(!wmInitFirebase())return;
+  const btn=document.getElementById('adminContinueBtn');btn.disabled=true;
+  try{
+    const credential=await wmAuth.signInWithEmailAndPassword(email,password);
+    if(!credential.user.emailVerified){await wmAuth.signOut();throw new Error('Verify this admin email from the Firebase email verification link first.');}
+    wmAdminUser=credential.user;wmMfaResolver=null;wmMfaMode='enroll';
+    document.getElementById('adminOtpDescription').textContent='First-time setup: enter your admin mobile number to enroll it for required OTP verification.';
+    wmShowOtpStep();
+  }catch(e){
+    if(e.code==='auth/multi-factor-auth-required'){
+      try{
+        wmMfaResolver=firebase.auth.getMultiFactorResolver(wmAuth,e);
+        const hints=wmMfaResolver.hints||[];wmMfaHint=hints.find(h=>h.factorId===firebase.auth.PhoneMultiFactorGenerator.FACTOR_ID);
+        if(!wmMfaHint)throw new Error('No enrolled phone factor found for this admin account. Contact the project administrator.');
+        wmMfaMode='signin';wmAdminUser=null;
+        document.getElementById('adminPhone').value='';document.getElementById('adminPhone').placeholder=wmMfaHint.phoneNumber||'Registered phone';
+        document.getElementById('adminPhone').disabled=true;
+        document.getElementById('adminOtpDescription').textContent='Enter the OTP sent to the registered phone ending in '+String(wmMfaHint.phoneNumber||'').slice(-4)+'.';
+        wmShowOtpStep();
+      }catch(inner){wmSetLoginMessage(inner.message||'Could not start multi-factor verification.','error');}
+    }else{
+      wmSetLoginMessage(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found'?'Incorrect admin email or password.':(e.message||'Admin sign-in failed.'),'error');
+    }
+  }finally{btn.disabled=false;}
+}
+async function wmForgotAdminPassword(){
+  const email=(document.getElementById('adminEmail').value||'').trim().toLowerCase();
+  if(!email){wmSetLoginMessage('Enter your admin email first, then choose Forgot password.','error');document.getElementById('adminEmail').focus();return;}
+  if(email!==WELCOME_MART_ADMIN_EMAIL.toLowerCase()){wmSetLoginMessage('This email is not authorized for admin access.','error');return;}
+  if(!wmInitFirebase())return;
+  const btn=document.getElementById('adminForgotPasswordBtn');btn.disabled=true;
+  try{await wmAuth.sendPasswordResetEmail(email);wmSetLoginMessage('Password reset email sent. Check your inbox and spam folder.','success');}
+  catch(e){wmSetLoginMessage(e.code==='auth/user-not-found'?'No Firebase account was found for this email.':(e.message||'Could not send password reset email.'),'error');}
+  finally{btn.disabled=false;}
+}
+function toggleProfileMenu(){const menu=document.getElementById('profileDropdown'),btn=document.getElementById('profileMenuToggle');const open=menu.hidden;menu.hidden=!open;btn.setAttribute('aria-expanded',String(open));}
+document.addEventListener('click',e=>{const wrap=document.querySelector('.profile-menu-wrap');if(wrap&&!wrap.contains(e.target)){const menu=document.getElementById('profileDropdown');if(menu)menu.hidden=true;const btn=document.getElementById('profileMenuToggle');if(btn)btn.setAttribute('aria-expanded','false');}});
+async function wmSendAdminOtp(){
+  if(!wmAuth){wmSetLoginMessage('Verify the admin account first.','error');return;}
+  const btn=document.getElementById('adminSendOtpBtn');btn.disabled=true;
+  try{
+    if(wmRecaptcha){try{wmRecaptcha.clear()}catch(e){}wmRecaptcha=null;}
+    wmRecaptcha=new firebase.auth.RecaptchaVerifier('adminAuthRecaptcha',{size:'invisible',callback:()=>{},'expired-callback':()=>wmSetLoginMessage('reCAPTCHA expired. Please send the OTP again.','error')},wmAuth);
+    await wmRecaptcha.render();
+    const provider=new firebase.auth.PhoneAuthProvider(wmAuth);
+    let options;
+    if(wmMfaMode==='signin'&&wmMfaResolver&&wmMfaHint){
+      options={multiFactorHint:wmMfaHint,session:wmMfaResolver.session};
+    }else{
+      const phone=(document.getElementById('adminPhone').value||'').trim();
+      if(!/^\+[1-9]\d{7,14}$/.test(phone)){wmSetLoginMessage('Enter your registered mobile in international format, e.g. +919876543210.','error');return;}
+      if(!wmAdminUser){wmSetLoginMessage('Admin account session missing. Sign in again.','error');return;}
+      options={phoneNumber:phone,session:await firebase.auth.multiFactor(wmAdminUser).getSession()};
+    }
+    wmMfaVerificationId=await provider.verifyPhoneNumber(options,wmRecaptcha);
+    document.getElementById('adminOtpField').hidden=false;document.getElementById('adminVerifyOtpBtn').hidden=false;
+    wmSetLoginMessage('OTP sent. Enter the 6-digit code.','success');
+  }catch(e){wmSetLoginMessage('Could not send OTP: '+(e.message||'check Firebase Phone/MFA setup and authorized domains.'),'error');}
+  finally{btn.disabled=false;}
+}
+async function wmVerifyAdminOtp(){
+  const code=(document.getElementById('adminOtp').value||'').trim();if(!/^\d{6}$/.test(code)){wmSetLoginMessage('Enter the 6-digit OTP.','error');return;}
+  if(!wmMfaVerificationId){wmSetLoginMessage('Request an OTP first.','error');return;}
+  const btn=document.getElementById('adminVerifyOtpBtn');btn.disabled=true;
+  try{
+    const credential=firebase.auth.PhoneAuthProvider.credential(wmMfaVerificationId,code);
+    const assertion=firebase.auth.PhoneMultiFactorGenerator.assertion(credential);
+    if(wmMfaMode==='signin'&&wmMfaResolver){
+      const result=await wmMfaResolver.resolveSignIn(assertion);wmAdminUser=result.user;
+    }else{
+      await firebase.auth.multiFactor(wmAdminUser).enroll(assertion,'Welcome Mart admin phone');
+      // Enrollment completes the first-time setup. Sign out and require a fresh MFA sign-in immediately.
+      await wmAuth.signOut();wmAdminUser=null;wmMfaVerificationId=null;wmMfaResolver=null;wmMfaHint=null;
+      wmShowEmailStep();wmSetLoginMessage('Phone factor enrolled successfully. Sign in again; OTP will now be required every time.','success');return;
+    }
+    if(!wmAdminUser||!wmAdminUser.email||wmAdminUser.email.toLowerCase()!==WELCOME_MART_ADMIN_EMAIL.toLowerCase()){
+      await wmAuth.signOut();throw new Error('The authenticated account is not the configured admin email.');
+    }
+    wmPhoneOtpVerified=true;wmUnlockDashboard();
+    const profileName=wmAdminUser.email.split('@')[0];
+    document.querySelectorAll('.sidebar-footer .store-name,.topbar .profile-btn .name').forEach(el=>el.textContent=profileName);
+    const emailLabel=document.getElementById('profileEmailLabel');if(emailLabel)emailLabel.textContent=wmAdminUser.email;
+    document.querySelectorAll('.sidebar-footer .store-avatar,.topbar .profile-btn .avatar').forEach(el=>el.textContent=profileName.slice(0,2).toUpperCase());
+    showToast('Admin email and mobile OTP verified.','success');
+  }catch(e){wmSetLoginMessage('OTP verification failed. '+(e.message||'Check the code and try again.'),'error');}
+  finally{btn.disabled=false;}
+}
+async function wmAdminLogout(){const menu=document.getElementById('profileDropdown');if(menu)menu.hidden=true;try{if(wmAuth)await wmAuth.signOut();}catch(e){}wmAdminUser=null;wmPhoneOtpVerified=false;wmMfaResolver=null;wmMfaVerificationId=null;wmMfaHint=null;wmShowEmailStep();wmLockDashboard();document.getElementById('adminPassword').value='';document.getElementById('adminOtp').value='';document.getElementById('adminPhone').disabled=false;document.getElementById('adminPhone').value='';}
+document.addEventListener('DOMContentLoaded',()=>{
+  wmLockDashboard();
+  document.getElementById('adminContinueBtn').addEventListener('click',wmContinueAdminLogin);
+  document.getElementById('adminForgotPasswordBtn').addEventListener('click',wmForgotAdminPassword);
+  document.getElementById('adminSendOtpBtn').addEventListener('click',wmSendAdminOtp);
+  document.getElementById('adminVerifyOtpBtn').addEventListener('click',wmVerifyAdminOtp);
+  document.getElementById('adminBackBtn').addEventListener('click',async()=>{if(wmAuth)await wmAuth.signOut().catch(()=>{});wmAdminUser=null;wmMfaResolver=null;wmMfaVerificationId=null;wmMfaHint=null;document.getElementById('adminPhone').disabled=false;wmShowEmailStep();});
+  document.getElementById('adminPassword').addEventListener('keydown',e=>{if(e.key==='Enter')wmContinueAdminLogin()});
+  document.getElementById('adminOtp').addEventListener('keydown',e=>{if(e.key==='Enter')wmVerifyAdminOtp()});
+});
+</script>
+
 <script>
     // ===== DATA =====
     let products = [
@@ -2143,6 +2360,24 @@
         { id: 5, customer: 'Neha Gupta', product: 'Minimalist Watch', rating: 4, text: 'Elegant watch, comfortable to wear.', date: '2026-08-20' }
     ];
 
+    // Local demo persistence: admin edits survive refresh in this browser. This is not a shared database.
+    const WM_STORAGE_KEYS={products:'wm_admin_products_v1',orders:'wm_admin_orders_v1',customers:'wm_admin_customers_v1'};
+    function wmLoadLocalData(){
+      try{const p=JSON.parse(localStorage.getItem(WM_STORAGE_KEYS.products)||'null');if(Array.isArray(p))products=p;}catch(e){}
+      try{const o=JSON.parse(localStorage.getItem(WM_STORAGE_KEYS.orders)||'null');if(Array.isArray(o))orders=o;}catch(e){}
+      try{const c=JSON.parse(localStorage.getItem(WM_STORAGE_KEYS.customers)||'null');if(Array.isArray(c))customers=c;}catch(e){}
+    }
+    function wmSaveLocalData(){try{localStorage.setItem(WM_STORAGE_KEYS.products,JSON.stringify(products));localStorage.setItem(WM_STORAGE_KEYS.orders,JSON.stringify(orders));localStorage.setItem(WM_STORAGE_KEYS.customers,JSON.stringify(customers));}catch(e){console.warn('Could not save local admin data',e);}}
+    wmLoadLocalData();
+    let coupons=[];
+    try{const savedCoupons=JSON.parse(localStorage.getItem('wm_admin_coupons_v1')||'[]');if(Array.isArray(savedCoupons))coupons=savedCoupons;}catch(e){}
+    function saveCoupons(){try{localStorage.setItem('wm_admin_coupons_v1',JSON.stringify(coupons));}catch(e){}}
+    function openCouponForm(){document.getElementById('couponForm').reset();document.getElementById('couponMin').value='0';switchView('coupons');document.getElementById('couponCode').focus();}
+    function saveCoupon(e){e.preventDefault();const code=document.getElementById('couponCode').value.trim().toUpperCase().replace(/\s+/g,'');const type=document.getElementById('couponType').value;const value=Number(document.getElementById('couponValue').value);const min=Number(document.getElementById('couponMin').value)||0;if(!code||value<=0||(type==='percent'&&value>100)){showToast('Enter a valid coupon and discount value.','error');return;}const old=coupons.find(c=>c.code===code);if(old){old.type=type;old.value=value;old.min=min;old.active=true;}else coupons.unshift({code,type,value,min,active:true});saveCoupons();renderCoupons();e.target.reset();document.getElementById('couponMin').value='0';showToast('Coupon saved.','success');}
+    function renderCoupons(){const body=document.getElementById('couponRows');if(!body)return;body.innerHTML=coupons.length?coupons.map(c=>`<tr><td><strong>${c.code}</strong></td><td>${c.type==='percent'?c.value+'%':'₹'+Number(c.value).toLocaleString('en-IN')}</td><td>₹${Number(c.min||0).toLocaleString('en-IN')}</td><td><span class="status-badge ${c.active?'active':'inactive'}">${c.active?'Active':'Inactive'}</span></td><td><div class="row-actions"><button title="Toggle status" onclick="toggleCoupon('${c.code}')"><i class="fas fa-power-off"></i></button><button class="danger" title="Delete coupon" onclick="deleteCoupon('${c.code}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join(''):'<tr><td colspan="5"><div class="empty-state"><h4>No coupons yet</h4><p>Create your first discount code above.</p></div></td></tr>';}
+    function toggleCoupon(code){const c=coupons.find(x=>x.code===code);if(c){c.active=!c.active;saveCoupons();renderCoupons();}}
+    function deleteCoupon(code){if(!confirm('Delete coupon '+code+'?'))return;coupons=coupons.filter(c=>c.code!==code);saveCoupons();renderCoupons();}
+
     let currentView = 'dashboard';
 
     // ===== TOAST =====
@@ -2170,6 +2405,7 @@
             orders: ['Orders', 'Manage customer orders'],
             products: ['Products', 'Manage your product catalog'],
             customers: ['Customers', 'Your customer base'],
+            coupons: ['Coupons & Discounts', 'Manage promotional codes'],
             analytics: ['Analytics', 'Store performance insights'],
             reviews: ['Reviews', 'Customer feedback'],
             settings: ['Settings', 'Store configuration']
@@ -2181,6 +2417,7 @@
         if (view === 'products') renderProducts();
         if (view === 'orders') renderOrders();
         if (view === 'customers') renderCustomers();
+        if (view === 'coupons') renderCoupons();
         if (view === 'reviews') renderReviews();
         if (view === 'dashboard') renderDashboard();
 
@@ -2592,6 +2829,7 @@
             showToast('✅ Product added successfully', 'success');
         }
 
+        wmSaveLocalData();
         closeProductModal();
         renderProducts();
         renderDashboard();
@@ -2604,6 +2842,7 @@
         if (!p) return;
         const newP = { ...p, id: Date.now(), name: p.name + ' (Copy)', sales: 0, sku: 'WM-CPY-' + String(Date.now()).slice(-3), status: 'draft' };
         products.unshift(newP);
+        wmSaveLocalData();
         renderProducts();
         showToast('📋 Product duplicated', 'success');
     }
@@ -2613,6 +2852,7 @@
         if (!p) return;
         if (!confirm(`Delete "${p.name}"? This cannot be undone.`)) return;
         products = products.filter(x => x.id !== id);
+        wmSaveLocalData();
         renderProducts();
         renderDashboard();
         showToast('🗑️ Product deleted', 'success');
@@ -2694,6 +2934,7 @@
         if (!o) return;
         const newStatus = document.getElementById('orderStatusSelect').value;
         o.status = newStatus;
+        wmSaveLocalData();
         closeOrderModal();
         renderOrders();
         renderDashboard();
@@ -2703,6 +2944,7 @@
     function deleteOrder(id) {
         if (!confirm(`Delete order ${id}?`)) return;
         orders = orders.filter(o => o.id !== id);
+        wmSaveLocalData();
         renderOrders();
         renderDashboard();
         showToast('🗑️ Order deleted', 'success');
@@ -2746,10 +2988,11 @@
     renderOrders();
     renderProducts();
     renderCustomers();
+    renderCoupons();
     renderReviews();
     renderTopProducts();
 
-    console.log('📊 Welcome Mart — Admin Dashboard loaded');
+    console.log('📊 Welcome Mart — Admin Dashboard loaded. Demo data is local until the store website and database are connected.');
     console.log(`📦 ${products.length} products · 🛒 ${orders.length} orders · 👥 ${customers.length} customers`);
 </script>
 
