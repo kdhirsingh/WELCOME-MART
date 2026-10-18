@@ -2128,6 +2128,210 @@
                 max-width: 90%;
             }
         }
+        
+/* ===== HOME PRODUCT DETAIL POPUP FIX ===== */
+#homeProductDetailOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: var(--transition);
+}
+
+#homeProductDetailOverlay.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+#homeProductDetailOverlay .detail-panel {
+    width: 100%;
+    max-width: 1100px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 28px;
+    position: relative;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-xl);
+}
+
+#homeProductDetailOverlay .close-detail {
+    display: block;
+    margin-left: auto;
+    margin-bottom: 12px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--gray-200);
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--gray-600);
+    font-size: 1.3rem;
+}
+
+#homeProductDetailOverlay .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+#homeProductDetailOverlay .main-img {
+    min-height: 280px;
+    background: var(--gray-100);
+    border-radius: var(--radius-sm);
+}
+
+#homeProductDetailOverlay .main-img img {
+    width: 100%;
+    max-height: 480px;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}
+
+#homeProductDetailOverlay .detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+#homeProductDetailOverlay .detail-info .title {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    color: var(--primary);
+}
+
+#homeProductDetailOverlay .rating-row,
+#homeProductDetailOverlay .price-row,
+#homeProductDetailOverlay .action-buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+#homeProductDetailOverlay .stars {
+    color: #f39c12;
+}
+
+#homeProductDetailOverlay .current {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+#homeProductDetailOverlay .original {
+    color: var(--gray-400);
+    text-decoration: line-through;
+}
+
+#homeProductDetailOverlay .discount {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+#homeProductDetailOverlay .description,
+#homeProductDetailOverlay .rating-count,
+#homeProductDetailOverlay .sku {
+    color: var(--gray-600);
+}
+
+#homeProductDetailOverlay .trust-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--gray-600);
+    font-size: 0.85rem;
+}
+
+#homeProductDetailOverlay .btn-add-cart,
+#homeProductDetailOverlay .btn-wishlist-detail {
+    padding: 12px 20px;
+    border-radius: 30px;
+    background: var(--primary);
+    color: var(--white);
+    font-weight: 600;
+}
+
+#homeProductDetailOverlay .btn-wishlist-detail {
+    background: var(--gray-100);
+    color: var(--primary);
+}
+
+#homeProductDetailOverlay .btn-add-cart:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#homeProductDetailOverlay .detail-tabs {
+    margin-top: 16px;
+    border-top: 1px solid var(--gray-200);
+    padding-top: 14px;
+}
+
+#homeProductDetailOverlay .tab-headers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+#homeProductDetailOverlay .tab-headers button {
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: var(--gray-100);
+}
+
+#homeProductDetailOverlay .tab-headers button.active {
+    background: var(--primary);
+    color: var(--white);
+}
+
+#homeProductDetailOverlay .detail-tabs .tab-content {
+    display: none;
+    padding: 12px 0;
+}
+
+#homeProductDetailOverlay .detail-tabs .tab-content.active {
+    display: block;
+}
+
+#homeProductDetailOverlay .thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+#homeProductDetailOverlay .thumb {
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-xs);
+}
+
+@media (max-width: 768px) {
+    #homeProductDetailOverlay {
+        padding: 8px;
+    }
+
+    #homeProductDetailOverlay .detail-panel {
+        max-height: 96vh;
+        padding: 16px;
+    }
+
+    #homeProductDetailOverlay .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
     </style>
 </head>
 <body>
@@ -2703,7 +2907,6 @@
                 (discount > 0 ? `<span class="badge-discount">-${discount}%</span>` : '');
             return `
             <div class="product-card" data-id="${p.id}" onclick="openHomeProductDetail(${p.id}, event)">
-     onclick="openHomeProductDetail(${p.id}, event)">
               <div class="img-wrap">
                 <img src="${p.img}" alt="${p.name}" loading="lazy" />
                 ${badgeHtml}
@@ -3296,6 +3499,16 @@ function closeHomeProductDetail() {
     const overlay = document.getElementById('homeProductDetailOverlay');
     if (overlay) overlay.classList.remove('open');
     document.body.style.overflow = '';
+}
+
+const homeDetailOverlay = document.getElementById('homeProductDetailOverlay');
+
+if (homeDetailOverlay) {
+    homeDetailOverlay.addEventListener('click', function(event) {
+        if (event.target === this) {
+            closeHomeProductDetail();
+        }
+    });
 }
 
         // ===== TOAST =====
