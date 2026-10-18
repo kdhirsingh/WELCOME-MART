@@ -2128,6 +2128,122 @@
                 max-width: 90%;
             }
         }
+        /* ===== HOME PRODUCT DETAIL — isolated styles ===== */
+#homeProductDetailOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+#homeProductDetailOverlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+#homeProductDetailOverlay .detail-panel {
+    width: 100%;
+    max-width: 1100px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 32px 36px;
+    position: relative;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-xl);
+    transform: translateY(15px);
+    transition: var(--transition);
+}
+
+#homeProductDetailOverlay.open .detail-panel {
+    transform: translateY(0);
+}
+
+#homeProductDetailOverlay .close-detail {
+    display: block;
+    margin-left: auto;
+    margin-bottom: 12px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--gray-200);
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--gray-600);
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+#homeProductDetailOverlay .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+#homeProductDetailOverlay .home-detail-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background: var(--gray-100);
+    border-radius: var(--radius-sm);
+}
+
+#homeProductDetailOverlay .home-detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+#homeProductDetailOverlay .home-detail-info h2 {
+    font-family: var(--font-display);
+    color: var(--primary);
+    font-size: 1.6rem;
+    line-height: 1.3;
+}
+
+#homeProductDetailOverlay .home-detail-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+#homeProductDetailOverlay .home-detail-original {
+    margin-left: 10px;
+    color: var(--gray-400);
+    text-decoration: line-through;
+    font-size: 1rem;
+}
+
+#homeProductDetailOverlay .home-detail-action {
+    padding: 12px 20px;
+    border-radius: 30px;
+    background: var(--primary);
+    color: var(--white);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    #homeProductDetailOverlay {
+        padding: 8px;
+    }
+
+    #homeProductDetailOverlay .detail-panel {
+        max-height: 96vh;
+        padding: 18px 14px;
+    }
+
+    #homeProductDetailOverlay .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
     </style>
 </head>
 <body>
@@ -2578,7 +2694,15 @@
         <a href="wishlist.html" id="bottomWishlist"><i class="fas fa-heart"></i><span class="badge" id="bottomWishCount">0</span>Wishlist</a>
         <a href="#" onclick="toggleCart();return false;" id="bottomCart"><i class="fas fa-shopping-bag"></i><span class="badge" id="bottomCartCount">0</span>Cart</a>
     </nav>
-
+<!-- ===== HOME PRODUCT DETAIL ===== -->
+<div class="product-detail-overlay" id="homeProductDetailOverlay"
+     role="dialog" aria-modal="true" aria-label="Product details">
+    <div class="detail-panel" id="homeDetailPanel">
+        <button class="close-detail" aria-label="Close product details"
+                onclick="closeHomeProductDetail()">✕</button>
+        <div class="detail-grid" id="homeDetailGrid"></div>
+    </div>
+</div>
     <!-- ===== TOAST ===== -->
     <div class="toast" id="toast"></div>
 
@@ -2692,12 +2816,12 @@
             const badgeHtml = tag ? `<span class="badge-${tag.toLowerCase()}">${tag}</span>` :
                 (discount > 0 ? `<span class="badge-discount">-${discount}%</span>` : '');
             return `
-            <div class="product-card" data-id="${p.id}">
+              <div class="product-card" data-id="${p.id}" onclick="openHomeProductDetail(${p.id}, event)">
               <div class="img-wrap">
                 <img src="${p.img}" alt="${p.name}" loading="lazy" />
                 ${badgeHtml}
                 <button class="wishlist-btn" onclick="toggleWishlist(${p.id}, event)" aria-label="Add to wishlist"><i class="fas fa-heart"></i></button>
-                <span class="quick-view" onclick="showToast('Quick view: ${p.name}')">Quick View</span>
+                <span class="quick-view" onclick="openHomeProductDetail(${p.id}, event)">Quick View</span>
               </div>
               <div class="info">
                 <div class="title">${p.name}</div>
@@ -3110,7 +3234,112 @@ function updateWishlistButtons() {
             // trigger reveal on load
             setTimeout(() => handleScroll(), 100);
         });
+// ===== HOME PRODUCT DETAIL =====
+function openHomeProductDetail(id, event) {
+    if (event) event.stopPropagation();
 
+    const allProducts = [
+        ...flashProducts,
+        ...trendingProducts,
+        ...newArrivals,
+        ...bestSellers
+    ];
+
+    const product = allProducts.find(p => p.id === id);
+    if (!product) return;
+
+    const discount = product.discount ||
+        (product.original
+            ? Math.round((1 - product.price / product.original) * 100)
+            : 0);
+
+    document.getElementById('homeDetailGrid').innerHTML = `
+        <div>
+            <img class="home-detail-image"
+                 src="${product.img}"
+                 alt="${product.name}">
+        </div>
+
+        <div class="home-detail-info">
+            <h2>${product.name}</h2>
+
+            <div>
+                <span style="color:#f39c12;">
+                    ${renderStars(product.rating)}
+                </span>
+                <span style="color:var(--gray-500);">
+                    ${product.rating} (${product.reviews || 0} reviews)
+                </span>
+            </div>
+
+            <div class="home-detail-price">
+                ₹${product.price.toLocaleString()}
+                ${product.original ? `
+                    <span class="home-detail-original">
+                        ₹${product.original.toLocaleString()}
+                    </span>` : ''}
+            </div>
+
+            ${discount > 0 ? `
+                <p style="color:#e74c3c;font-weight:600;">
+                    ${discount}% OFF
+                </p>` : ''}
+
+            <p>
+                ${product.stock !== undefined
+                    ? `Availability: ${product.stock > 0
+                        ? 'In stock (' + product.stock + ' available)'
+                        : 'Out of stock'}`
+                    : 'Check product availability before ordering.'}
+            </p>
+
+            <p>
+                Explore ${product.name} at Welcome Mart.
+                Review the product price, customer rating and
+                availability before adding it to your cart.
+            </p>
+
+            <div style="border-top:1px solid var(--gray-200);padding-top:14px;">
+                <strong>Product information</strong>
+                <p>Customer rating: ${product.rating} / 5</p>
+                <p>Customer reviews: ${product.reviews || 0}</p>
+                <p>Delivery: Free delivery on eligible orders.</p>
+                <p>Returns: Refer to the website's return policy.</p>
+            </div>
+
+            <button class="home-detail-action"
+                    onclick="addToCart(${product.id})"
+                    ${product.stock === 0 ? 'disabled' : ''}>
+                <i class="fas fa-shopping-bag"></i> Add to Cart
+            </button>
+        </div>
+    `;
+
+    document.getElementById('homeProductDetailOverlay')
+        .classList.add('open');
+
+    document.body.style.overflow = 'hidden';
+}
+
+function closeHomeProductDetail() {
+    document.getElementById('homeProductDetailOverlay')
+        .classList.remove('open');
+
+    document.body.style.overflow = '';
+}
+
+document.getElementById('homeProductDetailOverlay')
+    .addEventListener('click', function(event) {
+        if (event.target === this) {
+            closeHomeProductDetail();
+        }
+    });
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeHomeProductDetail();
+    }
+});
         // ===== TOAST =====
         function showToast(msg) {
             const toast = document.getElementById('toast');
