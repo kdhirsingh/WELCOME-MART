@@ -2685,7 +2685,11 @@
             for (let i = full + half; i < 5; i++) s += '☆';
             return s;
         }
-
+// ===== PRODUCT DETAIL POPUP STATE =====
+let currentProduct = null;
+let selectedSize = '';
+let selectedColor = '';
+let qty = 1;
         function productCard(p, extra = '') {
             const discount = p.discount || Math.round((1 - p.price / p.original) * 100);
             const tag = p.tag || '';
