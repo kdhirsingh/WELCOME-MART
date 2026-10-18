@@ -3123,6 +3123,181 @@ function updateWishlistButtons() {
             setTimeout(() => handleScroll(), 100);
         });
 
+/* ===== HOME PRODUCT DETAIL FIX ===== */
+function openHomeProductDetail(id, event) {
+    if (event) event.stopPropagation();
+
+    const allProducts = [
+        ...flashProducts,
+        ...trendingProducts,
+        ...newArrivals,
+        ...bestSellers
+    ];
+
+    const product = allProducts.find(p => String(p.id) === String(id));
+
+    if (!product) {
+        showToast('Product not found.');
+        return;
+    }
+
+    const overlay = document.getElementById('homeProductDetailOverlay');
+    const grid = document.getElementById('homeDetailGrid');
+
+    if (!overlay || !grid) {
+        console.error('Product detail HTML missing: homeProductDetailOverlay or homeDetailGrid');
+        showToast('Product detail window is not set up correctly.');
+        return;
+    }
+
+    const price = Number(product.price) || 0;
+    const original = Number(product.original) || 0;
+    const discount = Number(product.discount) ||
+        (original > price && original > 0
+            ? Math.round((1 - price / original) * 100)
+            : 0);
+
+    const images = Array.isArray(product.images)
+        ? product.images.filter(Boolean)
+        : [];
+
+    const mainImage = images[0] || product.img || '';
+
+    grid.innerHTML = `
+        <div class="gallery">
+            <div class="main-img">
+                ${mainImage
+                    ? `<img src="${mainImage}" alt="${product.name}">`
+                    : '<p>Product image unavailable</p>'}
+            </div>
+
+            ${images.length > 1 ? `
+                <div class="thumbnails">
+                    ${images.map(img => `
+                        <button type="button" class="thumb"
+                            onclick="this.closest('.gallery').querySelector('.main-img img').src=this.querySelector('img').src">
+                            <img src="${img}" alt="" style="width:100%;height:100%;object-fit:contain">
+                        </button>
+                    `).join('')}
+                </div>
+            ` : ''}
+        </div>
+
+        <div class="detail-info">
+            <h2 class="title">${product.name}</h2>
+
+            <div class="rating-row">
+                <span class="stars">${renderStars(Number(product.rating) || 0)}</span>
+                <span class="rating-count">
+                    ${product.rating !== undefined ? product.rating : 'Rating unavailable'}
+                    ${product.reviews !== undefined ? `(${product.reviews} reviews)` : ''}
+                </span>
+            </div>
+
+            <div class="price-row">
+                <span class="current">₹${price.toLocaleString('en-IN')}</span>
+                ${original > price ? `<span class="original">₹${original.toLocaleString('en-IN')}</span>` : ''}
+                ${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}
+            </div>
+
+            ${product.sku ? `<p class="sku">SKU: ${product.sku}</p>` : ''}
+
+            <p class="description">
+                ${product.description || 'No product description is available.'}
+            </p>
+
+            ${Array.isArray(product.sizes) && product.sizes.length
+                ? `<p><strong>Sizes:</strong> ${product.sizes.join(', ')}</p>`
+                : ''}
+
+            ${Array.isArray(product.colors) && product.colors.length
+                ? `<p><strong>Colors:</strong> ${product.colors.join(', ')}</p>`
+                : ''}
+
+            <p>${product.stock !== undefined
+                ? (product.stock > 0 ? `${product.stock} in stock` : 'Out of stock')
+                : ''}</p>
+
+            <div class="trust-badges">
+                <span>🚚 Delivery</span>
+                <span>↩ Returns</span>
+                <span>🔒 Secure checkout</span>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="btn-add-cart"
+                    ${product.stock === 0 ? 'disabled' : ''}
+                    onclick="addToCart(${product.id})">
+                    Add to Cart
+                </button>
+
+                <button type="button" class="btn-wishlist-detail"
+                    onclick="toggleWishlist(${product.id})">
+                    ♥ Wishlist
+                </button>
+            </div>
+
+            <div class="detail-tabs">
+                <div class="tab-headers">
+                    <button type="button" class="active"
+                        onclick="switchHomeDetailTab('description')">Description</button>
+                    <button type="button"
+                        onclick="switchHomeDetailTab('specs')">Specifications</button>
+                    <button type="button"
+                        onclick="switchHomeDetailTab('reviews')">Reviews</button>
+                </div>
+
+                <div id="homeDtab-description" class="tab-content active">
+                    ${product.description || 'Description unavailable.'}
+                </div>
+
+                <div id="homeDtab-specs" class="tab-content">
+                    ${product.sku ? `<p>SKU: ${product.sku}</p>` : ''}
+                    ${product.stock !== undefined ? `<p>Stock: ${product.stock}</p>` : ''}
+                    ${product.category ? `<p>Category: ${product.category}</p>` : ''}
+                    ${!product.sku && product.stock === undefined && !product.category
+                        ? 'Specifications unavailable.'
+                        : ''}
+                </div>
+
+                <div id="homeDtab-reviews" class="tab-content">
+                    ${product.rating !== undefined ? `${product.rating} stars` : 'Rating unavailable'}
+                    ${product.reviews !== undefined ? ` · ${product.reviews} reviews` : ''}
+                </div>
+            </div>
+        </div>
+    `;
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function switchHomeDetailTab(tab) {
+    const overlay = document.getElementById('homeProductDetailOverlay');
+    if (!overlay) return;
+
+    overlay.querySelectorAll('.tab-headers button').forEach(button => {
+        button.classList.toggle(
+            'active',
+            button.textContent.trim().toLowerCase() ===
+                (tab === 'specs' ? 'specifications' : tab)
+        );
+    });
+
+    overlay.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+
+    const selected = document.getElementById('homeDtab-' + tab);
+    if (selected) selected.classList.add('active');
+}
+
+function closeHomeProductDetail() {
+    const overlay = document.getElementById('homeProductDetailOverlay');
+    if (overlay) overlay.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
         // ===== TOAST =====
         function showToast(msg) {
             const toast = document.getElementById('toast');
