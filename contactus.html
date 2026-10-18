@@ -1497,7 +1497,7 @@
 
     <script>
         // ===== CART & WISHLIST (dummy state) =====
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('welcomeMartCart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
 
         // ===== TOAST =====
