@@ -3175,6 +3175,14 @@ function updateWishlistButtons() {
 
         console.log('🛍️ Welcome Mart — Premium E-Commerce Experience');
     </script>
-
+<div class="product-detail-overlay" id="productDetailOverlay" role="dialog" aria-label="Product details">
+        <div class="detail-panel" id="detailPanel">
+            <button class="close-detail" aria-label="Close product details" onclick="closeProductDetail()">✕</button>
+            <div class="detail-grid" id="detailGrid">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>
