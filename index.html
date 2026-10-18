@@ -2692,12 +2692,12 @@
             const badgeHtml = tag ? `<span class="badge-${tag.toLowerCase()}">${tag}</span>` :
                 (discount > 0 ? `<span class="badge-discount">-${discount}%</span>` : '');
             return `
-            <div class="product-card" data-id="${p.id}">
+            <div class="product-card" data-id="${p.id}" onclick="openProductDetail(${p.id})">
               <div class="img-wrap">
                 <img src="${p.img}" alt="${p.name}" loading="lazy" />
                 ${badgeHtml}
                 <button class="wishlist-btn" onclick="toggleWishlist(${p.id}, event)" aria-label="Add to wishlist"><i class="fas fa-heart"></i></button>
-                <span class="quick-view" onclick="showToast('Quick view: ${p.name}')">Quick View</span>
+                <span class="quick-view" onclick="event.stopPropagation(); openProductDetail(${p.id})">Quick View</span>
               </div>
               <div class="info">
                 <div class="title">${p.name}</div>
