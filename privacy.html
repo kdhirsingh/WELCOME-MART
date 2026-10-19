@@ -1183,9 +1183,10 @@
     </footer>
 
     <script>
-        // ===== CART & WISHLIST (dummy state) =====
-        let cart = [];
-        let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
+        
+        // ===== CART & WISHLIST (shared localStorage state) =====
+        let cart = JSON.parse(localStorage.getItem('welcomeMartCart') || '[]');
+        let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist') || '[]');
 
         // ===== TOAST =====
         function showToast(msg) {
