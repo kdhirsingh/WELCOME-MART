@@ -899,7 +899,217 @@
             opacity: 1;
             transform: translateY(0);
         }
-    </style>
+    
+
+        /* Added cart drawer and checkout styles from the existing Contact Us reference. */
+        /* ===== CART DRAWER ===== */
+        .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:4998;opacity:0;visibility:hidden;pointer-events:none;transition:var(--transition)}
+        .cart-overlay.open{opacity:1;visibility:visible;pointer-events:auto}
+        .cart-drawer{position:fixed;top:0;right:0;width:min(440px,100%);height:100dvh;background:var(--white);z-index:4999;display:flex;flex-direction:column;padding:22px;overflow-y:auto;box-shadow:var(--shadow-xl);transform:translateX(105%);visibility:hidden;transition:transform .35s ease,visibility .35s ease}
+        .cart-drawer.open{transform:translateX(0);visibility:visible}
+        .cart-drawer .header-cart{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:18px;border-bottom:1px solid var(--gray-200)}
+        .cart-drawer .header-cart h3{color:var(--primary);font-family:var(--font-display);font-size:1.35rem}
+        .cart-drawer .header-cart .close{width:38px;height:38px;border-radius:50%;border:1px solid var(--gray-200);display:grid;place-items:center;font-size:1.2rem}
+        .cart-drawer .free-ship{padding:14px 0;color:var(--gray-600);font-size:.82rem}.cart-drawer .bar{height:5px;margin-top:8px;background:var(--gray-200);border-radius:10px;overflow:hidden}.cart-drawer .bar .fill{height:100%;background:var(--accent);transition:width .25s ease}
+        .cart-drawer .items{flex:1;min-height:90px;overflow-y:auto}.cart-drawer .cart-item{display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--gray-100)}.cart-drawer .cart-item img{width:72px!important;height:88px!important;object-fit:cover;border-radius:8px;background:var(--gray-100);flex-shrink:0}.cart-drawer .cart-item .info{flex:1;min-width:0}.cart-drawer .cart-item .name{font-size:.9rem;font-weight:600;color:var(--primary);margin-bottom:4px}.cart-drawer .cart-item .price{color:var(--gray-700);font-size:.88rem;margin-bottom:8px}.cart-drawer .cart-item .quantity{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:.8rem}.cart-drawer .cart-item .quantity button{border:1px solid var(--gray-200);border-radius:5px;padding:3px 8px;color:var(--gray-700)}
+        .cart-drawer .totals{border-top:1px solid var(--gray-200);padding-top:14px;margin-top:12px}.cart-drawer .totals .row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:.88rem;color:var(--gray-600)}.cart-drawer .totals .row.total{color:var(--primary);font-weight:700;font-size:1.05rem;padding-top:10px}
+        .cart-drawer .actions{display:grid;gap:9px;padding-top:14px}.cart-drawer .btn-checkout,.cart-drawer .btn-continue{width:100%;border-radius:30px;padding:13px 16px;font-size:.85rem;font-weight:700;letter-spacing:.03em}.cart-drawer .btn-checkout{background:var(--accent);color:var(--primary)}.cart-drawer .btn-continue{border:1px solid var(--gray-200);color:var(--gray-700)}
+        .cart-drawer .recommended{padding-top:18px}.cart-drawer .recommended h4{color:var(--primary);font-size:.9rem;margin-bottom:10px}.cart-drawer .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cart-drawer .mini{display:flex;align-items:center;gap:8px;min-width:0}.cart-drawer .mini img{width:46px;height:54px;object-fit:cover;border-radius:6px}.cart-drawer .mini .name{font-size:.75rem;font-weight:600}.cart-drawer .mini .price{font-size:.75rem;color:var(--gray-500)}
+        @media(max-width:480px){.cart-drawer{padding:18px 16px}}
+
+/* ===== CHECKOUT OVERLAY ===== */
+        .checkout-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 6000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .checkout-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .checkout-overlay .checkout-panel {
+            background: var(--white);
+            border-radius: var(--radius);
+            max-width: 720px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            padding: 32px 36px;
+            position: relative;
+            transform: scale(0.96) translateY(20px);
+            transition: var(--transition);
+            box-shadow: var(--shadow-xl);
+        }
+        .checkout-overlay.open .checkout-panel {
+            transform: scale(1) translateY(0);
+        }
+        .checkout-overlay .close-checkout {
+            position: sticky;
+            top: 0;
+            float: right;
+            z-index: 10;
+            background: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--gray-500);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            margin-bottom: 12px;
+        }
+        .checkout-overlay .close-checkout:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: rotate(90deg);
+        }
+        .checkout-overlay h2 {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .checkout-overlay .sub {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .checkout-overlay .form-group {
+            margin-bottom: 18px;
+        }
+        .checkout-overlay .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 4px;
+        }
+        .checkout-overlay .form-group input,
+        .checkout-overlay .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: var(--font-body);
+            background: var(--white);
+        }
+        .checkout-overlay .form-group input:focus,
+        .checkout-overlay .form-group select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.12);
+        }
+        .checkout-overlay .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .checkout-overlay .payment-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0 16px;
+        }
+        .checkout-overlay .payment-methods .method {
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1.5px solid var(--gray-200);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            transition: var(--transition);
+            background: var(--white);
+            cursor: pointer;
+        }
+        .checkout-overlay .payment-methods .method:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .checkout-overlay .payment-methods .method.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--white);
+        }
+        .checkout-overlay .order-summary {
+            background: var(--off-white);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+        .checkout-overlay .order-summary .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.9rem;
+        }
+        .checkout-overlay .order-summary .row.total {
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-top: 1px solid var(--gray-200);
+            padding-top: 10px;
+            margin-top: 6px;
+        }
+        .checkout-overlay .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin: 12px 0 8px;
+        }
+        .checkout-overlay .security-badge i {
+            color: #2ecc71;
+        }
+        .checkout-overlay .btn-place-order {
+            width: 100%;
+            padding: 16px;
+            border-radius: 60px;
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+            border: none;
+            margin-top: 8px;
+        }
+        .checkout-overlay .btn-place-order:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 24px rgba(201, 168, 76, 0.35);
+        }
+        @media (max-width: 640px) {
+            .checkout-overlay .checkout-panel {
+                padding: 20px 16px;
+            }
+            .checkout-overlay .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .checkout-overlay h2 {
+                font-size: 1.3rem;
+            }
+            .checkout-overlay .payment-methods .method {
+                padding: 8px 14px;
+                font-size: 0.75rem;
+            }
+        }
+
+</style>
 </head>
 <body>
 
@@ -1246,10 +1456,122 @@
         </div>
     </footer>
 
+    <!-- ===== CHECKOUT OVERLAY ===== -->
+    <div class="checkout-overlay" id="checkoutOverlay" role="dialog" aria-label="Checkout">
+        <div class="checkout-panel">
+            <button class="close-checkout" aria-label="Close checkout" onclick="closeCheckout()">✕</button>
+            <h2>Secure Checkout</h2>
+            <p class="sub">Complete your order with confidence.</p>
+            <form id="checkoutForm" onsubmit="placeOrder(event)">
+                <div class="form-group">
+                    <label for="checkoutEmail">Email address</label>
+                    <input type="email" id="checkoutEmail" placeholder="you@example.com" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="checkoutFname">First name</label>
+                        <input type="text" id="checkoutFname" placeholder="John" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutLname">Last name</label>
+                        <input type="text" id="checkoutLname" placeholder="Doe" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="checkoutAddress">Delivery address</label>
+                    <input type="text" id="checkoutAddress" placeholder="123 Main St, City, State, PIN" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="checkoutPhone">Phone number</label>
+                        <input type="tel" id="checkoutPhone" placeholder="+91 98765 43210" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutShipping">Shipping method</label>
+                        <select id="checkoutShipping">
+                            <option value="standard">Standard (Free)</option>
+                            <option value="express">Express (+₹199)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label style="font-size:0.8rem;font-weight:600;color:var(--gray-700);display:block;margin:8px 0 4px;">Payment method</label>
+                <div class="payment-methods" id="paymentMethods">
+                    <button type="button" class="method active" data-method="upi">UPI</button>
+                    <button type="button" class="method" data-method="card">Credit/Debit Card</button>
+                    <button type="button" class="method" data-method="netbanking">Net Banking</button>
+                    <button type="button" class="method" data-method="wallet">Wallet</button>
+                </div>
+
+                <div class="order-summary" id="checkoutSummary">
+                    <div class="row"><span>Subtotal</span><span id="checkoutSubtotal">₹0.00</span></div>
+                    <div class="row"><span>Shipping</span><span id="checkoutShippingLabel">Free</span></div>
+                    <div class="row total"><span>Total</span><span id="checkoutTotal">₹0.00</span></div>
+                </div>
+
+                <div class="security-badge">
+                    <i class="fas fa-lock"></i> Secure checkout — Your payment information is protected.
+                </div>
+
+                <button type="submit" class="btn-place-order">PLACE ORDER <i class="fas fa-arrow-right"></i></button>
+            </form>
+        </div>
+    </div>
+<!-- ===== CART DRAWER ===== -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart">
+        <div class="header-cart">
+            <h3>Your Cart <span id="cartItemCount">(0)</span></h3>
+            <button class="close" aria-label="Close cart" onclick="toggleCart()">✕</button>
+        </div>
+        <div class="free-ship">
+            Add ₹450 more for Free Delivery
+            <div class="bar"><div class="fill" style="width:40%;"></div></div>
+        </div>
+        <div class="items" id="cartItems">
+            <!-- injected by JS -->
+        </div>
+        <div class="totals">
+            <div class="row"><span>Subtotal</span><span id="cartSubtotal">₹0.00</span></div>
+            <div class="row"><span>Estimated Delivery</span><span>Free</span></div>
+            <div class="row total"><span>Total</span><span id="cartTotal">₹0.00</span></div>
+        </div>
+        <div class="actions">
+            <button class="btn-checkout" type="button" onclick="openCheckout()">PROCEED TO CHECKOUT</button>
+            <button class="btn-continue" onclick="toggleCart()">CONTINUE SHOPPING</button>
+        </div>
+        <div class="recommended">
+            <h4>You may also like</h4>
+            <div class="mini-grid">
+                <div class="mini"><img src="https://images.unsplash.com/photo-1617137968427-85924c8002a0?w=100&q=80" alt="" /><div class="info"><div class="name">Classic Tee</div><div class="price">₹499</div></div></div>
+                <div class="mini"><img src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100&q=80" alt="" /><div class="info"><div class="name">Summer Dress</div><div class="price">₹899</div></div></div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // ===== CART & WISHLIST (dummy state) =====
-        let cart = [];
-        let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
+        // ===== CART & WISHLIST (fixed shared storage) =====
+        function readStoredArray(key) {
+            try {
+                const value = JSON.parse(localStorage.getItem(key) || '[]');
+                return Array.isArray(value) ? value : [];
+            } catch (error) {
+                console.warn('Could not read storage key:', key, error);
+                return [];
+            }
+        }
+        let cart = readStoredArray('welcomeMartCart');
+        let wishlist = readStoredArray('welcomeMartWishlist');
+        let selectedPaymentMethod = 'upi';
+
+        function saveCart() {
+            localStorage.setItem('welcomeMartCart', JSON.stringify(cart));
+        }
+        function refreshStoredState() {
+            cart = readStoredArray('welcomeMartCart');
+            wishlist = readStoredArray('welcomeMartWishlist');
+            updateBadges();
+        }
 
         // ===== TOAST =====
         function showToast(msg) {
@@ -1262,12 +1584,13 @@
 
         // ===== UPDATE BADGES =====
         function updateBadges() {
-            const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            const cartCount = cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0);
             const wishCount = wishlist.length;
-            document.getElementById('cartCount').textContent = cartCount;
-            document.getElementById('bottomCartCount').textContent = cartCount;
-            document.getElementById('wishlistCount').textContent = wishCount;
-            document.getElementById('bottomWishCount').textContent = wishCount;
+            const values = { cartCount, bottomCartCount: cartCount, wishlistCount: wishCount, bottomWishCount: wishCount };
+            Object.entries(values).forEach(([id, value]) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            });
         }
 
         // ===== SEARCH =====
@@ -1322,12 +1645,164 @@
             setTimeout(() => handleScroll(), 100);
         });
 
-        // ===== CART TOGGLE (dummy) =====
+        // ===== CART DRAWER =====
         function toggleCart() {
-            showToast('🛒 Cart drawer would open here.');
+            const overlay = document.getElementById('cartOverlay');
+            const drawer = document.getElementById('cartDrawer');
+            if (!overlay || !drawer) {
+                showToast('Cart is temporarily unavailable. Please refresh the page.');
+                return;
+            }
+            const shouldOpen = !drawer.classList.contains('open');
+            if (shouldOpen) {
+                cart = readStoredArray('welcomeMartCart');
+                updateCartUI();
+            }
+            overlay.classList.toggle('open', shouldOpen);
+            drawer.classList.toggle('open', shouldOpen);
+            document.body.style.overflow = shouldOpen ? 'hidden' : '';
         }
 
+        function updateCartUI() {
+            const itemsContainer = document.getElementById('cartItems');
+            if (!itemsContainer) { updateBadges(); return; }
+            saveCart();
+            const count = cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0);
+            const countEl = document.getElementById('cartItemCount');
+            if (countEl) countEl.textContent = `(${count})`;
+            if (!cart.length) {
+                itemsContainer.innerHTML = '<p style="padding:20px;text-align:center;">Your cart is empty.</p>';
+            } else {
+                itemsContainer.innerHTML = cart.map((item, index) => {
+                    const name = String(item.name || item.title || item.productName || 'Product');
+                    const image = String(item.img || item.image || item.imageUrl || '');
+                    const price = Number(item.price ?? item.salePrice ?? 0) || 0;
+                    const qty = Number(item.qty) || 1;
+                    return `<div class="cart-item">
+                        <img src="${image.replace(/"/g, '&quot;')}" alt="${name.replace(/"/g, '&quot;')}" onerror="this.style.display='none'">
+                        <div class="info"><div class="name">${name}</div><div class="price">₹${price.toFixed(2)}</div>
+                            <div class="quantity"><button type="button" onclick="changeCartQty(${index}, -1)" aria-label="Decrease quantity">−</button>
+                            <span>${qty}</span><button type="button" onclick="changeCartQty(${index}, 1)" aria-label="Increase quantity">+</button>
+                            <button type="button" onclick="removeCartItem(${index})">Remove</button></div></div></div>`;
+                }).join('');
+            }
+            const subtotal = getCartSubtotal();
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const totalEl = document.getElementById('cartTotal');
+            if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
+            if (totalEl) totalEl.textContent = `₹${subtotal.toFixed(2)}`;
+            const fill = document.querySelector('.cart-drawer .bar .fill');
+            if (fill) fill.style.width = `${Math.min(subtotal / 450 * 100, 100)}%`;
+            const freeShip = document.querySelector('.cart-drawer .free-ship');
+            if (freeShip) freeShip.firstChild.textContent = subtotal >= 450 ? 'You qualify for Free Delivery!' : `Add ₹${(450 - subtotal).toFixed(2)} more for Free Delivery`;
+            updateBadges();
+        }
+
+        function changeCartQty(index, delta) {
+            if (!cart[index]) return;
+            cart[index].qty = (Number(cart[index].qty) || 1) + delta;
+            if (cart[index].qty <= 0) cart.splice(index, 1);
+            updateCartUI();
+        }
+        function removeCartItem(index) {
+            if (index < 0 || index >= cart.length) return;
+            cart.splice(index, 1);
+            updateCartUI();
+            showToast('Product removed from cart.');
+        }
+
+        // ===== CHECKOUT =====
+        function getCartSubtotal() {
+            return cart.reduce((sum, item) => sum + (Number(item.price ?? item.salePrice) || 0) * (Number(item.qty) || 1), 0);
+        }
+        function updateCheckoutSummary() {
+            const subtotal = getCartSubtotal();
+            const shipping = document.getElementById('checkoutShipping')?.value === 'express' ? 199 : 0;
+            const a = document.getElementById('checkoutSubtotal');
+            const b = document.getElementById('checkoutShippingLabel');
+            const c = document.getElementById('checkoutTotal');
+            if (a) a.textContent = `₹${subtotal.toFixed(2)}`;
+            if (b) b.textContent = shipping ? `₹${shipping.toFixed(2)}` : 'Free';
+            if (c) c.textContent = `₹${(subtotal + shipping).toFixed(2)}`;
+        }
+        function openCheckout() {
+            cart = readStoredArray('welcomeMartCart');
+            if (!cart.length) { showToast('Your cart is empty. Add a product first.'); return; }
+            const checkout = document.getElementById('checkoutOverlay');
+            if (!checkout) { showToast('Checkout is temporarily unavailable.'); return; }
+            document.getElementById('cartDrawer')?.classList.remove('open');
+            document.getElementById('cartOverlay')?.classList.remove('open');
+            checkout.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            updateCheckoutSummary();
+        }
+        function closeCheckout() {
+            document.getElementById('checkoutOverlay')?.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function placeOrder(event) {
+            event?.preventDefault();
+            if (!cart.length) { showToast('Your cart is empty.'); closeCheckout(); return; }
+            const form = document.getElementById('checkoutForm');
+            if (form && !form.reportValidity()) return;
+            const subtotal = getCartSubtotal();
+            const shippingMethod = document.getElementById('checkoutShipping')?.value || 'standard';
+            const shipping = shippingMethod === 'express' ? 199 : 0;
+            const order = {
+                id: 'WM' + Date.now(), createdAt: new Date().toISOString(),
+                customer: {
+                    email: document.getElementById('checkoutEmail')?.value.trim() || '',
+                    firstName: document.getElementById('checkoutFname')?.value.trim() || '',
+                    lastName: document.getElementById('checkoutLname')?.value.trim() || '',
+                    address: document.getElementById('checkoutAddress')?.value.trim() || '',
+                    phone: document.getElementById('checkoutPhone')?.value.trim() || ''
+                },
+                items: cart.map(item => ({...item, qty: Number(item.qty) || 1})),
+                subtotal, shipping, total: subtotal + shipping, shippingMethod,
+                paymentMethod: selectedPaymentMethod, status: 'Pending'
+            };
+            const orders = readStoredArray('welcomeMartOrders');
+            orders.push(order);
+            localStorage.setItem('welcomeMartOrders', JSON.stringify(orders));
+            cart = [];
+            saveCart();
+            updateCartUI();
+            closeCheckout();
+            form?.reset();
+            showToast('Demo order saved. Order ID: ' + order.id);
+        }
+
+        document.getElementById('cartBtn')?.addEventListener('click', toggleCart);
+        document.getElementById('cartOverlay')?.addEventListener('click', toggleCart);
+        document.getElementById('checkoutOverlay')?.addEventListener('click', event => {
+            if (event.target === event.currentTarget) closeCheckout();
+        });
+        document.querySelectorAll('#paymentMethods .method').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('#paymentMethods .method').forEach(method => method.classList.remove('active'));
+                button.classList.add('active');
+                selectedPaymentMethod = button.dataset.method || 'upi';
+            });
+        });
+        document.getElementById('checkoutShipping')?.addEventListener('change', updateCheckoutSummary);
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                if (document.getElementById('cartDrawer')?.classList.contains('open')) toggleCart();
+                if (document.getElementById('checkoutOverlay')?.classList.contains('open')) closeCheckout();
+            }
+        });
+        window.addEventListener('storage', event => {
+            if (!event.key || ['welcomeMartCart', 'welcomeMartWishlist'].includes(event.key)) {
+                refreshStoredState();
+                if (document.getElementById('cartDrawer')?.classList.contains('open')) updateCartUI();
+            }
+        });
+        window.addEventListener('focus', refreshStoredState);
+
         // ===== INIT =====
+        cart = readStoredArray('welcomeMartCart');
+        wishlist = readStoredArray('welcomeMartWishlist');
+        updateCartUI();
         updateBadges();
 
         console.log('📜 Welcome Mart — Terms & Conditions page loaded');
