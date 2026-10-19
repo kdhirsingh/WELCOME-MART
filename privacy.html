@@ -1196,15 +1196,29 @@
             toast._timeout = setTimeout(() => toast.classList.remove('show'), 2600);
         }
 
-        // ===== UPDATE BADGES =====
-        function updateBadges() {
-            const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
-            const wishCount = wishlist.length;
-            document.getElementById('cartCount').textContent = cartCount;
-            document.getElementById('bottomCartCount').textContent = cartCount;
-            document.getElementById('wishlistCount').textContent = wishCount;
-            document.getElementById('bottomWishCount').textContent = wishCount;
+ // ===== UPDATE BADGES =====
+function updateBadges() {
+    const cartCount = cart.reduce(
+        (sum, item) => sum + (Number(item.qty) || 0),
+        0
+    );
+
+    const wishCount = wishlist.length;
+
+    const badgeIds = {
+        cartCount: cartCount,
+        bottomCartCount: cartCount,
+        wishlistCount: wishCount,
+        bottomWishCount: wishCount
+    };
+
+    Object.entries(badgeIds).forEach(([id, count]) => {
+        const badge = document.getElementById(id);
+        if (badge) {
+            badge.textContent = count;
         }
+    });
+}
 
         // ===== SEARCH =====
         function toggleSearch() {
