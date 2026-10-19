@@ -1973,13 +1973,14 @@
             if (totalEl) totalEl.textContent = `₹${subtotal.toFixed(2)}`;
 
             const fill = document.querySelector('.free-ship .fill');
-            if (fill) {
-                fill.style.width = `${Math.min(subtotal / 450 * 100, 100)}%`;
-            }
+           if (fill) {
+    fill.style.width = `${Math.min(subtotal / 450 * 100, 100)}%`;
+}
 
-            updateBadges();
-        }
-
+if (typeof updateBadges === 'function') {
+    updateBadges();
+}
+}
         // ===== CHANGE CART QUANTITY =====
         function changeCartQty(index, delta) {
             if (!cart[index]) return;
