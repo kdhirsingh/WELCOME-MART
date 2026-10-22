@@ -1327,6 +1327,59 @@
 }
 /* ===== END CART LAYOUT FIX ===== */
 
+    
+/* ===== CART + CHECKOUT ADDITIONS ONLY ===== */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:4000;opacity:0;visibility:hidden;transition:var(--transition)}
+.cart-overlay.open{opacity:1;visibility:visible}
+.cart-drawer{position:fixed;top:0;right:-440px;width:410px;max-width:94vw;height:100dvh;background:var(--white);z-index:4001;transition:var(--transition);box-shadow:var(--shadow-xl);display:flex;flex-direction:column;padding:24px 20px}
+.cart-drawer.open{right:0}
+.cart-drawer .header-cart{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--gray-100)}
+.cart-drawer .header-cart h3{font-size:1.2rem;font-weight:600;color:var(--primary)}
+.cart-drawer .header-cart .close{font-size:1.4rem;color:var(--gray-500);padding:4px 8px}
+.cart-drawer .free-ship{background:var(--off-white);padding:10px 14px;border-radius:var(--radius-sm);margin:12px 0;font-size:.8rem;color:var(--gray-600)}
+.cart-drawer .free-ship .bar{height:4px;background:var(--gray-200);border-radius:4px;margin-top:7px;overflow:hidden}
+.cart-drawer .free-ship .fill{height:100%;background:var(--accent);transition:width .25s}
+.cart-drawer .items{flex:1;min-height:80px;overflow-y:auto;padding:4px 0 16px}
+.cart-drawer .items .cart-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--gray-100);min-width:0}
+.cart-drawer .items .cart-item>img{width:62px;height:62px;flex:0 0 62px;object-fit:cover;border-radius:var(--radius-xs);background:var(--gray-100)}
+.cart-drawer .cart-item-info{flex:1;min-width:0}
+.cart-drawer .cart-item-info h4{font-size:.85rem;font-weight:600;color:var(--primary);line-height:1.4;overflow-wrap:anywhere;margin-bottom:4px}
+.cart-drawer .cart-item-info p{font-size:.82rem;color:var(--gray-600);margin-bottom:6px}
+.cart-drawer .qty-controls{display:flex;align-items:center;gap:9px}
+.cart-drawer .qty-controls button{width:25px;height:25px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--gray-200);border-radius:50%;background:var(--white)}
+.cart-drawer .qty-controls span{min-width:16px;text-align:center;font-size:.85rem}
+.cart-drawer .remove-item{width:28px;height:28px;flex:0 0 28px;color:var(--gray-500);font-size:.9rem}
+.cart-drawer .remove-item:hover{color:#e74c3c}
+.cart-drawer .cart-empty{padding:38px 12px;text-align:center;color:var(--gray-500)}
+.cart-drawer .cart-empty i{font-size:2rem;display:block;margin-bottom:12px;color:var(--gray-400)}
+.cart-drawer .totals{border-top:1px solid var(--gray-200);padding-top:12px}
+.cart-drawer .totals .row,.checkout-panel .order-summary .row{display:flex;justify-content:space-between;gap:16px;padding:5px 0;font-size:.88rem;color:var(--gray-600)}
+.cart-drawer .totals .row.total,.checkout-panel .order-summary .row.total{font-weight:700;color:var(--primary);font-size:1rem;border-top:1px solid var(--gray-200);margin-top:6px;padding-top:10px}
+.cart-drawer .actions{display:grid;gap:9px;padding-top:14px}
+.cart-drawer .actions .btn-checkout,.checkout-panel .btn-place-order{padding:14px 18px;background:var(--primary);color:white;border-radius:var(--radius-sm);font-size:.85rem;font-weight:600;letter-spacing:.03em}
+.cart-drawer .actions .btn-continue{padding:11px;background:var(--off-white);color:var(--primary);border-radius:var(--radius-sm);font-size:.82rem;font-weight:600}
+.checkout-overlay{position:fixed;inset:0;z-index:4100;background:rgba(0,0,0,.52);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;visibility:hidden;transition:var(--transition)}
+.checkout-overlay.open{opacity:1;visibility:visible}
+.checkout-panel{position:relative;background:var(--white);width:620px;max-width:100%;max-height:92dvh;overflow-y:auto;padding:30px;border-radius:var(--radius);box-shadow:var(--shadow-xl);transform:translateY(14px);transition:var(--transition)}
+.checkout-overlay.open .checkout-panel{transform:translateY(0)}
+.checkout-panel h2{font-family:var(--font-display);font-size:1.8rem;color:var(--primary);margin-bottom:5px}
+.checkout-panel .checkout-intro{font-size:.88rem;color:var(--gray-500);margin-bottom:20px}
+.checkout-panel .close-checkout{position:absolute;top:18px;right:20px;font-size:1.35rem;color:var(--gray-500)}
+.checkout-panel .checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.checkout-panel .field{margin-bottom:13px}
+.checkout-panel .field.full{grid-column:1/-1}
+.checkout-panel label{display:block;font-size:.8rem;font-weight:600;color:var(--gray-700);margin-bottom:5px}
+.checkout-panel input,.checkout-panel select,.checkout-panel textarea{width:100%;padding:11px 12px;border:1px solid var(--gray-200);border-radius:var(--radius-xs);font:inherit;font-size:.88rem;color:var(--gray-800);background:white}
+.checkout-panel input:focus,.checkout-panel select:focus,.checkout-panel textarea:focus{outline:2px solid rgba(201,168,76,.25);border-color:var(--accent)}
+.checkout-panel .payment-methods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 18px}
+.checkout-panel .payment-methods .method{border:1px solid var(--gray-200);border-radius:var(--radius-xs);padding:10px;font-size:.82rem;text-align:center}
+.checkout-panel .payment-methods .method.active{border-color:var(--accent);background:var(--off-white);font-weight:600;color:var(--primary)}
+.checkout-panel .order-summary{background:var(--off-white);border-radius:var(--radius-sm);padding:12px 15px;margin:16px 0}
+.checkout-panel .security-badge{font-size:.77rem;color:var(--gray-500);margin:12px 0}
+.checkout-panel .btn-place-order{width:100%;display:flex;justify-content:center;gap:10px;align-items:center}
+@media(max-width:520px){.cart-drawer{padding:18px 15px}.checkout-panel{padding:24px 18px}.checkout-panel .checkout-grid{grid-template-columns:1fr}.checkout-panel .field.full{grid-column:auto}.checkout-panel h2{font-size:1.5rem}}
+/* ===== END CART + CHECKOUT ADDITIONS ===== */
+
     </style>
 </head>
 <body>
@@ -1578,6 +1631,64 @@
         </div>
     </section>
 
+
+    <!-- ===== CART DRAWER (shared cart state) ===== -->
+    <div class="cart-overlay" id="cartOverlay" aria-hidden="true"></div>
+    <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true">
+        <div class="header-cart">
+            <h3>Your Cart <span id="cartItemCount">(0)</span></h3>
+            <button class="close" type="button" aria-label="Close cart" onclick="toggleCart(false)">✕</button>
+        </div>
+        <div class="free-ship" id="cartFreeShip">Add ₹499 more for free delivery
+            <div class="bar"><div class="fill" id="cartShipFill" style="width:0%"></div></div>
+        </div>
+        <div class="items" id="cartItems" aria-live="polite"></div>
+        <div class="totals">
+            <div class="row"><span>Subtotal</span><span id="cartSubtotal">₹0.00</span></div>
+            <div class="row"><span>Delivery</span><span id="cartShipping">Free</span></div>
+            <div class="row total"><span>Total</span><span id="cartTotal">₹0.00</span></div>
+        </div>
+        <div class="actions">
+            <button class="btn-checkout" type="button" onclick="openCheckout()">PROCEED TO CHECKOUT</button>
+            <button class="btn-continue" type="button" onclick="toggleCart(false)">CONTINUE SHOPPING</button>
+        </div>
+    </aside>
+
+    <!-- ===== CHECKOUT ===== -->
+    <div class="checkout-overlay" id="checkoutOverlay" role="dialog" aria-modal="true" aria-label="Checkout" aria-hidden="true">
+      <div class="checkout-panel">
+        <button class="close-checkout" type="button" aria-label="Close checkout" onclick="closeCheckout()">✕</button>
+        <h2>Secure Checkout</h2>
+        <p class="checkout-intro">Enter your delivery details to review your order.</p>
+        <form id="checkoutForm" onsubmit="placeOrder(event)">
+          <div class="checkout-grid">
+            <div class="field"><label for="checkoutName">Full name *</label><input id="checkoutName" name="name" autocomplete="name" required maxlength="100" /></div>
+            <div class="field"><label for="checkoutEmail">Email *</label><input id="checkoutEmail" name="email" type="email" autocomplete="email" required maxlength="150" /></div>
+            <div class="field"><label for="checkoutPhone">Mobile number *</label><input id="checkoutPhone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" pattern="[0-9+() -]{8,18}" required /></div>
+            <div class="field"><label for="checkoutPincode">PIN code *</label><input id="checkoutPincode" name="pincode" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" maxlength="6" required /></div>
+            <div class="field full"><label for="checkoutAddress">House no., street, area *</label><textarea id="checkoutAddress" name="address" autocomplete="street-address" rows="2" required maxlength="300"></textarea></div>
+            <div class="field"><label for="checkoutCity">City *</label><input id="checkoutCity" name="city" autocomplete="address-level2" required maxlength="80" /></div>
+            <div class="field"><label for="checkoutState">State *</label><input id="checkoutState" name="state" autocomplete="address-level1" required maxlength="80" /></div>
+            <div class="field full"><label for="checkoutShipping">Delivery option</label><select id="checkoutShipping" name="shipping"><option value="standard">Standard delivery — Free</option><option value="express">Express delivery — ₹199</option></select></div>
+          </div>
+          <label>Payment method</label>
+          <div class="payment-methods" id="paymentMethods">
+            <button type="button" class="method active" data-method="cod">Cash on Delivery</button>
+            <button type="button" class="method" data-method="upi">UPI (gateway required)</button>
+            <button type="button" class="method" data-method="card">Credit/Debit Card (gateway required)</button>
+            <button type="button" class="method" data-method="netbanking">Net Banking (gateway required)</button>
+          </div>
+          <div class="order-summary">
+            <div class="row"><span>Subtotal</span><span id="checkoutSubtotal">₹0.00</span></div>
+            <div class="row"><span>Delivery</span><span id="checkoutShippingLabel">Free</span></div>
+            <div class="row total"><span>Total</span><span id="checkoutTotal">₹0.00</span></div>
+          </div>
+          <p class="security-badge"><i class="fas fa-lock"></i> Your details are used to prepare this order. Online payments are not processed by this static page.</p>
+          <button type="submit" class="btn-place-order">PLACE ORDER <i class="fas fa-arrow-right"></i></button>
+        </form>
+      </div>
+    </div>
+
     <!-- ===== BOTTOM NAV ===== -->
     <nav class="bottom-nav" aria-label="Mobile navigation">
         <a href="index.html"><i class="fas fa-home"></i>Home</a>
@@ -1648,9 +1759,35 @@
     </footer>
 
     <script>
-        // ===== CART & WISHLIST (dummy state) =====
-        let cart = [];
-        let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
+        // ===== CART & WISHLIST (shared site storage keys) =====
+        let cart = readCart();
+        let wishlist = readWishlist();
+        let selectedPaymentMethod = 'cod';
+
+        function readCart() {
+            try {
+                const data = JSON.parse(localStorage.getItem('welcomeMartCart') || '[]');
+                return Array.isArray(data) ? data.map(item => ({
+                    ...item,
+                    id: item.id,
+                    name: item.name || item.title || 'Product',
+                    price: Number(item.price) || 0,
+                    qty: Math.max(1, Number(item.qty) || 1),
+                    image: item.image || item.img || item.images?.[0] || ''
+                })) : [];
+            } catch (_) { return []; }
+        }
+        function readWishlist() {
+            try { const data = JSON.parse(localStorage.getItem('welcomeMartWishlist') || '[]'); return Array.isArray(data) ? data : []; }
+            catch (_) { return []; }
+        }
+        function money(value) {
+            return '₹' + (Number(value) || 0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+        function persistCart() {
+            localStorage.setItem('welcomeMartCart', JSON.stringify(cart));
+            updateCartUI();
+        }
 
         // ===== TOAST =====
         function showToast(msg) {
@@ -1661,14 +1798,146 @@
             toast._timeout = setTimeout(() => toast.classList.remove('show'), 2600);
         }
 
-        // ===== UPDATE BADGES =====
+        // ===== CART UI + BADGES =====
         function updateBadges() {
-            const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            const count = cart.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
             const wishCount = wishlist.length;
-            document.getElementById('cartCount').textContent = cartCount;
-            document.getElementById('bottomCartCount').textContent = cartCount;
-            document.getElementById('wishlistCount').textContent = wishCount;
-            document.getElementById('bottomWishCount').textContent = wishCount;
+            ['cartCount', 'bottomCartCount'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = count; });
+            ['wishlistCount', 'bottomWishCount'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = wishCount; });
+        }
+        function updateCartUI() {
+            const count = cart.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+            const subtotal = cart.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 1), 0);
+            const itemCount = document.getElementById('cartItemCount');
+            const items = document.getElementById('cartItems');
+            if (itemCount) itemCount.textContent = `(${count})`;
+            if (items) {
+                if (!cart.length) {
+                    items.innerHTML = '<div class="cart-empty"><i class="fas fa-shopping-bag"></i><p>Your cart is empty.</p><small>Add products from any shop page to see them here.</small></div>';
+                } else {
+                    items.innerHTML = cart.map((item, index) => `
+                      <div class="cart-item">
+                        <img src="${String(item.image || '').replace(/["<>]/g, '')}" alt="" onerror="this.style.visibility='hidden'">
+                        <div class="cart-item-info">
+                          <h4>${escapeCartText(item.name)}</h4>
+                          <p>${money(item.price)}</p>
+                          <div class="qty-controls">
+                            <button type="button" aria-label="Decrease quantity" onclick="changeCartQty(${index},-1)">−</button>
+                            <span>${Number(item.qty) || 1}</span>
+                            <button type="button" aria-label="Increase quantity" onclick="changeCartQty(${index},1)">+</button>
+                          </div>
+                        </div>
+                        <button type="button" class="remove-item" aria-label="Remove ${escapeCartText(item.name)}" onclick="removeCartItem(${index})"><i class="fas fa-trash"></i></button>
+                      </div>`).join('');
+                }
+            }
+            const shipping = document.getElementById('checkoutShipping')?.value === 'express' ? 199 : 0;
+            const shippingLabel = document.getElementById('cartShipping');
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const totalEl = document.getElementById('cartTotal');
+            if (subtotalEl) subtotalEl.textContent = money(subtotal);
+            if (totalEl) totalEl.textContent = money(subtotal + shipping);
+            if (shippingLabel) shippingLabel.textContent = shipping ? money(shipping) : 'Free';
+            const progress = document.getElementById('cartShipFill');
+            const freeShip = document.getElementById('cartFreeShip');
+            if (progress) progress.style.width = Math.min(100, subtotal / 499 * 100) + '%';
+            if (freeShip) freeShip.firstChild.textContent = subtotal >= 499 ? 'You qualify for free delivery' : `Add ${money(499 - subtotal)} more for free delivery`;
+            updateCheckoutTotals();
+            updateBadges();
+        }
+        function escapeCartText(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+        }
+        function changeCartQty(index, delta) {
+            if (!cart[index]) return;
+            cart[index].qty = Math.max(1, (Number(cart[index].qty) || 1) + delta);
+            persistCart();
+        }
+        function removeCartItem(index) {
+            if (!cart[index]) return;
+            cart.splice(index, 1);
+            persistCart();
+            showToast('Item removed from cart.');
+        }
+        function toggleCart(forceOpen) {
+            const overlay = document.getElementById('cartOverlay');
+            const drawer = document.getElementById('cartDrawer');
+            if (!overlay || !drawer) return;
+            const open = typeof forceOpen === 'boolean' ? forceOpen : !drawer.classList.contains('open');
+            overlay.classList.toggle('open', open);
+            drawer.classList.toggle('open', open);
+            overlay.setAttribute('aria-hidden', String(!open));
+            drawer.setAttribute('aria-hidden', String(!open));
+            document.body.style.overflow = open || document.getElementById('checkoutOverlay')?.classList.contains('open') ? 'hidden' : '';
+            if (open) updateCartUI();
+        }
+        document.getElementById('cartBtn')?.addEventListener('click', () => toggleCart());
+        document.getElementById('cartOverlay')?.addEventListener('click', () => toggleCart(false));
+        function updateCheckoutTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 1), 0);
+            const shipping = document.getElementById('checkoutShipping')?.value === 'express' ? 199 : 0;
+            const sub = document.getElementById('checkoutSubtotal');
+            const ship = document.getElementById('checkoutShippingLabel');
+            const total = document.getElementById('checkoutTotal');
+            if (sub) sub.textContent = money(subtotal);
+            if (ship) ship.textContent = shipping ? money(shipping) : 'Free';
+            if (total) total.textContent = money(subtotal + shipping);
+        }
+        function openCheckout() {
+            cart = readCart();
+            if (!cart.length) { showToast('Your cart is empty. Add products first.'); return; }
+            toggleCart(false);
+            const overlay = document.getElementById('checkoutOverlay');
+            overlay.classList.add('open');
+            overlay.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            updateCheckoutTotals();
+        }
+        function closeCheckout() {
+            const overlay = document.getElementById('checkoutOverlay');
+            overlay.classList.remove('open');
+            overlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = document.getElementById('cartDrawer')?.classList.contains('open') ? 'hidden' : '';
+        }
+        document.getElementById('checkoutShipping')?.addEventListener('change', updateCheckoutTotals);
+        document.querySelectorAll('#paymentMethods .method').forEach(button => button.addEventListener('click', () => {
+            document.querySelectorAll('#paymentMethods .method').forEach(b => b.classList.remove('active'));
+            button.classList.add('active');
+            selectedPaymentMethod = button.dataset.method || 'cod';
+        }));
+        document.getElementById('checkoutOverlay')?.addEventListener('click', event => {
+            if (event.target.id === 'checkoutOverlay') closeCheckout();
+        });
+        function placeOrder(event) {
+            event.preventDefault();
+            if (!cart.length) { showToast('Your cart is empty.'); closeCheckout(); return; }
+            if (selectedPaymentMethod !== 'cod') {
+                showToast('Online payment needs a payment gateway integration. Choose Cash on Delivery for this demo.');
+                return;
+            }
+            const form = document.getElementById('checkoutForm');
+            if (!form.reportValidity()) return;
+            const formData = new FormData(form);
+            const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+            const shipping = formData.get('shipping') === 'express' ? 199 : 0;
+            const orders = (() => { try { return JSON.parse(localStorage.getItem('welcomeMartOrders') || '[]'); } catch (_) { return []; } })();
+            const order = {
+                orderId: 'WM' + Date.now().toString().slice(-9),
+                createdAt: new Date().toISOString(),
+                customer: { name: formData.get('name'), email: formData.get('email'), phone: formData.get('phone'), pincode: formData.get('pincode'), address: formData.get('address'), city: formData.get('city'), state: formData.get('state') },
+                items: cart.map(item => ({id:item.id, name:item.name, price:item.price, qty:item.qty, image:item.image})),
+                subtotal, shipping, total: subtotal + shipping, paymentMethod: selectedPaymentMethod, status: 'pending'
+            };
+            orders.push(order);
+            localStorage.setItem('welcomeMartOrders', JSON.stringify(orders));
+            cart = [];
+            localStorage.setItem('welcomeMartCart', JSON.stringify(cart));
+            updateCartUI();
+            closeCheckout();
+            form.reset();
+            selectedPaymentMethod = 'cod';
+            document.querySelectorAll('#paymentMethods .method').forEach(b => b.classList.toggle('active', b.dataset.method === 'cod'));
+            showToast('Order saved on this device. Connect a backend to receive real orders.');
         }
 
         // ===== SEARCH =====
@@ -1685,6 +1954,8 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (document.getElementById('searchOverlay').classList.contains('open')) toggleSearch();
+                if (document.getElementById('checkoutOverlay')?.classList.contains('open')) closeCheckout();
+                if (document.getElementById('cartDrawer')?.classList.contains('open')) toggleCart(false);
                 if (document.getElementById('mobileMenu').classList.contains('open')) toggleMobileMenu();
             }
         });
@@ -1723,13 +1994,8 @@
             setTimeout(() => handleScroll(), 100);
         });
 
-        // ===== CART TOGGLE (dummy) =====
-        function toggleCart() {
-            showToast('🛒 Cart drawer would open here.');
-        }
-
         // ===== INIT =====
-        updateBadges();
+        updateCartUI();
 
         console.log('🏢 Welcome Mart — About Us page loaded');
     </script>
