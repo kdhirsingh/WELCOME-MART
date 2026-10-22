@@ -1358,26 +1358,199 @@
 .cart-drawer .actions{display:grid;gap:9px;padding-top:14px}
 .cart-drawer .actions .btn-checkout,.checkout-panel .btn-place-order{padding:14px 18px;background:var(--primary);color:white;border-radius:var(--radius-sm);font-size:.85rem;font-weight:600;letter-spacing:.03em}
 .cart-drawer .actions .btn-continue{padding:11px;background:var(--off-white);color:var(--primary);border-radius:var(--radius-sm);font-size:.82rem;font-weight:600}
-.checkout-overlay{position:fixed;inset:0;z-index:4100;background:rgba(0,0,0,.52);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;visibility:hidden;transition:var(--transition)}
-.checkout-overlay.open{opacity:1;visibility:visible}
-.checkout-panel{position:relative;background:var(--white);width:620px;max-width:100%;max-height:92dvh;overflow-y:auto;padding:30px;border-radius:var(--radius);box-shadow:var(--shadow-xl);transform:translateY(14px);transition:var(--transition)}
-.checkout-overlay.open .checkout-panel{transform:translateY(0)}
-.checkout-panel h2{font-family:var(--font-display);font-size:1.8rem;color:var(--primary);margin-bottom:5px}
-.checkout-panel .checkout-intro{font-size:.88rem;color:var(--gray-500);margin-bottom:20px}
-.checkout-panel .close-checkout{position:absolute;top:18px;right:20px;font-size:1.35rem;color:var(--gray-500)}
-.checkout-panel .checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.checkout-panel .field{margin-bottom:13px}
-.checkout-panel .field.full{grid-column:1/-1}
-.checkout-panel label{display:block;font-size:.8rem;font-weight:600;color:var(--gray-700);margin-bottom:5px}
-.checkout-panel input,.checkout-panel select,.checkout-panel textarea{width:100%;padding:11px 12px;border:1px solid var(--gray-200);border-radius:var(--radius-xs);font:inherit;font-size:.88rem;color:var(--gray-800);background:white}
-.checkout-panel input:focus,.checkout-panel select:focus,.checkout-panel textarea:focus{outline:2px solid rgba(201,168,76,.25);border-color:var(--accent)}
-.checkout-panel .payment-methods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 18px}
-.checkout-panel .payment-methods .method{border:1px solid var(--gray-200);border-radius:var(--radius-xs);padding:10px;font-size:.82rem;text-align:center}
-.checkout-panel .payment-methods .method.active{border-color:var(--accent);background:var(--off-white);font-weight:600;color:var(--primary)}
-.checkout-panel .order-summary{background:var(--off-white);border-radius:var(--radius-sm);padding:12px 15px;margin:16px 0}
-.checkout-panel .security-badge{font-size:.77rem;color:var(--gray-500);margin:12px 0}
-.checkout-panel .btn-place-order{width:100%;display:flex;justify-content:center;gap:10px;align-items:center}
-@media(max-width:520px){.cart-drawer{padding:18px 15px}.checkout-panel{padding:24px 18px}.checkout-panel .checkout-grid{grid-template-columns:1fr}.checkout-panel .field.full{grid-column:auto}.checkout-panel h2{font-size:1.5rem}}
+/* ===== CHECKOUT OVERLAY ===== */
+        .checkout-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 6000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .checkout-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .checkout-overlay .checkout-panel {
+            background: var(--white);
+            border-radius: var(--radius);
+            max-width: 720px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            padding: 32px 36px;
+            position: relative;
+            transform: scale(0.96) translateY(20px);
+            transition: var(--transition);
+            box-shadow: var(--shadow-xl);
+        }
+        .checkout-overlay.open .checkout-panel {
+            transform: scale(1) translateY(0);
+        }
+        .checkout-overlay .close-checkout {
+            position: sticky;
+            top: 0;
+            float: right;
+            z-index: 10;
+            background: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--gray-500);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            margin-bottom: 12px;
+        }
+        .checkout-overlay .close-checkout:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: rotate(90deg);
+        }
+        .checkout-overlay h2 {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .checkout-overlay .sub {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .checkout-overlay .form-group {
+            margin-bottom: 18px;
+        }
+        .checkout-overlay .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 4px;
+        }
+        .checkout-overlay .form-group input,
+        .checkout-overlay .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: var(--font-body);
+            background: var(--white);
+        }
+        .checkout-overlay .form-group input:focus,
+        .checkout-overlay .form-group select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.12);
+        }
+        .checkout-overlay .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .checkout-overlay .payment-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0 16px;
+        }
+        .checkout-overlay .payment-methods .method {
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1.5px solid var(--gray-200);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            transition: var(--transition);
+            background: var(--white);
+            cursor: pointer;
+        }
+        .checkout-overlay .payment-methods .method:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .checkout-overlay .payment-methods .method.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--white);
+        }
+        .checkout-overlay .order-summary {
+            background: var(--off-white);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+        .checkout-overlay .order-summary .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.9rem;
+        }
+        .checkout-overlay .order-summary .row.total {
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-top: 1px solid var(--gray-200);
+            padding-top: 10px;
+            margin-top: 6px;
+        }
+        .checkout-overlay .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin: 12px 0 8px;
+        }
+        .checkout-overlay .security-badge i {
+            color: #2ecc71;
+        }
+        .checkout-overlay .btn-place-order {
+            width: 100%;
+            padding: 16px;
+            border-radius: 60px;
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+            border: none;
+            margin-top: 8px;
+        }
+        .checkout-overlay .btn-place-order:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 24px rgba(201, 168, 76, 0.35);
+        }
+        @media (max-width: 640px) {
+            .checkout-overlay .checkout-panel {
+                padding: 20px 16px;
+            }
+            .checkout-overlay .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .checkout-overlay h2 {
+                font-size: 1.3rem;
+            }
+            .checkout-overlay .payment-methods .method {
+                padding: 8px 14px;
+                font-size: 0.75rem;
+            }
+        }
+
+        
 /* ===== END CART + CHECKOUT ADDITIONS ===== */
 
     </style>
@@ -1654,39 +1827,66 @@
         </div>
     </aside>
 
-    <!-- ===== CHECKOUT ===== -->
-    <div class="checkout-overlay" id="checkoutOverlay" role="dialog" aria-modal="true" aria-label="Checkout" aria-hidden="true">
-      <div class="checkout-panel">
-        <button class="close-checkout" type="button" aria-label="Close checkout" onclick="closeCheckout()">✕</button>
-        <h2>Secure Checkout</h2>
-        <p class="checkout-intro">Enter your delivery details to review your order.</p>
-        <form id="checkoutForm" onsubmit="placeOrder(event)">
-          <div class="checkout-grid">
-            <div class="field"><label for="checkoutName">Full name *</label><input id="checkoutName" name="name" autocomplete="name" required maxlength="100" /></div>
-            <div class="field"><label for="checkoutEmail">Email *</label><input id="checkoutEmail" name="email" type="email" autocomplete="email" required maxlength="150" /></div>
-            <div class="field"><label for="checkoutPhone">Mobile number *</label><input id="checkoutPhone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" pattern="[0-9+() -]{8,18}" required /></div>
-            <div class="field"><label for="checkoutPincode">PIN code *</label><input id="checkoutPincode" name="pincode" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" maxlength="6" required /></div>
-            <div class="field full"><label for="checkoutAddress">House no., street, area *</label><textarea id="checkoutAddress" name="address" autocomplete="street-address" rows="2" required maxlength="300"></textarea></div>
-            <div class="field"><label for="checkoutCity">City *</label><input id="checkoutCity" name="city" autocomplete="address-level2" required maxlength="80" /></div>
-            <div class="field"><label for="checkoutState">State *</label><input id="checkoutState" name="state" autocomplete="address-level1" required maxlength="80" /></div>
-            <div class="field full"><label for="checkoutShipping">Delivery option</label><select id="checkoutShipping" name="shipping"><option value="standard">Standard delivery — Free</option><option value="express">Express delivery — ₹199</option></select></div>
-          </div>
-          <label>Payment method</label>
-          <div class="payment-methods" id="paymentMethods">
-            <button type="button" class="method active" data-method="cod">Cash on Delivery</button>
-            <button type="button" class="method" data-method="upi">UPI (gateway required)</button>
-            <button type="button" class="method" data-method="card">Credit/Debit Card (gateway required)</button>
-            <button type="button" class="method" data-method="netbanking">Net Banking (gateway required)</button>
-          </div>
-          <div class="order-summary">
-            <div class="row"><span>Subtotal</span><span id="checkoutSubtotal">₹0.00</span></div>
-            <div class="row"><span>Delivery</span><span id="checkoutShippingLabel">Free</span></div>
-            <div class="row total"><span>Total</span><span id="checkoutTotal">₹0.00</span></div>
-          </div>
-          <p class="security-badge"><i class="fas fa-lock"></i> Your details are used to prepare this order. Online payments are not processed by this static page.</p>
-          <button type="submit" class="btn-place-order">PLACE ORDER <i class="fas fa-arrow-right"></i></button>
-        </form>
-      </div>
+    <!-- ===== CHECKOUT OVERLAY ===== -->
+    <div class="checkout-overlay" id="checkoutOverlay" role="dialog" aria-label="Checkout" aria-modal="true" aria-hidden="true">
+        <div class="checkout-panel">
+            <button type="button" class="close-checkout" aria-label="Close checkout" onclick="closeCheckout()">✕</button>
+            <h2>Secure Checkout</h2>
+            <p class="sub">Complete your order with confidence.</p>
+            <form id="checkoutForm" onsubmit="placeOrder(event)">
+                <div class="form-group">
+                    <label for="checkoutEmail">Email address</label>
+                    <input type="email" id="checkoutEmail" name="email" autocomplete="email" placeholder="you@example.com" maxlength="150" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="checkoutFname">First name</label>
+                        <input type="text" id="checkoutFname" name="firstName" autocomplete="given-name" placeholder="John" maxlength="80" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutLname">Last name</label>
+                        <input type="text" id="checkoutLname" name="lastName" autocomplete="family-name" placeholder="Doe" maxlength="80" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="checkoutAddress">Delivery address</label>
+                    <input type="text" id="checkoutAddress" name="address" autocomplete="street-address" placeholder="House no., street, area, city, state, PIN" maxlength="300" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="checkoutPhone">Phone number</label>
+                        <input type="tel" id="checkoutPhone" name="phone" autocomplete="tel" inputmode="tel" pattern="[0-9+() -]{8,18}" placeholder="+91 98765 43210" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutShipping">Shipping method</label>
+                        <select id="checkoutShipping" name="shipping">
+                            <option value="standard">Standard (Free)</option>
+                            <option value="express">Express (+₹199)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label style="font-size:0.8rem;font-weight:600;color:var(--gray-700);display:block;margin:8px 0 4px;">Payment method</label>
+                <div class="payment-methods" id="paymentMethods">
+                    <button type="button" class="method active" data-method="upi">UPI</button>
+                    <button type="button" class="method" data-method="card">Credit/Debit Card</button>
+                    <button type="button" class="method" data-method="netbanking">Net Banking</button>
+                    <button type="button" class="method" data-method="wallet">Wallet</button>
+                </div>
+
+                <div class="order-summary" id="checkoutSummary">
+                    <div class="row"><span>Subtotal</span><span id="checkoutSubtotal">₹0.00</span></div>
+                    <div class="row"><span>Shipping</span><span id="checkoutShippingLabel">Free</span></div>
+                    <div class="row total"><span>Total</span><span id="checkoutTotal">₹0.00</span></div>
+                </div>
+
+                <div class="security-badge">
+                    <i class="fas fa-lock"></i> Secure checkout — online payments require a connected payment gateway.
+                </div>
+
+                <button type="submit" class="btn-place-order">PLACE ORDER <i class="fas fa-arrow-right"></i></button>
+            </form>
+        </div>
     </div>
 
     <!-- ===== BOTTOM NAV ===== -->
@@ -1762,7 +1962,7 @@
         // ===== CART & WISHLIST (shared site storage keys) =====
         let cart = readCart();
         let wishlist = readWishlist();
-        let selectedPaymentMethod = 'cod';
+        let selectedPaymentMethod = 'upi';
 
         function readCart() {
             try {
@@ -1916,11 +2116,8 @@
 
             const form = document.getElementById('checkoutForm');
             if (!form || !form.reportValidity()) return;
-            if (selectedPaymentMethod !== 'cod') {
-                showToast('Online payment is not enabled yet. Choose Cash on Delivery or connect a payment gateway.');
-                return;
-            }
-
+            // This static page cannot process payments. Keep the order marked pending
+            // until a real payment gateway/backend confirms payment.
             const submitButton = form.querySelector('[type="submit"]');
             if (submitButton?.dataset.submitting === 'true') return;
             if (submitButton) { submitButton.dataset.submitting = 'true'; submitButton.disabled = true; }
@@ -1939,13 +2136,13 @@
                     orderId: 'WM' + Date.now().toString(36).toUpperCase(),
                     createdAt: new Date().toISOString(),
                     customer: {
-                        name: String(formData.get('name') || '').trim(),
+                        name: [formData.get('firstName'), formData.get('lastName')].map(value => String(value || '').trim()).filter(Boolean).join(' '),
                         email: String(formData.get('email') || '').trim(),
                         phone: String(formData.get('phone') || '').trim(),
-                        pincode: String(formData.get('pincode') || '').trim(),
+                        pincode: '',
                         address: String(formData.get('address') || '').trim(),
-                        city: String(formData.get('city') || '').trim(),
-                        state: String(formData.get('state') || '').trim()
+                        city: '',
+                        state: ''
                     },
                     items: cart.map(item => ({ id: item.id, name: item.name, price: Number(item.price) || 0, qty: Number(item.qty) || 1, image: item.image || '' })),
                     subtotal, shipping, total: subtotal + shipping,
@@ -1962,9 +2159,9 @@
                 updateCartUI();
                 closeCheckout();
                 form.reset();
-                selectedPaymentMethod = 'cod';
-                document.querySelectorAll('#paymentMethods .method').forEach(b => b.classList.toggle('active', b.dataset.method === 'cod'));
-                showToast('Order ' + order.orderId + ' saved on this device.');
+                selectedPaymentMethod = 'upi';
+                document.querySelectorAll('#paymentMethods .method').forEach(b => b.classList.toggle('active', b.dataset.method === 'upi'));
+                showToast('Order ' + order.orderId + ' saved on this device. Payment is pending gateway confirmation.');
             } catch (error) {
                 console.error('Unable to save checkout order:', error);
                 showToast('Order could not be saved. Please check browser storage and try again.');
