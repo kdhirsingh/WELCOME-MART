@@ -1638,119 +1638,129 @@
             transform: translateY(0);
         }
         
-/* ===== CART DRAWER LAYOUT FIX ===== */
-.cart-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 4000;
-}
-
-.cart-drawer {
-    position: fixed;
-    top: 0;
-    right: -420px;
-    width: 400px;
-    max-width: 92vw;
-    height: 100vh;
-    height: 100dvh;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    z-index: 4001;
-    padding: 24px 20px;
-    background: var(--white);
-}
-
-.cart-drawer.open {
-    right: 0;
-}
-
-.cart-drawer .header-cart {
-    flex-shrink: 0;
-}
-
-.cart-drawer .free-ship {
-    flex-shrink: 0;
-}
-
-.cart-drawer .items {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.cart-drawer .items .item {
+/* ===== CART LAYOUT FIX ONLY ===== */
+.cart-drawer .items .cart-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-100);
     width: 100%;
-    box-sizing: border-box;
-}
-
-.cart-drawer .items .item img {
-    width: 60px;
-    height: 60px;
-    flex: 0 0 60px;
-    object-fit: cover;
-}
-
-.cart-drawer .items .item .info {
-    flex: 1 1 auto;
     min-width: 0;
 }
 
-.cart-drawer .items .item .name {
+.cart-drawer .items .cart-item > img {
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    object-fit: cover;
+    border-radius: var(--radius-xs);
+    background: var(--gray-100);
+}
+
+.cart-drawer .items .cart-item .cart-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.cart-drawer .items .cart-item .cart-item-info h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary);
+    line-height: 1.4;
     overflow-wrap: anywhere;
+    margin-bottom: 4px;
 }
 
-.cart-drawer .items .item .price {
-    flex-shrink: 0;
+.cart-drawer .items .cart-item .cart-item-info p {
+    font-size: 0.85rem;
+    color: var(--gray-700);
+    margin-bottom: 6px;
 }
 
-.cart-drawer .totals,
-.cart-drawer .actions {
-    flex-shrink: 0;
+.cart-drawer .items .cart-item .qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-drawer .items .cart-item .qty-controls button {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--gray-200);
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--primary);
+}
+
+.cart-drawer .items .cart-item .qty-controls span {
+    min-width: 18px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.cart-drawer .items .cart-item .remove-item {
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-500);
+    background: transparent;
+}
+
+.cart-drawer .items .cart-item .remove-item:hover {
+    color: #e74c3c;
+}
+
+.cart-drawer .items .cart-empty {
+    padding: 40px 16px;
+    text-align: center;
+    color: var(--gray-500);
+}
+
+.cart-drawer .items .cart-empty i {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 12px;
+    color: var(--gray-400);
+}
+
+.cart-drawer .items .cart-empty p {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.cart-drawer .items .cart-empty small {
+    font-size: 0.8rem;
 }
 
 @media (max-width: 480px) {
     .cart-drawer {
-        width: 100%;
-        max-width: 100%;
         padding: 20px 16px;
     }
 
-    .cart-drawer .items .item {
-        gap: 8px;
+    .cart-drawer .items .cart-item {
+        gap: 9px;
     }
-}  
-/* Fix product rows inside Return & Refund cart */
-#cartDrawer .items .item {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 10px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
 
-#cartDrawer .items .item > img {
-    display: block !important;
-    width: 60px !important;
-    min-width: 60px !important;
-    max-width: 60px !important;
-    height: 60px !important;
-    min-height: 60px !important;
-    max-height: 60px !important;
-    flex: 0 0 60px !important;
-    object-fit: cover !important;
-}
+    .cart-drawer .items .cart-item > img {
+        width: 54px;
+        height: 54px;
+        flex-basis: 54px;
+    }
 
-#cartDrawer .items .item .info {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
+    .cart-drawer .items .cart-item .cart-item-info h4 {
+        font-size: 0.8rem;
+    }
 }
+/* ===== END CART LAYOUT FIX ===== */
 
     </style>
 </head>
