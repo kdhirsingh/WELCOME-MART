@@ -1353,6 +1353,8 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+
 /* ===== CART LAYOUT FIX ONLY ===== */
 .cart-drawer .items .cart-item {
     display: flex;
@@ -1923,8 +1925,10 @@
 
     <script>
         // ===== CART & WISHLIST (dummy state) =====
-        let cart = JSON.parse(localStorage.getItem('welcomeMartCart')) || [];
-        let wishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist')) || [];
+        let cart = [];
+        let wishlist = [];
+        try { const savedCart = JSON.parse(localStorage.getItem('welcomeMartCart') || '[]'); cart = Array.isArray(savedCart) ? savedCart : []; } catch (e) { cart = []; }
+        try { const savedWishlist = JSON.parse(localStorage.getItem('welcomeMartWishlist') || '[]'); wishlist = Array.isArray(savedWishlist) ? savedWishlist : []; } catch (e) { wishlist = []; }
 
         // ===== TOAST =====
         function showToast(msg) {
@@ -1937,7 +1941,7 @@
 
         // ===== UPDATE BADGES =====
         function updateBadges() {
-            const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            const cartCount = cart.reduce((sum, item) => sum + (Number(item.qty) > 0 ? Math.floor(Number(item.qty)) : 1), 0);
             const wishCount = wishlist.length;
             const cartBadge = document.getElementById('cartCount');
             const bottomCartBadge = document.getElementById('bottomCartCount');
@@ -2052,137 +2056,197 @@
 
 
         // ===== CART TOGGLE =====
-        function toggleCart() {
+        function toggleCart(forceOpen) {
             const overlay = document.getElementById('cartOverlay');
             const drawer = document.getElementById('cartDrawer');
-
             if (!overlay || !drawer) {
-                showToast('Cart drawer HTML not found.');
+                showToast('Cart is temporarily unavailable. Please refresh the page.');
                 return;
             }
+            const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !drawer.classList.contains('open');
+            if (shouldOpen) updateCartUI();
+            overlay.classList.toggle('open', shouldOpen);
+            drawer.classList.toggle('open', shouldOpen);
+            document.body.style.overflow = (shouldOpen || document.getElementById('checkoutOverlay')?.classList.contains('open')) ? 'hidden' : '';
+        }
 
-            const isOpen = drawer.classList.contains('open');
-
-            if (!isOpen) {
-                updateCartUI();
-            }
-
-            overlay.classList.toggle('open', !isOpen);
-            drawer.classList.toggle('open', !isOpen);
-            document.body.style.overflow = !isOpen ? 'hidden' : '';
+        // ===== CART HELPERS =====
+        function getItemQty(item) {
+            const qty = Number(item?.qty);
+            return Number.isFinite(qty) && qty > 0 ? Math.floor(qty) : 1;
+        }
+        function getItemPrice(item) {
+            const price = Number(item?.price);
+            return Number.isFinite(price) && price >= 0 ? price : 0;
+        }
+        function getCartSubtotal() {
+            return cart.reduce((sum, item) => sum + getItemPrice(item) * getItemQty(item), 0);
+        }
+        function escapeCartText(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
         }
 
         // ===== UPDATE CART UI =====
         function updateCartUI() {
             const itemsContainer = document.getElementById('cartItems');
-            if (!itemsContainer) return;
-
+            cart = Array.isArray(cart) ? cart : [];
+            cart = cart.filter(item => item && typeof item === 'object');
+            cart.forEach(item => { item.qty = getItemQty(item); item.price = getItemPrice(item); });
             localStorage.setItem('welcomeMartCart', JSON.stringify(cart));
 
-            const count = cart.reduce(
-                (sum, item) => sum + (Number(item.qty) || 1), 0
-            );
-
+            const count = cart.reduce((sum, item) => sum + getItemQty(item), 0);
             const countEl = document.getElementById('cartItemCount');
             if (countEl) countEl.textContent = `(${count})`;
+            const badge = document.getElementById('cartCount');
+            if (badge) badge.textContent = count;
 
-            if (cart.length === 0) {
-                itemsContainer.innerHTML =
-                    '<p style="padding:20px;text-align:center;">Your cart is empty.</p>';
-            } else {
-                itemsContainer.innerHTML = cart.map((item, index) => `
-                    <div class="cart-item">
-                        <img src="${item.img || item.image || ''}"
-                             alt="${item.name || 'Product'}"
-                             style="width:65px;height:75px;object-fit:cover;">
-                        <div class="info">
-                            <div class="name">${item.name || 'Product'}</div>
-                            <div class="price">₹${Number(item.price) || 0}</div>
-                            <div class="quantity">
-                                <button onclick="changeCartQty(${index}, -1)">−</button>
-                                <span>${Number(item.qty) || 1}</span>
-                                <button onclick="changeCartQty(${index}, 1)">+</button>
-                                <button onclick="removeCartItem(${index})">Remove</button>
+            if (itemsContainer) {
+                if (!cart.length) {
+                    itemsContainer.innerHTML = '<div class="cart-empty"><i class="fas fa-shopping-bag"></i><p>Your cart is empty.</p><small>Add a product to get started.</small></div>';
+                } else {
+                    itemsContainer.innerHTML = cart.map((item, index) => {
+                        const name = escapeCartText(item.name || 'Product');
+                        const image = escapeCartText(item.img || item.image || '');
+                        const qty = getItemQty(item);
+                        const price = getItemPrice(item);
+                        const variant = item.variant ? `<p class="variant">${escapeCartText(item.variant)}</p>` : '';
+                        return `<div class="cart-item">
+                            <img src="${image}" alt="${name}" loading="lazy" onerror="this.style.visibility='hidden'">
+                            <div class="cart-item-info">
+                                <h4>${name}</h4>
+                                ${variant}
+                                <p>₹${price.toLocaleString('en-IN')}</p>
+                                <div class="qty-controls" aria-label="Quantity controls">
+                                    <button type="button" aria-label="Decrease ${name} quantity" onclick="changeCartQty(${index}, -1)">−</button>
+                                    <span>${qty}</span>
+                                    <button type="button" aria-label="Increase ${name} quantity" onclick="changeCartQty(${index}, 1)">+</button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                `).join('');
+                            <button type="button" class="remove-item" aria-label="Remove ${name} from cart" title="Remove item" onclick="removeCartItem(${index})"><i class="fas fa-trash-alt"></i></button>
+                        </div>`;
+                    }).join('');
+                }
             }
 
-            const subtotal = cart.reduce(
-                (sum, item) =>
-                    sum + (Number(item.price) || 0) * (Number(item.qty) || 1), 0
-            );
-
+            const subtotal = getCartSubtotal();
             const subtotalEl = document.getElementById('cartSubtotal');
             const totalEl = document.getElementById('cartTotal');
+            if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            if (totalEl) totalEl.textContent = `₹${subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-            if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
-            if (totalEl) totalEl.textContent = `₹${subtotal.toFixed(2)}`;
+            const fill = document.querySelector('.cart-drawer .free-ship .fill');
+            const freeShip = document.querySelector('.cart-drawer .free-ship');
+            const threshold = 450;
+            if (freeShip) {
+                if (subtotal >= threshold) {
+                    freeShip.firstChild.textContent = '🎉 You qualify for Free Delivery!';
+                } else {
+                    freeShip.firstChild.textContent = `Add ₹${(threshold - subtotal).toLocaleString('en-IN')} more for Free Delivery`;
+                }
+            }
+            if (fill) fill.style.width = `${Math.min(100, (subtotal / threshold) * 100)}%`;
+            if (typeof updateBadges === 'function') updateBadges();
+            updateCheckoutSummary();
+        }
 
-            const fill = document.querySelector('.free-ship .fill');
-           if (fill) {
-    fill.style.width = `${Math.min(subtotal / 450 * 100, 100)}%`;
-}
-
-if (typeof updateBadges === 'function') {
-    updateBadges();
-}
-}
         // ===== CHANGE CART QUANTITY =====
         function changeCartQty(index, delta) {
             if (!cart[index]) return;
-
-            const currentQty = Number(cart[index].qty) || 1;
-            cart[index].qty = currentQty + delta;
-
-            if (cart[index].qty <= 0) {
-                cart.splice(index, 1);
-            }
-
+            const nextQty = getItemQty(cart[index]) + Number(delta || 0);
+            if (nextQty <= 0) cart.splice(index, 1);
+            else cart[index].qty = nextQty;
             updateCartUI();
         }
 
         // ===== REMOVE CART ITEM =====
         function removeCartItem(index) {
-            if (index < 0 || index >= cart.length) return;
-
+            if (!Number.isInteger(index) || index < 0 || index >= cart.length) return;
+            const name = cart[index]?.name || 'Product';
             cart.splice(index, 1);
             updateCartUI();
-            showToast('Product removed from cart.');
+            showToast(`${name} removed from cart.`);
         }
-
 
         // ===== CHECKOUT FUNCTIONS =====
         let selectedPaymentMethod = 'upi';
-        function getCartSubtotal(){return cart.reduce((sum,item)=>sum+(Number(item.price)||0)*(Number(item.qty)||1),0)}
-        function updateCheckoutSummary(){
-            const subtotal=getCartSubtotal();
-            const shippingSelect=document.getElementById('checkoutShipping');
-            const shipping=shippingSelect&&shippingSelect.value==='express'?199:0;
-            const a=document.getElementById('checkoutSubtotal'),b=document.getElementById('checkoutShippingLabel'),c=document.getElementById('checkoutTotal');
-            if(a)a.textContent=`₹${subtotal.toFixed(2)}`;if(b)b.textContent=shipping?`₹${shipping.toFixed(2)}`:'Free';if(c)c.textContent=`₹${(subtotal+shipping).toFixed(2)}`;
+        function updateCheckoutSummary() {
+            const subtotal = getCartSubtotal();
+            const shippingSelect = document.getElementById('checkoutShipping');
+            const shipping = shippingSelect?.value === 'express' ? 199 : 0;
+            const subtotalEl = document.getElementById('checkoutSubtotal');
+            const shippingEl = document.getElementById('checkoutShippingLabel');
+            const totalEl = document.getElementById('checkoutTotal');
+            if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            if (shippingEl) shippingEl.textContent = shipping ? `₹${shipping.toLocaleString('en-IN')}` : 'Free';
+            if (totalEl) totalEl.textContent = `₹${(subtotal + shipping).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         }
-        function openCheckout(){
-            if(!cart.length){showToast('Your cart is empty. Add a product first.');return}
-            const checkout=document.getElementById('checkoutOverlay');if(!checkout){showToast('Checkout form not found.');return}
-            document.getElementById('cartDrawer')?.classList.remove('open');document.getElementById('cartOverlay')?.classList.remove('open');
-            checkout.classList.add('open');document.body.style.overflow='hidden';updateCheckoutSummary();
+        function openCheckout() {
+            if (!cart.length) { showToast('Your cart is empty. Add a product first.'); return; }
+            const checkout = document.getElementById('checkoutOverlay');
+            if (!checkout) { showToast('Checkout form not found.'); return; }
+            toggleCart(false);
+            updateCheckoutSummary();
+            checkout.classList.add('open');
+            document.body.style.overflow = 'hidden';
         }
-        function closeCheckout(){document.getElementById('checkoutOverlay')?.classList.remove('open');document.body.style.overflow=''}
-        function placeOrder(event){
-            event?.preventDefault();if(!cart.length){showToast('Your cart is empty.');closeCheckout();return}
-            const form=document.getElementById('checkoutForm');if(form&&!form.reportValidity())return;
-            const subtotal=getCartSubtotal(),shippingMethod=document.getElementById('checkoutShipping')?.value||'standard',shipping=shippingMethod==='express'?199:0;
-            const order={id:'WM'+Date.now(),createdAt:new Date().toISOString(),customer:{email:document.getElementById('checkoutEmail')?.value.trim()||'',firstName:document.getElementById('checkoutFname')?.value.trim()||'',lastName:document.getElementById('checkoutLname')?.value.trim()||'',address:document.getElementById('checkoutAddress')?.value.trim()||'',phone:document.getElementById('checkoutPhone')?.value.trim()||''},items:cart.map(item=>({...item,qty:Number(item.qty)||1})),subtotal,shipping,total:subtotal+shipping,shippingMethod,paymentMethod:selectedPaymentMethod,status:'Pending'};
-            const orders=JSON.parse(localStorage.getItem('welcomeMartOrders')||'[]');orders.push(order);localStorage.setItem('welcomeMartOrders',JSON.stringify(orders));
-            cart=[];localStorage.setItem('welcomeMartCart',JSON.stringify(cart));updateCartUI();closeCheckout();form?.reset();showToast('Demo order saved. Order ID: '+order.id);
+        function closeCheckout() {
+            document.getElementById('checkoutOverlay')?.classList.remove('open');
+            document.body.style.overflow = document.getElementById('cartDrawer')?.classList.contains('open') ? 'hidden' : '';
         }
-        document.addEventListener('DOMContentLoaded',()=>{
-            document.getElementById('cartOverlay')?.addEventListener('click',toggleCart);
-            const co=document.getElementById('checkoutOverlay');co?.addEventListener('click',e=>{if(e.target===co)closeCheckout()});
-            const methods=document.querySelectorAll('#paymentMethods .method');methods.forEach(btn=>btn.addEventListener('click',()=>{methods.forEach(m=>m.classList.remove('active'));btn.classList.add('active');selectedPaymentMethod=btn.dataset.method||'upi'}));
-            document.getElementById('checkoutShipping')?.addEventListener('change',updateCheckoutSummary);
+        function placeOrder(event) {
+            event?.preventDefault();
+            if (!cart.length) { showToast('Your cart is empty.'); closeCheckout(); return; }
+            const form = document.getElementById('checkoutForm');
+            if (form && !form.reportValidity()) return;
+            const submitButton = form?.querySelector('[type="submit"]');
+            if (submitButton?.dataset.submitting === 'true') return;
+            if (submitButton) { submitButton.dataset.submitting = 'true'; submitButton.disabled = true; }
+            try {
+                const subtotal = getCartSubtotal();
+                const shippingMethod = document.getElementById('checkoutShipping')?.value || 'standard';
+                const shipping = shippingMethod === 'express' ? 199 : 0;
+                const order = {
+                    id: 'WM' + Date.now(), createdAt: new Date().toISOString(),
+                    customer: {
+                        email: document.getElementById('checkoutEmail')?.value.trim() || '',
+                        firstName: document.getElementById('checkoutFname')?.value.trim() || '',
+                        lastName: document.getElementById('checkoutLname')?.value.trim() || '',
+                        address: document.getElementById('checkoutAddress')?.value.trim() || '',
+                        phone: document.getElementById('checkoutPhone')?.value.trim() || ''
+                    },
+                    items: cart.map(item => ({...item, qty: getItemQty(item), price: getItemPrice(item)})),
+                    subtotal, shipping, total: subtotal + shipping, shippingMethod,
+                    paymentMethod: selectedPaymentMethod, status: 'Pending (demo; payment not processed)'
+                };
+                const savedOrders = JSON.parse(localStorage.getItem('welcomeMartOrders') || '[]');
+                const orders = Array.isArray(savedOrders) ? savedOrders : [];
+                orders.push(order);
+                localStorage.setItem('welcomeMartOrders', JSON.stringify(orders));
+                cart = [];
+                localStorage.setItem('welcomeMartCart', JSON.stringify(cart));
+                updateCartUI();
+                closeCheckout();
+                form?.reset();
+                selectedPaymentMethod = 'upi';
+                document.querySelectorAll('#paymentMethods .method').forEach(btn => btn.classList.toggle('active', btn.dataset.method === 'upi'));
+                showToast('Demo order saved. Order ID: ' + order.id);
+            } catch (error) {
+                console.error('Unable to save demo order:', error);
+                showToast('Could not save your demo order. Please try again.');
+            } finally {
+                if (submitButton) { submitButton.dataset.submitting = 'false'; submitButton.disabled = false; }
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('cartOverlay')?.addEventListener('click', () => toggleCart(false));
+            const checkout = document.getElementById('checkoutOverlay');
+            checkout?.addEventListener('click', event => { if (event.target === checkout) closeCheckout(); });
+            document.querySelectorAll('#paymentMethods .method').forEach(btn => btn.addEventListener('click', () => {
+                document.querySelectorAll('#paymentMethods .method').forEach(method => method.classList.remove('active'));
+                btn.classList.add('active');
+                selectedPaymentMethod = btn.dataset.method || 'upi';
+            }));
+            document.getElementById('checkoutShipping')?.addEventListener('change', updateCheckoutSummary);
         });
 
         // ===== INIT =====
