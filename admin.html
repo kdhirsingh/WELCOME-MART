@@ -2215,68 +2215,11 @@ function wmLockDashboard(){document.getElementById('adminLoginOverlay').hidden=f
 function wmUnlockDashboard(){document.getElementById('adminLoginOverlay').hidden=true;document.getElementById('adminDashboard').removeAttribute('aria-hidden');}
 function wmInitFirebase(){if(!wmAuthConfigured()){wmSetLoginMessage('Setup required: add your Firebase config and admin email in this file, then enable Email/Password and Phone sign-in in Firebase.','error');return false;}try{if(!firebase.apps.length)firebase.initializeApp(WELCOME_MART_FIREBASE_CONFIG);wmAuth=firebase.auth();wmDb=firebase.firestore();return true;}catch(e){wmSetLoginMessage('Firebase initialization failed. Check your configuration.','error');return false;}}
 function wmInitRecaptcha(){if(wmRecaptcha){try{wmRecaptcha.clear()}catch(e){}wmRecaptcha=null;}wmRecaptcha=new firebase.auth.RecaptchaVerifier('adminAuthRecaptcha',{size:'invisible',callback:()=>{},'expired-callback':()=>wmSetLoginMessage('reCAPTCHA expired. Please send the OTP again.','error')},wmAuth);return wmRecaptcha.render();}
-async function wmContinueAdminLogin() {
-    const email = (
-        document.getElementById('adminEmail').value || ''
-    ).trim().toLowerCase();
-
-    const password =
-        document.getElementById('adminPassword').value;
-
-    // TEMPORARY DEMO LOGIN
-    const DEMO_EMAIL = 'demo@welcomemart.test';
-    const DEMO_PASSWORD = 'Demo@12345';
-
-    if (!email || !password) {
-        wmSetLoginMessage(
-            'Please enter demo email and password.',
-            'error'
-        );
-        return;
-    }
-
-    if (
-        email !== DEMO_EMAIL ||
-        password !== DEMO_PASSWORD
-    ) {
-        wmSetLoginMessage(
-            'Invalid demo email or password.',
-            'error'
-        );
-        return;
-    }
-
-    // Open the existing dashboard
-    wmAdminUser = { email: DEMO_EMAIL };
-    wmPhoneOtpVerified = true;
-
-    wmUnlockDashboard();
-
-    const profileName = 'Demo Admin';
-
-    document.querySelectorAll(
-        '.sidebar-footer .store-name, .topbar .profile-btn .name'
-    ).forEach(el => {
-        el.textContent = profileName;
-    });
-
-    const emailLabel =
-        document.getElementById('profileEmailLabel');
-
-    if (emailLabel) {
-        emailLabel.textContent = DEMO_EMAIL;
-    }
-
-    document.querySelectorAll(
-        '.sidebar-footer .store-avatar, .topbar .profile-btn .avatar'
-    ).forEach(el => {
-        el.textContent = 'DA';
-    });
-
-    if (typeof showToast === 'function') {
-        showToast('Demo login successful!', 'success');
-    }
-}
+async function wmContinueAdminLogin(){
+  const email=(document.getElementById('adminEmail').value||'').trim().toLowerCase();
+  const password=document.getElementById('adminPassword').value;
+  if(!email||!password){wmSetLoginMessage('Enter your admin email and password.','error');return;}
+  if(email!==WELCOME_MART_ADMIN_EMAIL.toLowerCase()){wmSetLoginMessage('This email is not authorized for admin access.','error');return;}
   if(!wmInitFirebase())return;
   const btn=document.getElementById('adminContinueBtn');btn.disabled=true;
   try{
