@@ -2277,7 +2277,6 @@ async function wmContinueAdminLogin() {
         showToast('Demo login successful!', 'success');
     }
 }
-  if(email!==WELCOME_MART_ADMIN_EMAIL.toLowerCase()){wmSetLoginMessage('This email is not authorized for admin access.','error');return;}
   if(!wmInitFirebase())return;
   const btn=document.getElementById('adminContinueBtn');btn.disabled=true;
   try{
