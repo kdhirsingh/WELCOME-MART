@@ -3848,6 +3848,144 @@ let qty = 1;
             drawer.classList.toggle('open');
             document.body.style.overflow = overlay.classList.contains('open') ? 'hidden' : '';
         }
+        ```javascript
+// ===== CHECKOUT =====
+
+function openCheckout() {
+    if (!Array.isArray(cart) || cart.length === 0) {
+        showToast('Your cart is empty. Add some items first!');
+        return;
+    }
+
+    const checkoutOverlay = document.getElementById('checkoutOverlay');
+
+    if (!checkoutOverlay) {
+        showToast('Checkout page could not be opened. Please check the checkout HTML.');
+        return;
+    }
+
+    // Calculate subtotal using existing cart data
+    const subtotal = cart.reduce(
+        (sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 0),
+        0
+    );
+
+    const shippingSelect = document.getElementById('checkoutShipping');
+    const shipping = shippingSelect && shippingSelect.value === 'express' ? 199 : 0;
+
+    const subtotalEl = document.getElementById('checkoutSubtotal');
+    const shippingEl = document.getElementById('checkoutShippingLabel');
+    const totalEl = document.getElementById('checkoutTotal');
+
+    if (subtotalEl) {
+        subtotalEl.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+    }
+
+    if (shippingEl) {
+        shippingEl.textContent = shipping === 0 ? 'Free' : `+₹${shipping}`;
+    }
+
+    if (totalEl) {
+        totalEl.textContent = `₹${(subtotal + shipping).toLocaleString('en-IN')}`;
+    }
+
+    // Close cart drawer only if it is currently open
+    const cartOverlay = document.getElementById('cartOverlay');
+    const cartDrawer = document.getElementById('cartDrawer');
+
+    if (
+        (cartOverlay && cartOverlay.classList.contains('open')) ||
+        (cartDrawer && cartDrawer.classList.contains('open'))
+    ) {
+        toggleCart();
+    }
+
+    checkoutOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+
+function closeCheckout() {
+    const checkoutOverlay = document.getElementById('checkoutOverlay');
+
+    if (checkoutOverlay) {
+        checkoutOverlay.classList.remove('open');
+    }
+
+    document.body.style.overflow = '';
+}
+
+
+// Payment method selection
+document.querySelectorAll('.payment-methods .method').forEach(button => {
+    button.addEventListener('click', function () {
+        document.querySelectorAll('.payment-methods .method').forEach(method => {
+            method.classList.remove('active');
+        });
+
+        this.classList.add('active');
+    });
+});
+
+
+// Update totals when shipping method changes
+const checkoutShippingSelect = document.getElementById('checkoutShipping');
+
+if (checkoutShippingSelect) {
+    checkoutShippingSelect.addEventListener('change', function () {
+        const subtotal = cart.reduce(
+            (sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 0),
+            0
+        );
+
+        const shipping = this.value === 'express' ? 199 : 0;
+
+        const subtotalEl = document.getElementById('checkoutSubtotal');
+        const shippingEl = document.getElementById('checkoutShippingLabel');
+        const totalEl = document.getElementById('checkoutTotal');
+
+        if (subtotalEl) {
+            subtotalEl.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+        }
+
+        if (shippingEl) {
+            shippingEl.textContent = shipping === 0 ? 'Free' : `+₹${shipping}`;
+        }
+
+        if (totalEl) {
+            totalEl.textContent = `₹${(subtotal + shipping).toLocaleString('en-IN')}`;
+        }
+    });
+}
+
+
+// Demo order placement — no real payment is processed
+function placeOrder(event) {
+    event.preventDefault();
+
+    if (!Array.isArray(cart) || cart.length === 0) {
+        showToast('Your cart is empty. Add some items first!');
+        closeCheckout();
+        return;
+    }
+
+    showToast('🎉 Demo order placed successfully! Thank you for shopping at Welcome Mart.');
+
+    // Use the website's existing cart update function
+    cart = [];
+    updateCartUI();
+
+    closeCheckout();
+
+    const checkoutForm = document.getElementById('checkoutForm');
+
+    if (checkoutForm) {
+        checkoutForm.reset();
+    }
+}
+
+// ===== END CHECKOUT =====
+```
          // ===== WISHLIST =====
 function toggleWishlist(id, event) {
     if (event) event.stopPropagation();
